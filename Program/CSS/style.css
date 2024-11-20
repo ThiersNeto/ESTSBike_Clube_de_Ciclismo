@@ -63,45 +63,6 @@ nav ul li a:hover {
     border-radius: 4px;
 }
 
-/* Table Styles */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-}
-
-th {
-    background-color: #0a1933;
-    color: white;
-    padding: 10px;
-    text-align: left;
-}
-
-td {
-    padding: 10px;
-    background-color: #b8c7e0;
-    border: 1px solid #fff;
-}
-
-tr:nth-child(even) td {
-    background-color: #d1dced;
-}
-
-/* Buttons */
-button {
-    background-color: #0a1933;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin: 10px;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-button:hover {
-    background-color: #1a3b6d;
-}
-
 /* Footer */
 footer {
     background-color: #0a1933;
