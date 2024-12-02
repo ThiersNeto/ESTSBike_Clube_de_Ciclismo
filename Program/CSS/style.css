@@ -1,9 +1,41 @@
-/* Reset básico */
-* {
+body {
     margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: monospace ;
-    background-color: #f5f5f5;
-    color: #0a1933;
+    font-family: Arial, sans-serif;
+}
+
+.title {
+    background-color: #1B294B;
+    color: white;
+    padding: 15px 20px;
+    font-size: 24px;
+}
+
+.nav {
+    display: flex;
+    background-color: #E6E9F0;
+}
+
+.nav-item {
+    padding: 10px 20px;
+    cursor: pointer;
+    border-right: 1px solid #ccc;
+}
+
+.nav-item:hover {
+    background-color: #d5d9e3;
+}
+
+.footer {
+    background-color: #1B294B;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    font-size: 14px;
+}
+
+.footer-text {
+    opacity: 0.9;
 }
