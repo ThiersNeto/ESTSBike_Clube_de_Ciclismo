@@ -18,6 +18,12 @@ menuItems.forEach(item => {
     const menuItem = document.createElement('div');
     menuItem.textContent = item;
     menuItem.classList.add('nav-item');
+    
+    // Adicionar evento de clique para o item "Tipos de Eventos"
+    if (item === 'Tipos de Eventos') {
+        menuItem.addEventListener('click', () => eventTypeManager.showEventTypes());
+    }
+    
     nav.appendChild(menuItem);
 });
 
