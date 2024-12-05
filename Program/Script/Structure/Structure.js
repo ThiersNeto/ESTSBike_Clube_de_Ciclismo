@@ -19,9 +19,12 @@ menuItems.forEach(item => {
     menuItem.textContent = item;
     menuItem.classList.add('nav-item');
     
-    // Adicionar evento de clique para o item "Tipos de Eventos"
     if (item === 'Tipos de Eventos') {
         menuItem.addEventListener('click', () => eventTypeManager.showEventTypes());
+    } else if (item === 'Eventos') {
+        menuItem.addEventListener('click', () => eventManager.showEvents());
+    } else if (item === 'Membros') {
+        menuItem.addEventListener('click', () => membersModule.showMembers());
     }
     
     nav.appendChild(menuItem);

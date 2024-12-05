@@ -1,8 +1,8 @@
 class EventType {
-    // Construtor para criar um novo tipo de evento com validação de entrada
+    // Construtor para criar um novo tipo de evento
     constructor(id, description) {
         if (!description || typeof description !== 'string') {
-            throw new Error('Description must be a non-empty string');
+            throw new Error('A descrição deve ser uma string não vazia');
         }
         this.id = id;
         this.description = description.trim();
@@ -21,7 +21,7 @@ class EventTypeManager {
     // Adiciona um novo tipo de evento à lista
     addEventType(description) {
         if (!description || typeof description !== 'string') {
-            throw new Error('Description must be a non-empty string');
+            throw new Error('A descrição deve ser uma string não vazia');
         }
         this.currentId++;
         const eventType = new EventType(this.currentId, description);
@@ -37,11 +37,11 @@ class EventTypeManager {
     // Atualiza a descrição de um tipo de evento existente
     updateEventType(id, description) {
         if (!description || typeof description !== 'string') {
-            throw new Error('Description must be a non-empty string');
+            throw new Error('A descrição deve ser uma string não vazia');
         }
         const eventType = this.eventTypes.find(et => et.id === id);
         if (!eventType) {
-            throw new Error('Event type not found');
+            throw new Error('Tipo de evento não encontrado');
         }
         eventType.description = description.trim();
         return true;
@@ -50,14 +50,14 @@ class EventTypeManager {
     // Remove um tipo de evento se não estiver em uso
     deleteEventType(id) {
         if (this.eventAssociations.some(ea => ea.eventTypeId === id)) {
-            throw new Error('Cannot delete event type: associated with existing events');
+            throw new Error('Não é possível excluir: tipo de evento associado a eventos existentes');
         }
         if (this.memberPreferences.some(mp => mp.eventTypeId === id)) {
-            throw new Error('Cannot delete event type: associated with member preferences');
+            throw new Error('Não é possível excluir: tipo de evento associado a preferências de membros');
         }
         const index = this.eventTypes.findIndex(et => et.id === id);
         if (index === -1) {
-            throw new Error('Event type not found');
+            throw new Error('Tipo de evento não encontrado');
         }
         this.eventTypes.splice(index, 1);
         return true;
@@ -67,7 +67,7 @@ class EventTypeManager {
     getEventType(id) {
         const eventType = this.eventTypes.find(et => et.id === id);
         if (!eventType) {
-            throw new Error('Event type not found');
+            throw new Error('Tipo de evento não encontrado');
         }
         return eventType;
     }
@@ -231,7 +231,7 @@ class EventTypeManager {
     handleEdit() {
         const selected = document.querySelector('.event-type-item.selected');
         if (!selected) {
-            this.showError('Selecione um tipo de evento para editar.');
+            this.showError('Selecione um tipo de evento para editar');
             return;
         }
         const eventTypeId = parseInt(selected.dataset.eventTypeId);
@@ -239,11 +239,11 @@ class EventTypeManager {
         this.showEventTypeForm(eventType);
     }
 
-    // Gerencia a ação de deletar um tipo de evento
+    // Gerencia a ação de deletar
     handleDelete() {
         const selected = document.querySelector('.event-type-item.selected');
         if (!selected) {
-            this.showError('Selecione um tipo de evento para apagar.');
+            this.showError('Selecione um tipo de evento para apagar');
             return;
         }
         
@@ -256,19 +256,22 @@ class EventTypeManager {
         }
     }
 
-    // Gerencia o salvamento de um tipo de Evento
+    // Gerencia o salvamento
     handleSave(value, selectedEventType) {
-        if (value.trim()) {
-            try {
-                if (selectedEventType) {
-                    this.updateEventType(selectedEventType.id, value.trim());
-                } else {
-                    this.addEventType(value.trim());
-                }
-                this.showEventTypes();
-            } catch (error) {
-                this.showError(error.message);
+        if (!value.trim()) {
+            this.showError('O campo descrição é obrigatório');
+            return;
+        }
+
+        try {
+            if (selectedEventType) {
+                this.updateEventType(selectedEventType.id, value.trim());
+            } else {
+                this.addEventType(value.trim());
             }
+            this.showEventTypes();
+        } catch (error) {
+            this.showError(error.message);
         }
     }
 
