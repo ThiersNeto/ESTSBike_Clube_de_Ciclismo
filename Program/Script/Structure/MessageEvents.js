@@ -1,0 +1,1 @@
+// Passa todos as mensgame aqui e cria elas static apenas para puxar para a notificação
