@@ -19,9 +19,38 @@ class Members {
         this.selectedMember = null;
     }
 
+    // Adiciona um novo membro
+    addMember(name, email) {
+        this.currentId++;
+        const member = new Member(this.currentId, name, email);
+        this.members.push(member);
+        return member;
+    }
+
     // Retorna todos os membros
     getAllMembers() {
         return [...this.members];
+    }
+
+    // Atualiza um membro existente
+    updateMember(id, name, email) {
+        const member = this.member.find(e => e.id === id);
+        if (!member) {
+            throw new Error('Membro não encontrado');
+        }
+        member.name = name;
+        member.email = email;
+        return true;
+    }
+
+    // Remove um membro
+    deleteMember(id) {
+        const index = this.members.findIndex(e => e.id === id);
+        if (index === -1) {
+            throw new Error('Membro não encontrado');
+        }
+        this.members.splice(index, 1);
+        return true;
     }
 
     // Exibe a interface principal de membros
@@ -69,35 +98,6 @@ class Members {
         });
 
         return buttonContainer;
-    }
-
-    // Adiciona um novo membro
-    addMember(name, email) {
-        this.currentId++;
-        const member = new Member(this.currentId, name, email);
-        this.members.push(member);
-        return member;
-    }
-
-    // Atualiza um membro existente
-    updateMember(id, name, email) {
-        const member = this.member.find(e => e.id === id);
-        if (!member) {
-            throw new Error('Membro não encontrado');
-        }
-        member.name = name;
-        member.email = email;
-        return true;
-    }
-
-    // Remove um membro
-    deleteMember(id) {
-        const index = this.members.findIndex(e => e.id === id);
-        if (index === -1) {
-            throw new Error('Membro não encontrado');
-        }
-        this.members.splice(index, 1);
-        return true;
     }
 
     // Gerencia o salvamento
@@ -155,11 +155,66 @@ class Members {
         content.innerHTML = '';
 
         const formTitle = document.createElement('h2');
-        formTitle.textContent = selectedEvent ? 'Alterar Membro' : 'Novo Membro';
+        formTitle.textContent = selectedMember ? 'Alterar Membro' : 'Novo Membro';
         content.appendChild(formTitle);
 
         const form = this.createForm(selectedMember);
         content.appendChild(form);
+    }
+
+
+    // Cria o formulário para entrada de dados
+    createForm(selectedMember) {
+        const formContainer = document.createElement('div');
+        formContainer.classList.add('form-container');
+
+        // Nome
+        const nameInput = document.createElement('input');
+        nameInput.type = 'text';
+        nameInput.classList.add('event-input');
+        nameInput.placeholder = 'Nome';
+        if (selectedMember) {
+            nameInput.value = selectedMember.name;
+        }
+
+        // email
+        const emailInput = document.createElement('input');
+        emailInput.type = 'text';
+        emailInput.classList.add('event-input');
+        emailInput.placeholder = 'Email';
+        if (selectedMember) {
+            emailInput.value = selectedMember.email;
+        }
+
+
+        const buttonContainer = document.createElement('div');
+        buttonContainer.classList.add('button-container');
+
+        const saveButton = document.createElement('button');
+        saveButton.textContent = 'Gravar';
+        saveButton.classList.add('action-button');
+        saveButton.addMemberListener('click', () => {
+            this.handleSave(
+                nameInput.value,
+                emailInput.value,
+                selectedMember
+            );
+        });
+
+        const cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Cancelar';
+        cancelButton.classList.add('action-button');
+        cancelButton.addEventListener('click', () => this.showEvents());
+
+        buttonContainer.appendChild(saveButton);
+        buttonContainer.appendChild(cancelButton);
+
+        formContainer.appendChild(typeSelect);
+        formContainer.appendChild(descInput);
+        formContainer.appendChild(dateInput);
+        formContainer.appendChild(buttonContainer);
+
+        return formContainer;
     }
 
     // Cria a lista de membros
