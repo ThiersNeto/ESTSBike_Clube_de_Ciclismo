@@ -34,7 +34,7 @@ class Members {
 
     // Atualiza um membro existente
     updateMember(id, name, email) {
-        const member = this.member.find(e => e.id === id);
+        const member = this.members.find(e => e.id === id);
         if (!member) {
             throw new Error('Membro não encontrado');
         }
@@ -171,7 +171,7 @@ class Members {
         // Nome
         const nameInput = document.createElement('input');
         nameInput.type = 'text';
-        nameInput.classList.add('event-input');
+        nameInput.classList.add('member-input');
         nameInput.placeholder = 'Nome';
         if (selectedMember) {
             nameInput.value = selectedMember.name;
@@ -180,7 +180,7 @@ class Members {
         // email
         const emailInput = document.createElement('input');
         emailInput.type = 'text';
-        emailInput.classList.add('event-input');
+        emailInput.classList.add('member-input');
         emailInput.placeholder = 'Email';
         if (selectedMember) {
             emailInput.value = selectedMember.email;
@@ -191,9 +191,9 @@ class Members {
         buttonContainer.classList.add('button-container');
 
         const saveButton = document.createElement('button');
-        saveButton.textContent = 'Gravar';
+        saveButton.textContent = 'Gravar';  
         saveButton.classList.add('action-button');
-        saveButton.addMemberListener('click', () => {
+        saveButton.addEventListener('click', () => {
             this.handleSave(
                 nameInput.value,
                 emailInput.value,
@@ -204,14 +204,13 @@ class Members {
         const cancelButton = document.createElement('button');
         cancelButton.textContent = 'Cancelar';
         cancelButton.classList.add('action-button');
-        cancelButton.addEventListener('click', () => this.showEvents());
+        cancelButton.addEventListener('click', () => this.showMembers());
 
         buttonContainer.appendChild(saveButton);
         buttonContainer.appendChild(cancelButton);
 
-        formContainer.appendChild(typeSelect);
-        formContainer.appendChild(descInput);
-        formContainer.appendChild(dateInput);
+        formContainer.appendChild(nameInput);
+        formContainer.appendChild(emailInput);
         formContainer.appendChild(buttonContainer);
 
         return formContainer;
@@ -286,6 +285,22 @@ class Members {
             previousSelected.classList.remove('selected');
         }
         element.classList.add('selected');
+    }
+
+    // Exibe mensagens de erro temporárias
+    showError(message) {
+        const content = document.querySelector('.main-content');
+        const existingError = content.querySelector('.error-message');
+        if (existingError) {
+            existingError.remove();
+        }
+
+        const errorContainer = document.createElement('div');
+        errorContainer.classList.add('error-message');
+        errorContainer.textContent = message;
+        content.insertBefore(errorContainer, content.firstChild);
+
+        setTimeout(() => errorContainer.remove(), 3000);
     }
 }
 
