@@ -19,14 +19,6 @@ class Members {
         this.selectedMember = null;
     }
 
-    // Adiciona um novo membro
-    addMember(name, email) {
-        this.currentId++;
-        const member = new Member(this.currentId, name, email);
-        this.members.push(member);
-        return member;
-    }
-
     // Retorna todos os membros
     getAllMembers() {
         return [...this.members];
@@ -77,6 +69,97 @@ class Members {
         });
 
         return buttonContainer;
+    }
+
+    // Adiciona um novo membro
+    addMember(name, email) {
+        this.currentId++;
+        const member = new Member(this.currentId, name, email);
+        this.members.push(member);
+        return member;
+    }
+
+    // Atualiza um membro existente
+    updateMember(id, name, email) {
+        const member = this.member.find(e => e.id === id);
+        if (!member) {
+            throw new Error('Membro não encontrado');
+        }
+        member.name = name;
+        member.email = email;
+        return true;
+    }
+
+    // Remove um membro
+    deleteMember(id) {
+        const index = this.members.findIndex(e => e.id === id);
+        if (index === -1) {
+            throw new Error('Membro não encontrado');
+        }
+        this.members.splice(index, 1);
+        return true;
+    }
+
+    // Gerencia o salvamento
+    handleSave(name, email, selectedMember) {
+        if (!name || !email) {
+            this.showError('Preencha todos os campos.');
+            return;
+        }
+
+        try {
+            if (selectedMember) {
+                this.updateMember(selectedMember.id, name, email);
+            } else {
+                this.addMember(name, email);
+            }
+            this.showMembers();
+        } catch (error) {
+            this.showError(error.message);
+        }
+    }
+
+// Gerencia a ação de editar
+    handleEdit() {
+        const selected = document.querySelector('.member-item.selected');
+        if (!selected) {
+            this.showError('Selecione um membro para editar.');
+            return;
+        }
+        const memberId = parseInt(selected.dataset.memberId);
+        const member = this.members.find(e => e.id === memberId);
+        this.showMemberForm(member);
+    }
+
+
+    // Gerencia a ação de deletar
+    handleDelete() {
+        const selected = document.querySelector('.member-item.selected');
+        if (!selected) {
+            this.showError('Selecione um membro para apagar.');
+            return;
+        }
+        
+        try {
+            const memberId = parseInt(selected.dataset.memberId);
+            this.deleteMember(memberId);
+            this.showMembers();
+        } catch (error) {
+            this.showError(error.message);
+        }
+    }
+
+    // Exibe o formulário para criar/editar um membro
+    showMemberForm(selectedMember = null) {
+        const content = document.querySelector('.main-content');
+        content.innerHTML = '';
+
+        const formTitle = document.createElement('h2');
+        formTitle.textContent = selectedEvent ? 'Alterar Membro' : 'Novo Membro';
+        content.appendChild(formTitle);
+
+        const form = this.createForm(selectedMember);
+        content.appendChild(form);
     }
 
     // Cria a lista de membros
