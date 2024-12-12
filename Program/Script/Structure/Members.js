@@ -1,5 +1,5 @@
 class Member {
-    constructor(id, name, email) {
+    constructor(id, name, email, preferredEvents = []) {
         if (!name || typeof name !== 'string') {
             throw new Error('O nome deve ser uma string não vazia');
         }
@@ -9,6 +9,7 @@ class Member {
         this.id = id;
         this.name = name.trim();
         this.email = email.trim();
+        this.preferredEvents = preferredEvents;
     }
 }
 
@@ -17,12 +18,13 @@ class Members {
         this.members = [];
         this.currentId = 0;
         this.selectedMember = null;
+        this.events = [];
     }
 
     // Adiciona um novo membro
-    addMember(name, email) {
+    addMember(name, email, preferredEvents) {
         this.currentId++;
-        const member = new Member(this.currentId, name, email);
+        const member = new Member(this.currentId, name, email, preferredEvents);
         this.members.push(member);
         return member;
     }
@@ -33,13 +35,14 @@ class Members {
     }
 
     // Atualiza um membro existente
-    updateMember(id, name, email) {
+    updateMember(id, name, email, preferredEvents) {
         const member = this.members.find(e => e.id === id);
         if (!member) {
             throw new Error('Membro não encontrado');
         }
         member.name = name;
         member.email = email;
+        member.preferredEvents = preferredEvents;
         return true;
     }
 
@@ -101,7 +104,7 @@ class Members {
     }
 
     // Gerencia o salvamento
-    handleSave(name, email, selectedMember) {
+    handleSave(name, email, selectedEvents, selectedMember) {
         if (!name || !email) {
             this.showError('Preencha todos os campos.');
             return;
@@ -109,9 +112,9 @@ class Members {
 
         try {
             if (selectedMember) {
-                this.updateMember(selectedMember.id, name, email);
+                this.updateMember(selectedMember.id, name, email, selectedEvents);
             } else {
-                this.addMember(name, email);
+                this.addMember(name, email, selectedEvents);
             }
             this.showMembers();
         } catch (error) {
@@ -186,6 +189,38 @@ class Members {
             emailInput.value = selectedMember.email;
         }
 
+        // Tipos de eventos preferidos
+        const eventsContainer = document.createElement('div');
+        eventsContainer.classList.add('events-container');
+        const eventsLabel = document.createElement('p');
+        eventsLabel.textContent = 'Tipos de Eventos Preferidos';
+        eventsContainer.appendChild(eventsLabel);
+
+        if (this.events.length === 0) {
+            const noEventsMessage = document.createElement('p');
+            noEventsMessage.textContent = 'Nenhum evento disponível. Adicione eventos primeiro.';
+            eventsContainer.appendChild(noEventsMessage);
+        } else {
+            this.events.forEach(event => {
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.value = event;
+                checkbox.id = `event-${event}`;
+                checkbox.classList.add('event-checkbox');
+        
+                if (selectedMember && selectedMember.preferredEvents.includes(event)) {
+                    checkbox.checked = true;
+                }
+        
+                const label = document.createElement('label');
+                label.htmlFor = `event-${event}`;
+                label.textContent = event;
+        
+                eventsContainer.appendChild(checkbox);
+                eventsContainer.appendChild(label);
+            });
+        }
+
 
         const buttonContainer = document.createElement('div');
         buttonContainer.classList.add('button-container');
@@ -197,7 +232,8 @@ class Members {
             this.handleSave(
                 nameInput.value,
                 emailInput.value,
-                selectedMember
+                selectedEvents,
+                selectedMember,
             );
         });
 
@@ -211,6 +247,7 @@ class Members {
 
         formContainer.appendChild(nameInput);
         formContainer.appendChild(emailInput);
+        formContainer.appendChild(eventsContainer);
         formContainer.appendChild(buttonContainer);
 
         return formContainer;
