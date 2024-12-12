@@ -301,7 +301,7 @@ class EventManager {
 
     // Gerencia o salvamento
     handleSave(typeId, description, date, selectedEvent) {
-        if (!description.trim() || !date) {
+        if (!description.trim() || !date || isNaN(date.getTime())) {
             this.showError('Preencha todos os campos.');
             return;
         }
