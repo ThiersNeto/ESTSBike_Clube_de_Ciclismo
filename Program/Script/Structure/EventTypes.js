@@ -184,7 +184,9 @@ class EventTypeManager {
     // Exibe o formulário para criar/editar um tipo de evento
     showEventTypeForm(selectedEventType = null) {
         const content = document.querySelector('.main-content');
-        content.innerHTML = '';
+        while (content.firstChild) {
+            content.removeChild(content.firstChild);
+        }
 
         const formTitle = document.createElement('h2');
         formTitle.textContent = selectedEventType ? 'Alterar Tipo de Evento' : 'Novo Tipo de Evento';

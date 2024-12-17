@@ -183,7 +183,9 @@ class EventManager {
     // Exibe o formulário para criar/editar um evento
     showEventForm(selectedEvent = null) {
         const content = document.querySelector('.main-content');
-        content.innerHTML = '';
+        while (content.firstChild) {
+            content.removeChild(content.firstChild);
+        }
 
         const formTitle = document.createElement('h2');
         formTitle.textContent = selectedEvent ? 'Alterar Evento' : 'Novo Evento';

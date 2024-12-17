@@ -155,7 +155,9 @@ class Members {
     // Exibe o formulário para criar/editar um membro
     showMemberForm(selectedMember = null) {
         const content = document.querySelector('.main-content');
-        content.innerHTML = '';
+        while (content.firstChild) {
+            content.removeChild(content.firstChild);
+        }
 
         const formTitle = document.createElement('h2');
         formTitle.textContent = selectedMember ? 'Alterar Membro' : 'Novo Membro';
