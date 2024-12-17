@@ -229,6 +229,7 @@ class Members {
         saveButton.textContent = 'Gravar';  
         saveButton.classList.add('action-button');
         saveButton.addEventListener('click', () => {
+            const selectedEvents = Array.from(document.querySelectorAll('.event-checkbox:checked')).map(checkbox => checkbox.value);
             this.handleSave(
                 nameInput.value,
                 emailInput.value,
