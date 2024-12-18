@@ -1,3 +1,6 @@
+// Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+// André Rocha - 202300185 - 202300185@estudantes.ips.pt
+
 // Add initial event types
 eventTypeManager.addEventType("Estrada");
 eventTypeManager.addEventType("BTT");
@@ -5,20 +8,23 @@ eventTypeManager.addEventType("BMX");
 eventTypeManager.addEventType("Pista");
 eventTypeManager.addEventType("Ciclocrosse");
 eventTypeManager.addEventType("Cicloturismo");
+eventTypeManager.addEventType("Motociata");
 
 // Add initial events
-eventManager.addEvent(6, "Passeio das Vindimas", new Date("2024-09-20"));
-eventManager.addEvent(6, "Tour do Alentejo", new Date("2024-09-30"));
-eventManager.addEvent(3, "BMX Extreme Show", new Date("2024-10-05"));
-eventManager.addEvent(1, "Clássica da Arrábida", new Date("2024-10-15"));
-eventManager.addEvent(2, "BTT Noturno", new Date("2024-11-15"));
-eventManager.addEvent(1, "Volta a Setúbal", new Date("2024-11-01"));
+eventManager.addEvent(1, "Clássica da Arrábida", new Date("2025-10-15"));
+eventManager.addEvent(2, "BTT Noturno", new Date("2025-11-15"));
+eventManager.addEvent(1, "Volta a Setúbal", new Date("2025-11-01"));
+eventManager.addEvent(6, "Passeio das Vindimas", new Date("2025-09-20"));
+eventManager.addEvent(6, "Tour do Alentejo", new Date("2025-09-30"));
+eventManager.addEvent(3, "BMX Extreme Show", new Date("2025-10-05"));
 
 // Add initial members
 membersModule.addMember("Thiers Neto", [1, 2]);
 membersModule.addMember("Lucas Gomes", [3, 4]);
 membersModule.addMember("Eduardo Vemba", [5, 6]);
 membersModule.addMember("Saymon Gabriel", [2, 4])
+membersModule.addMember("Gabriel Piscante", [7]);
+membersModule.addMember("João Silva", []);
 
 // Header
 const header = document.createElement('header');

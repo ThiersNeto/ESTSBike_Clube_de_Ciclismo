@@ -1,3 +1,6 @@
+// Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+// André Rocha - 202300185 - 202300185@estudantes.ips.pt
+
 class Member {
     constructor(id, name, preferredEvents = []) {
         if (!name || typeof name !== 'string') {
@@ -14,7 +17,11 @@ class Members {
         this.members = [];
         this.currentId = 0;
         this.selectedMember = null;
+<<<<<<< HEAD
         this.events = [];
+        this.eventSubscriptions = [];
+=======
+>>>>>>> 3ee64ee95b1dd80076f6f5d66317cadf9ebb9544
     }
 
     // Adiciona um novo membro
@@ -84,7 +91,8 @@ class Members {
         const buttons = [
             { text: 'Criar', action: () => this.showMemberForm() },
             { text: 'Editar', action: () => this.handleEdit() },
-            { text: 'Apagar', action: () => this.handleDelete() }
+            { text: 'Apagar', action: () => this.handleDelete() },
+            { text: 'Inscrever em Evento', action: () => this.handleEventRegistration() }
         ];
 
         buttons.forEach(({ text, action }) => {
@@ -93,6 +101,7 @@ class Members {
             button.classList.add('action-button');
             button.addEventListener('click', action);
             buttonContainer.appendChild(button);
+            
         });
 
         return buttonContainer;
@@ -107,9 +116,9 @@ class Members {
 
         try {
             if (selectedMember) {
-                this.updateMember(selectedMember.id, name, selectedEvents);
+                this.updateMember(selectedMember.id, name, selectedEvents.map(Number));
             } else {
-                this.addMember(name, selectedEvents);
+                this.addMember(name, selectedEvents.map(Number));
             }
             this.showMembers();
         } catch (error) {
@@ -168,7 +177,14 @@ class Members {
         const formContainer = document.createElement('div');
         formContainer.classList.add('form-container');
 
-        // Nome
+        // Nome (em cima)
+        const nameSection = document.createElement('div');
+        nameSection.classList.add('name-section');
+
+        const nameLabel = document.createElement('label');
+        nameLabel.textContent = 'Nome';
+        nameLabel.classList.add('form-label');
+
         const nameInput = document.createElement('input');
         nameInput.type = 'text';
         nameInput.classList.add('member-input');
@@ -177,52 +193,198 @@ class Members {
             nameInput.value = selectedMember.name;
         }
 
-        // Tipos de eventos preferidos
-        const eventsContainer = document.createElement('div');
-        eventsContainer.classList.add('events-container');
+        nameSection.appendChild(nameLabel);
+        nameSection.appendChild(nameInput);
+
+        // Container para as duas colunas
+        const columnsContainer = document.createElement('div');
+        columnsContainer.classList.add('form-columns');
+
+        // Coluna da esquerda (Tipos de eventos preferidos)
+        const leftColumn = document.createElement('div');
+        leftColumn.classList.add('form-column');
+
         const eventsLabel = document.createElement('p');
         eventsLabel.textContent = 'Tipos de Eventos Preferidos';
-        eventsContainer.appendChild(eventsLabel);
+        eventsLabel.classList.add('form-label');
 
-        if (this.events.length === 0) {
+<<<<<<< HEAD
+        const eventsContainer = document.createElement('div');
+        eventsContainer.classList.add('events-checkbox-container');
+
+        // Busca todos os tipos de eventos disponíveis
+        const eventTypes = eventTypeManager.getAllEventTypes();
+        
+        if (eventTypes.length === 0) {
             const noEventsMessage = document.createElement('p');
-            noEventsMessage.textContent = 'Nenhum evento disponível. Adicione eventos primeiro.';
+            noEventsMessage.textContent = MessageEvents.NO_EVENT_TYPES;
+            noEventsMessage.classList.add('empty-message');
             eventsContainer.appendChild(noEventsMessage);
         } else {
-            this.events.forEach(event => {
+            const checkboxGrid = document.createElement('div');
+            checkboxGrid.classList.add('checkbox-grid');
+
+            eventTypes.forEach(eventType => {
+                const checkboxContainer = document.createElement('div');
+                checkboxContainer.classList.add('checkbox-container');
+
+=======
+        const eventTypes = eventTypeManager.getAllEventTypes();
+        if (eventTypes.length === 0) {
+            const noEventsMessage = document.createElement('p');
+            noEventsMessage.textContent = 'Nenhum tipo de evento disponível. Adicione tipos de eventos primeiro.';
+            eventsContainer.appendChild(noEventsMessage);
+        } else {
+            eventTypes.forEach(eventType => {
+>>>>>>> 3ee64ee95b1dd80076f6f5d66317cadf9ebb9544
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
-                checkbox.value = event;
-                checkbox.id = `event-${event}`;
+                checkbox.value = eventType.id;
+                checkbox.id = `event-${eventType.id}`;
                 checkbox.classList.add('event-checkbox');
-        
-                if (selectedMember && selectedMember.preferredEvents.includes(event)) {
+<<<<<<< HEAD
+                
+=======
+
+>>>>>>> 3ee64ee95b1dd80076f6f5d66317cadf9ebb9544
+                if (selectedMember && selectedMember.preferredEvents.includes(eventType.id)) {
                     checkbox.checked = true;
                 }
-        
+
                 const label = document.createElement('label');
-                label.htmlFor = `event-${event}`;
-                label.textContent = event;
-        
+                label.htmlFor = `event-${eventType.id}`;
+                label.textContent = eventType.description;
+
+<<<<<<< HEAD
+                checkboxContainer.appendChild(checkbox);
+                checkboxContainer.appendChild(label);
+                checkboxGrid.appendChild(checkboxContainer);
+=======
                 eventsContainer.appendChild(checkbox);
                 eventsContainer.appendChild(label);
+>>>>>>> 3ee64ee95b1dd80076f6f5d66317cadf9ebb9544
             });
+
+            eventsContainer.appendChild(checkboxGrid);
         }
 
+        leftColumn.appendChild(eventsLabel);
+        leftColumn.appendChild(eventsContainer);
 
+<<<<<<< HEAD
+        // Coluna da direita (Eventos disponíveis)
+        const rightColumn = document.createElement('div');
+        rightColumn.classList.add('form-column');
+
+        if (selectedMember) {
+            const eventsListLabel = document.createElement('p');
+            eventsListLabel.textContent = 'Eventos';
+            eventsListLabel.classList.add('form-label');
+
+            const eventsListContainer = document.createElement('div');
+            eventsListContainer.classList.add('events-list-container');
+
+            // Cabeçalho da tabela de eventos
+            const tableHeader = document.createElement('div');
+            tableHeader.classList.add('events-header');
+            ['Id', 'Tipo', 'Descritivo', 'Data'].forEach(text => {
+                const cell = document.createElement('div');
+                cell.textContent = text;
+                cell.classList.add('header-cell');
+                tableHeader.appendChild(cell);
+            });
+            eventsListContainer.appendChild(tableHeader);
+
+            // Verifica se o membro tem tipos de eventos preferidos
+            if (selectedMember.preferredEvents.length === 0) {
+                const emptyMessage = document.createElement('p');
+                emptyMessage.textContent = 'Não há Eventos - Este membro não tem tipos de eventos preferidos';
+                emptyMessage.classList.add('empty-message');
+                eventsListContainer.appendChild(emptyMessage);
+            } else {
+                // Filtra eventos pelos tipos preferidos
+                const availableEvents = eventManager.events.filter(event => {
+                    // Verifica se o evento é futuro
+                    const eventDate = new Date(event.date);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    
+                    // Verifica se o evento é do tipo preferido E é uma data futura
+                    return eventDate >= today && selectedMember.preferredEvents.includes(event.typeId);
+                });
+
+                if (availableEvents.length === 0) {
+                    const emptyMessage = document.createElement('p');
+                    emptyMessage.textContent = 'Não há Eventos futuros do seu Tipo de Evento Preferido';
+                    emptyMessage.classList.add('empty-message');
+                    eventsListContainer.appendChild(emptyMessage);
+                } else {
+                    availableEvents.forEach(event => {
+                        const eventRow = document.createElement('div');
+                        eventRow.classList.add('event-row');
+
+                        const eventType = eventTypeManager.getEventType(event.typeId);
+                        const cells = [
+                            event.id,
+                            eventType.description,
+                            event.description,
+                            event.date.toISOString().split('T')[0]
+                        ];
+
+                        cells.forEach(text => {
+                            const cell = document.createElement('div');
+                            cell.textContent = text;
+                            cell.classList.add('item-cell');
+                            eventRow.appendChild(cell);
+                        });
+
+                        // Adiciona o botão de inscrição
+                        const inscricaoCell = document.createElement('div');
+                        inscricaoCell.classList.add('item-cell');
+
+                        const inscricaoButton = document.createElement('button');
+                        inscricaoButton.textContent = 'Inscrever';
+                        inscricaoButton.classList.add('inscricao-button');
+                        inscricaoButton.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            try {
+                                this.subscribeToEvent(selectedMember.id, event.id);
+                                MessageEvents.showSuccess('Inscrito com sucesso no evento!');
+                                this.showMemberForm(selectedMember);
+                            } catch (error) {
+                                MessageEvents.showError(error.message);
+                            }
+                        });
+
+                        inscricaoCell.appendChild(inscricaoButton);
+                        eventRow.appendChild(inscricaoCell);
+
+                        eventsListContainer.appendChild(eventRow);
+                    });
+                }
+            }
+
+            rightColumn.appendChild(eventsListLabel);
+            rightColumn.appendChild(eventsListContainer);
+        }
+
+        columnsContainer.appendChild(leftColumn);
+        columnsContainer.appendChild(rightColumn);
+
+        // Botões
+=======
+
+>>>>>>> 3ee64ee95b1dd80076f6f5d66317cadf9ebb9544
         const buttonContainer = document.createElement('div');
         buttonContainer.classList.add('button-container');
 
         const saveButton = document.createElement('button');
-        saveButton.textContent = 'Gravar';  
+        saveButton.textContent = 'Gravar';
         saveButton.classList.add('action-button');
         saveButton.addEventListener('click', () => {
-            const selectedEvents = Array.from(document.querySelectorAll('.event-checkbox:checked')).map(checkbox => checkbox.value);
-            this.handleSave(
-                nameInput.value,
-                selectedEvents,
-                selectedMember,
-            );
+            const selectedEvents = Array.from(document.querySelectorAll('.event-checkbox:checked'))
+                .map(checkbox => parseInt(checkbox.value));
+            this.handleSave(nameInput.value, selectedEvents, selectedMember);
         });
 
         const cancelButton = document.createElement('button');
@@ -233,8 +395,9 @@ class Members {
         buttonContainer.appendChild(saveButton);
         buttonContainer.appendChild(cancelButton);
 
-        formContainer.appendChild(nameInput);
-        formContainer.appendChild(eventsContainer);
+        // Montagem final do formulário
+        formContainer.appendChild(nameSection);
+        formContainer.appendChild(columnsContainer);
         formContainer.appendChild(buttonContainer);
 
         return formContainer;
@@ -325,6 +488,103 @@ class Members {
         content.insertBefore(errorContainer, content.firstChild);
 
         setTimeout(() => errorContainer.remove(), 3000);
+    }
+
+<<<<<<< HEAD
+    // Método para inscrever em evento
+    subscribeToEvent(memberId, eventId) {
+        // Verifica se já está inscrito
+        const isSubscribed = this.eventSubscriptions.some(
+            sub => sub.memberId === memberId && sub.eventId === eventId
+        );
+
+        if (isSubscribed) {
+            throw new Error('Membro já está inscrito neste evento');
+        }
+
+        this.eventSubscriptions.push({ memberId, eventId });
+        return true;
+    }
+
+    // Método para cancelar inscrição
+    unsubscribeFromEvent(memberId, eventId) {
+        const index = this.eventSubscriptions.findIndex(
+            sub => sub.memberId === memberId && sub.eventId === eventId
+        );
+
+        if (index === -1) {
+            throw new Error('Inscrição não encontrada');
+        }
+
+        this.eventSubscriptions.splice(index, 1);
+        return true;
+=======
+    handleEventRegistration() {
+        const selected = document.querySelector('.member-item.selected');
+        if (!selected) {
+            this.showError('Selecione um membro para inscrever em eventos.');
+            return;
+        }
+    
+        const memberId = parseInt(selected.dataset.memberId);
+        const member = this.members.find(e => e.id === memberId);
+    
+        // Obtém as preferências de tipos de eventos do membro diretamente
+        const memberPreferences = member.preferredEvents;  // Acesse diretamente o preferredEvents
+        if (memberPreferences.length === 0) {
+            this.showError('Este membro não tem preferências de tipo de evento.');
+            return;
+        }
+    
+        // Busca os eventos compatíveis com base nas preferências
+        const compatibleEvents = eventTypeManager.getEventsByTypes(memberPreferences);
+    
+        if (compatibleEvents.length === 0) {
+            this.showError('Não há eventos compatíveis com os tipos preferidos deste membro.');
+            return;
+        }
+    
+        this.showEventModal(member, compatibleEvents);
+    }
+    
+
+    showEventModal(member, events) {
+        console.log('Mostrando modal para', member.name);  // Adicionar log
+        const modal = document.createElement('div');
+        modal.classList.add('event-modal');
+    
+        const title = document.createElement('h3');
+        title.textContent = `Inscrever ${member.name} em Evento`;
+        modal.appendChild(title);
+    
+        const eventSelect = document.createElement('select');
+        events.forEach(event => {
+            const option = document.createElement('option');
+            option.value = event.id;
+            option.textContent = event.description;
+            eventSelect.appendChild(option);
+        });
+        modal.appendChild(eventSelect);
+    
+        const buttonContainer = document.createElement('div');
+        const saveButton = document.createElement('button');
+        saveButton.textContent = 'Inscrever';
+        saveButton.addEventListener('click', () => {
+            const selectedEventId = eventSelect.value;
+            alert(`${member.name} foi inscrito no evento ID ${selectedEventId}`);
+            modal.remove();
+        });
+    
+        const cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Cancelar';
+        cancelButton.addEventListener('click', () => modal.remove());
+    
+        buttonContainer.appendChild(saveButton);
+        buttonContainer.appendChild(cancelButton);
+        modal.appendChild(buttonContainer);
+    
+        document.body.appendChild(modal);
+>>>>>>> 3ee64ee95b1dd80076f6f5d66317cadf9ebb9544
     }
 }
 

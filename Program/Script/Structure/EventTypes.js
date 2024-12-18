@@ -1,8 +1,11 @@
+// Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+// André Rocha - 202300185 - 202300185@estudantes.ips.pt
+
 class EventType {
     // Construtor para criar um novo tipo de evento
     constructor(id, description) {
         if (!description || typeof description !== 'string') {
-            throw new Error('A descrição deve ser uma string não vazia');
+            throw new Error(MessageEvents.REQUIRED_DESCRIPTION);
         }
         this.id = id;
         this.description = description.trim();
@@ -21,7 +24,7 @@ class EventTypeManager {
     // Adiciona um novo tipo de evento à lista
     addEventType(description) {
         if (!description || typeof description !== 'string') {
-            throw new Error('A descrição deve ser uma string não vazia');
+            throw new Error(MessageEvents.REQUIRED_DESCRIPTION);
         }
         this.currentId++;
         const eventType = new EventType(this.currentId, description);
@@ -37,11 +40,11 @@ class EventTypeManager {
     // Atualiza a descrição de um tipo de evento existente
     updateEventType(id, description) {
         if (!description || typeof description !== 'string') {
-            throw new Error('A descrição deve ser uma string não vazia');
+            throw new Error(MessageEvents.REQUIRED_DESCRIPTION);
         }
         const eventType = this.eventTypes.find(et => et.id === id);
         if (!eventType) {
-            throw new Error('Tipo de evento não encontrado');
+            throw new Error(MessageEvents.EVENT_TYPE_NOT_FOUND);
         }
         eventType.description = description.trim();
         return true;
@@ -50,10 +53,10 @@ class EventTypeManager {
     // Remove um tipo de evento se não estiver em uso
     deleteEventType(id) {
         if (this.eventAssociations.some(ea => ea.eventTypeId === id)) {
-            throw new Error('Não é possível excluir: tipo de evento associado a eventos existentes');
+            throw new Error(MessageEvents.EVENT_TYPE_IN_USE);
         }
         if (this.memberPreferences.some(mp => mp.eventTypeId === id)) {
-            throw new Error('Não é possível excluir: tipo de evento associado a preferências de membros');
+            throw new Error(MessageEvents.EVENT_TYPE_IN_PREFERENCES);
         }
         const index = this.eventTypes.findIndex(et => et.id === id);
         if (index === -1) {
@@ -245,17 +248,20 @@ class EventTypeManager {
     handleDelete() {
         const selected = document.querySelector('.event-type-item.selected');
         if (!selected) {
-            MessageEvents.showError(MessageEvents.SELECT_EVENT_TYPE_DELETE, document.querySelector('.main-content'));
+            MessageEvents.showError(MessageEvents.SELECT_EVENT_TYPE_DELETE);
             return;
         }
         
-        try {
-            const eventTypeId = parseInt(selected.dataset.eventTypeId);
-            this.deleteEventType(eventTypeId);
-            this.showEventTypes();
-        } catch (error) {
-            MessageEvents.showError(error.message, document.querySelector('.main-content'));
-        }
+        const eventTypeId = parseInt(selected.dataset.eventTypeId);
+        MessageEvents.showConfirm('Tem certeza que deseja excluir este evento?', () => {
+            try {
+                this.deleteEventType(eventTypeId);
+                MessageEvents.showSuccess(MessageEvents.SUCCESS_DELETE);
+                this.showEventTypes();
+            } catch (error) {
+                MessageEvents.showError(error.message);
+            }
+        });
     }
 
     // Gerencia o salvamento
@@ -268,8 +274,10 @@ class EventTypeManager {
         try {
             if (selectedEventType) {
                 this.updateEventType(selectedEventType.id, value.trim());
+                MessageEvents.showSuccess(MessageEvents.SUCCESS_UPDATE);
             } else {
                 this.addEventType(value.trim());
+                MessageEvents.showSuccess(MessageEvents.SUCCESS_CREATE);
             }
             this.showEventTypes();
         } catch (error) {
@@ -284,6 +292,18 @@ class EventTypeManager {
             previousSelected.classList.remove('selected');
         }
         element.classList.add('selected');
+    }
+
+    getEventsByTypes(preferredEventIds) {
+        return this.eventTypes.filter(event => preferredEventIds.includes(event.id));
+    }
+
+    addMemberPreferences(memberId, eventTypeIds) {
+        this.memberPreferences.push({ memberId, eventTypeIds });
+    }
+
+    getMemberPreferences(memberId) {
+        return this.memberPreferences.find(mp => mp.memberId === memberId);
     }
 }
 

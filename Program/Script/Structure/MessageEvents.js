@@ -1,3 +1,6 @@
+// Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+// André Rocha - 202300185 - 202300185@estudantes.ips.pt
+
 class MessageEvents {
     // Mensagens de seleção
     static SELECT_MEMBER_EDIT = 'Selecione um membro para editar.';
@@ -27,18 +30,80 @@ class MessageEvents {
     static NO_EVENT_TYPES = 'Não existem tipos de eventos cadastrados.';
     static NO_EVENTS_AVAILABLE = 'Nenhum evento disponível. Adicione eventos primeiro.';
 
-    // Método estático para exibir mensagens de erro
-    static showError(message, content) {
-        const existingError = content.querySelector('.error-message');
-        if (existingError) {
-            existingError.remove();
-        }
+    // Mensagens de sucesso
+    static SUCCESS_CREATE = 'Registro criado com sucesso!';
+    static SUCCESS_UPDATE = 'Registro atualizado com sucesso!';
+    static SUCCESS_DELETE = 'Registro excluído com sucesso!';
 
+    // Método para exibir mensagens de erro
+    static showError(message, container) {
+        MessageEvents.removeExistingMessages();
+        
         const errorContainer = document.createElement('div');
         errorContainer.classList.add('error-message');
         errorContainer.textContent = message;
-        content.insertBefore(errorContainer, content.firstChild);
+        
+        document.body.appendChild(errorContainer);
 
-        setTimeout(() => errorContainer.remove(), 3000);
+        setTimeout(() => {
+            if (errorContainer && errorContainer.parentNode) {
+                errorContainer.remove();
+            }
+        }, 3000);
+    }
+
+    // Método para exibir mensagens de sucesso
+    static showSuccess(message) {
+        MessageEvents.removeExistingMessages();
+        
+        const successContainer = document.createElement('div');
+        successContainer.classList.add('success-message');
+        successContainer.textContent = message;
+        
+        document.body.appendChild(successContainer);
+
+        setTimeout(() => {
+            if (successContainer && successContainer.parentNode) {
+                successContainer.remove();
+            }
+        }, 3000);
+    }
+
+    // Remove mensagens existentes
+    static removeExistingMessages() {
+        const existingMessages = document.querySelectorAll('.error-message, .success-message');
+        existingMessages.forEach(message => message.remove());
+    }
+
+    // Método para mostrar confirmação
+    static showConfirm(message, onConfirm) {
+        const confirmContainer = document.createElement('div');
+        confirmContainer.classList.add('confirm-message');
+        
+        const messageText = document.createElement('p');
+        messageText.textContent = message;
+        
+        const buttonContainer = document.createElement('div');
+        buttonContainer.classList.add('confirm-buttons');
+        
+        const confirmButton = document.createElement('button');
+        confirmButton.textContent = 'Confirmar';
+        confirmButton.classList.add('confirm-button');
+        confirmButton.onclick = () => {
+            onConfirm();
+            confirmContainer.remove();
+        };
+        
+        const cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Cancelar';
+        cancelButton.classList.add('cancel-button');
+        cancelButton.onclick = () => confirmContainer.remove();
+        
+        buttonContainer.appendChild(confirmButton);
+        buttonContainer.appendChild(cancelButton);
+        confirmContainer.appendChild(messageText);
+        confirmContainer.appendChild(buttonContainer);
+        
+        document.body.appendChild(confirmContainer);
     }
 }

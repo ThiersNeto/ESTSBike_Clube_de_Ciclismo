@@ -1,11 +1,14 @@
+// Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+// André Rocha - 202300185 - 202300185@estudantes.ips.pt
+
 class Event {
     // Construtor para criar um novo evento
     constructor(id, typeId, description, date) {
         if (!description || typeof description !== 'string') {
-            throw new Error('A descrição deve ser uma string não vazia');
+            throw new Error(MessageEvents.REQUIRED_DESCRIPTION);
         }
         if (!date || !(date instanceof Date)) {
-            throw new Error('A data deve ser um objeto Date válido');
+            throw new Error(MessageEvents.INVALID_DATE);
         }
         this.id = id;
         this.typeId = typeId;
@@ -24,7 +27,7 @@ class EventManager {
     // Adiciona um novo evento à lista
     addEvent(typeId, description, date) {
         if (!eventTypeManager.getEventType(typeId)) {
-            throw new Error('Tipo de evento inválido');
+            throw new Error(MessageEvents.INVALID_EVENT_TYPE);
         }
         this.currentId++;
         const event = new Event(this.currentId, typeId, description, date);
@@ -41,10 +44,10 @@ class EventManager {
     updateEvent(id, typeId, description, date) {
         const event = this.events.find(e => e.id === id);
         if (!event) {
-            throw new Error('Evento não encontrado');
+            throw new Error(MessageEvents.EVENT_NOT_FOUND);
         }
         if (!eventTypeManager.getEventType(typeId)) {
-            throw new Error('Tipo de evento inválido');
+            throw new Error(MessageEvents.INVALID_EVENT_TYPE);
         }
         event.typeId = typeId;
         event.description = description.trim();
@@ -56,7 +59,7 @@ class EventManager {
     deleteEvent(id) {
         const index = this.events.findIndex(e => e.id === id);
         if (index === -1) {
-            throw new Error('Evento não encontrado');
+            throw new Error(MessageEvents.EVENT_NOT_FOUND);
         }
         this.events.splice(index, 1);
         return true;
@@ -153,7 +156,7 @@ class EventManager {
     // Cria a mensagem para quando não há eventos
     createEmptyMessage() {
         const message = document.createElement('p');
-        message.textContent = 'Não existem eventos cadastrados.';
+        message.textContent = MessageEvents.NO_EVENTS;
         message.classList.add('empty-message');
         return message;
     }
@@ -309,15 +312,31 @@ class EventManager {
         }
 
         try {
+            this.validateDate(date);
             if (selectedEvent) {
                 this.updateEvent(selectedEvent.id, typeId, description, date);
+                MessageEvents.showSuccess(MessageEvents.SUCCESS_UPDATE);
             } else {
                 this.addEvent(typeId, description, date);
+                MessageEvents.showSuccess(MessageEvents.SUCCESS_CREATE);
             }
             this.showEvents();
         } catch (error) {
             MessageEvents.showError(error.message, document.querySelector('.main-content'));
         }
+    }
+
+    validateDate(date) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        const eventDate = new Date(date);
+        eventDate.setHours(0, 0, 0, 0);
+        
+        if (eventDate < today) {
+            throw new Error('A data do evento não pode ser anterior a hoje');
+        }
+        return true;
     }
 }
 
