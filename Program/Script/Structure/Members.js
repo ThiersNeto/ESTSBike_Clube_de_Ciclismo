@@ -17,11 +17,8 @@ class Members {
         this.members = [];
         this.currentId = 0;
         this.selectedMember = null;
-<<<<<<< HEAD
         this.events = [];
         this.eventSubscriptions = [];
-=======
->>>>>>> 3ee64ee95b1dd80076f6f5d66317cadf9ebb9544
     }
 
     // Adiciona um novo membro
@@ -208,7 +205,6 @@ class Members {
         eventsLabel.textContent = 'Tipos de Eventos Preferidos';
         eventsLabel.classList.add('form-label');
 
-<<<<<<< HEAD
         const eventsContainer = document.createElement('div');
         eventsContainer.classList.add('events-checkbox-container');
 
@@ -227,8 +223,6 @@ class Members {
             eventTypes.forEach(eventType => {
                 const checkboxContainer = document.createElement('div');
                 checkboxContainer.classList.add('checkbox-container');
-
-=======
         const eventTypes = eventTypeManager.getAllEventTypes();
         if (eventTypes.length === 0) {
             const noEventsMessage = document.createElement('p');
@@ -236,17 +230,18 @@ class Members {
             eventsContainer.appendChild(noEventsMessage);
         } else {
             eventTypes.forEach(eventType => {
->>>>>>> 3ee64ee95b1dd80076f6f5d66317cadf9ebb9544
+        const eventTypes = eventTypeManager.getAllEventTypes();
+        if (eventTypes.length === 0) {
+            const noEventsMessage = document.createElement('p');
+            noEventsMessage.textContent = 'Nenhum tipo de evento disponível. Adicione tipos de eventos primeiro.';
+            eventsContainer.appendChild(noEventsMessage);
+        } else {
+            eventTypes.forEach(eventType => {
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 checkbox.value = eventType.id;
                 checkbox.id = `event-${eventType.id}`;
                 checkbox.classList.add('event-checkbox');
-<<<<<<< HEAD
-                
-=======
-
->>>>>>> 3ee64ee95b1dd80076f6f5d66317cadf9ebb9544
                 if (selectedMember && selectedMember.preferredEvents.includes(eventType.id)) {
                     checkbox.checked = true;
                 }
@@ -254,15 +249,11 @@ class Members {
                 const label = document.createElement('label');
                 label.htmlFor = `event-${eventType.id}`;
                 label.textContent = eventType.description;
-
-<<<<<<< HEAD
                 checkboxContainer.appendChild(checkbox);
                 checkboxContainer.appendChild(label);
                 checkboxGrid.appendChild(checkboxContainer);
-=======
                 eventsContainer.appendChild(checkbox);
                 eventsContainer.appendChild(label);
->>>>>>> 3ee64ee95b1dd80076f6f5d66317cadf9ebb9544
             });
 
             eventsContainer.appendChild(checkboxGrid);
@@ -271,7 +262,6 @@ class Members {
         leftColumn.appendChild(eventsLabel);
         leftColumn.appendChild(eventsContainer);
 
-<<<<<<< HEAD
         // Coluna da direita (Eventos disponíveis)
         const rightColumn = document.createElement('div');
         rightColumn.classList.add('form-column');
@@ -372,9 +362,6 @@ class Members {
         columnsContainer.appendChild(rightColumn);
 
         // Botões
-=======
-
->>>>>>> 3ee64ee95b1dd80076f6f5d66317cadf9ebb9544
         const buttonContainer = document.createElement('div');
         buttonContainer.classList.add('button-container');
 
@@ -490,7 +477,6 @@ class Members {
         setTimeout(() => errorContainer.remove(), 3000);
     }
 
-<<<<<<< HEAD
     // Método para inscrever em evento
     subscribeToEvent(memberId, eventId) {
         // Verifica se já está inscrito
@@ -518,7 +504,7 @@ class Members {
 
         this.eventSubscriptions.splice(index, 1);
         return true;
-=======
+
     handleEventRegistration() {
         const selected = document.querySelector('.member-item.selected');
         if (!selected) {
@@ -584,7 +570,6 @@ class Members {
         modal.appendChild(buttonContainer);
     
         document.body.appendChild(modal);
->>>>>>> 3ee64ee95b1dd80076f6f5d66317cadf9ebb9544
     }
 }
 
