@@ -83,8 +83,8 @@ class EventTypeManager {
         content.classList.add('main-content');
 
         content.appendChild(this.createHeader());
-        content.appendChild(this.createButtonContainer());
         content.appendChild(this.createEventTypesList());
+        content.appendChild(this.createButtonContainer());
 
         const footer = document.querySelector('.footer');
         document.body.insertBefore(content, footer);
@@ -233,7 +233,7 @@ class EventTypeManager {
     handleEdit() {
         const selected = document.querySelector('.event-type-item.selected');
         if (!selected) {
-            this.showError('Selecione um tipo de evento para editar');
+            MessageEvents.showError(MessageEvents.SELECT_EVENT_TYPE_EDIT, document.querySelector('.main-content'));
             return;
         }
         const eventTypeId = parseInt(selected.dataset.eventTypeId);
@@ -245,7 +245,7 @@ class EventTypeManager {
     handleDelete() {
         const selected = document.querySelector('.event-type-item.selected');
         if (!selected) {
-            this.showError('Selecione um tipo de evento para apagar');
+            MessageEvents.showError(MessageEvents.SELECT_EVENT_TYPE_DELETE, document.querySelector('.main-content'));
             return;
         }
         
@@ -254,14 +254,14 @@ class EventTypeManager {
             this.deleteEventType(eventTypeId);
             this.showEventTypes();
         } catch (error) {
-            this.showError(error.message);
+            MessageEvents.showError(error.message, document.querySelector('.main-content'));
         }
     }
 
     // Gerencia o salvamento
     handleSave(value, selectedEventType) {
         if (!value.trim()) {
-            this.showError('O campo descrição é obrigatório');
+            MessageEvents.showError(MessageEvents.REQUIRED_FIELDS, document.querySelector('.main-content'));
             return;
         }
 
@@ -273,7 +273,7 @@ class EventTypeManager {
             }
             this.showEventTypes();
         } catch (error) {
-            this.showError(error.message);
+            MessageEvents.showError(error.message, document.querySelector('.main-content'));
         }
     }
 
@@ -284,22 +284,6 @@ class EventTypeManager {
             previousSelected.classList.remove('selected');
         }
         element.classList.add('selected');
-    }
-
-    // Exibe mensagens de erro temporárias
-    showError(message) {
-        const content = document.querySelector('.main-content');
-        const existingError = content.querySelector('.error-message');
-        if (existingError) {
-            existingError.remove();
-        }
-
-        const errorContainer = document.createElement('div');
-        errorContainer.classList.add('error-message');
-        errorContainer.textContent = message;
-        content.insertBefore(errorContainer, content.firstChild);
-
-        setTimeout(() => errorContainer.remove(), 3000);
     }
 }
 

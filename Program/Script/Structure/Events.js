@@ -276,7 +276,7 @@ class EventManager {
     handleEdit() {
         const selected = document.querySelector('.event-item.selected');
         if (!selected) {
-            this.showError('Selecione um evento para editar.');
+            MessageEvents.showError(MessageEvents.SELECT_EVENT_EDIT, document.querySelector('.main-content'));
             return;
         }
         const eventId = parseInt(selected.dataset.eventId);
@@ -288,7 +288,7 @@ class EventManager {
     handleDelete() {
         const selected = document.querySelector('.event-item.selected');
         if (!selected) {
-            this.showError('Selecione um evento para apagar.');
+            MessageEvents.showError(MessageEvents.SELECT_EVENT_DELETE, document.querySelector('.main-content'));
             return;
         }
         
@@ -297,14 +297,14 @@ class EventManager {
             this.deleteEvent(eventId);
             this.showEvents();
         } catch (error) {
-            this.showError(error.message);
+            MessageEvents.showError(error.message, document.querySelector('.main-content'));
         }
     }
 
     // Gerencia o salvamento
     handleSave(typeId, description, date, selectedEvent) {
         if (!description.trim() || !date || isNaN(date.getTime())) {
-            this.showError('Preencha todos os campos.');
+            MessageEvents.showError(MessageEvents.REQUIRED_FIELDS, document.querySelector('.main-content'));
             return;
         }
 
@@ -316,24 +316,8 @@ class EventManager {
             }
             this.showEvents();
         } catch (error) {
-            this.showError(error.message);
+            MessageEvents.showError(error.message, document.querySelector('.main-content'));
         }
-    }
-
-    // Exibe mensagens de erro temporárias
-    showError(message) {
-        const content = document.querySelector('.main-content');
-        const existingError = content.querySelector('.error-message');
-        if (existingError) {
-            existingError.remove();
-        }
-
-        const errorContainer = document.createElement('div');
-        errorContainer.classList.add('error-message');
-        errorContainer.textContent = message;
-        content.insertBefore(errorContainer, content.firstChild);
-
-        setTimeout(() => errorContainer.remove(), 3000);
     }
 }
 

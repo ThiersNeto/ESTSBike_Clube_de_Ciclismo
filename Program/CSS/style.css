@@ -22,10 +22,10 @@ body {
 
 /* Layout Principal */
 .main-content {
-    padding: 20px;
+    padding: 0 20px;
     margin: 0 auto 60px;
-    max-width: 800px;
-    width: 95%;
+    max-width: 840px;
+    width: 100%;
 }
 
 /* Cabeçalho */
@@ -54,7 +54,8 @@ body {
 
 /* Listas */
 .events-list,
-.event-types-list {
+.event-types-list,
+.members-list {
     margin: 20px auto;
     border: 1px solid var(--border-color);
     border-radius: 8px;
@@ -167,7 +168,9 @@ select.event-input {
     display: flex;
     gap: 10px;
     justify-content: center;
-    margin-top: 20px;
+    margin: 20px auto;
+    max-width: 800px;
+    width: 95%;
 }
 
 .action-button {
@@ -226,7 +229,7 @@ select.event-input {
 
 .members-header {
     display: grid;
-    grid-template-columns: 60px 1fr 1fr;
+    grid-template-columns: 60px 1fr;
     background-color: var(--primary-color);
     color: white;
     font-weight: bold;
@@ -234,7 +237,7 @@ select.event-input {
 
 .member-item {
     display: grid;
-    grid-template-columns: 60px 1fr 1fr;
+    grid-template-columns: 60px 1fr;
     border-bottom: 1px solid var(--secondary-color);
     cursor: pointer;
     transition: background-color 0.2s;
@@ -251,4 +254,12 @@ select.event-input {
 .member-item.selected {
     background-color: var(--selected-color);
     border-left: 4px solid var(--primary-color);
+}
+
+/* Alinhamento dos títulos das seções */
+.main-content h2 {
+    max-width: 800px;
+    width: 95%;
+    margin: 20px auto;
+    padding: 0;
 }
