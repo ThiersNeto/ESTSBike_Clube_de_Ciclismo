@@ -1,8 +1,21 @@
-// Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
-// André Rocha - 202300185 - 202300185@estudantes.ips.pt
+/**
+ * @fileoverview Gerenciamento de tipos de eventos do clube de ciclismo
+ * @author Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+ * @author André Rocha - 202300185 - 202300185@estudantes.ips.pt
+ */
 
+/**
+ * Classe que representa um tipo de evento individual
+ * @class EventType
+ */
 class EventType {
-    // Construtor para criar um novo tipo de evento
+    /**
+     * Cria uma nova instância de tipo de evento
+     * @constructor
+     * @param {number} id - Identificador único do tipo de evento
+     * @param {string} description - Descrição do tipo de evento
+     * @throws {Error} Se a descrição estiver vazia ou não for string
+     */
     constructor(id, description) {
         if (!description || typeof description !== 'string') {
             throw new Error(MessageEvents.REQUIRED_DESCRIPTION);
@@ -12,8 +25,15 @@ class EventType {
     }
 }
 
+/**
+ * Classe responsável pelo gerenciamento de tipos de eventos
+ * @class EventTypeManager
+ */
 class EventTypeManager {
-    // Inicializa as estruturas de dados necessárias
+    /**
+     * Inicializa o gerenciador de tipos de eventos
+     * @constructor
+     */
     constructor() {
         this.eventTypes = [];
         this.currentId = 0;
@@ -21,7 +41,12 @@ class EventTypeManager {
         this.memberPreferences = [];
     }
 
-    // Adiciona um novo tipo de evento à lista
+    /**
+     * Adiciona um novo tipo de evento
+     * @param {string} description - Descrição do tipo de evento
+     * @returns {EventType} O tipo de evento criado
+     * @throws {Error} Se a descrição estiver vazia ou não for string
+     */
     addEventType(description) {
         if (!description || typeof description !== 'string') {
             throw new Error(MessageEvents.REQUIRED_DESCRIPTION);
@@ -32,12 +57,21 @@ class EventTypeManager {
         return eventType;
     }
 
-    // Retorna uma cópia da lista de todos os tipos de eventos
+    /**
+     * Retorna todos os tipos de eventos
+     * @returns {EventType[]} Array com todos os tipos de eventos
+     */
     getAllEventTypes() {
         return [...this.eventTypes];
     }
 
-    // Atualiza a descrição de um tipo de evento existente
+    /**
+     * Atualiza um tipo de evento existente
+     * @param {number} id - ID do tipo de evento
+     * @param {string} description - Nova descrição
+     * @returns {boolean} true se atualizado com sucesso
+     * @throws {Error} Se o tipo de evento não for encontrado ou descrição inválida
+     */
     updateEventType(id, description) {
         if (!description || typeof description !== 'string') {
             throw new Error(MessageEvents.REQUIRED_DESCRIPTION);
@@ -50,7 +84,12 @@ class EventTypeManager {
         return true;
     }
 
-    // Remove um tipo de evento se não estiver em uso
+    /**
+     * Remove um tipo de evento
+     * @param {number} id - ID do tipo de evento
+     * @returns {boolean} true se removido com sucesso
+     * @throws {Error} Se o tipo de evento estiver em uso ou não for encontrado
+     */
     deleteEventType(id) {
         if (this.eventAssociations.some(ea => ea.eventTypeId === id)) {
             throw new Error(MessageEvents.EVENT_TYPE_IN_USE);
@@ -60,13 +99,18 @@ class EventTypeManager {
         }
         const index = this.eventTypes.findIndex(et => et.id === id);
         if (index === -1) {
-            throw new Error('Tipo de evento não encontrado');
+            throw new Error(MessageEvents.EVENT_TYPE_NOT_FOUND);
         }
         this.eventTypes.splice(index, 1);
         return true;
     }
 
-    // Busca um tipo de evento específico pelo ID
+    /**
+     * Busca um tipo de evento pelo ID
+     * @param {number} id - ID do tipo de evento
+     * @returns {EventType} O tipo de evento encontrado
+     * @throws {Error} Se o tipo de evento não for encontrado
+     */
     getEventType(id) {
         const eventType = this.eventTypes.find(et => et.id === id);
         if (!eventType) {
@@ -75,7 +119,9 @@ class EventTypeManager {
         return eventType;
     }
 
-    // Exibe a interface principal de tipos de eventos
+    /**
+     * Exibe a interface principal de tipos de eventos
+     */
     showEventTypes() {
         const mainContent = document.querySelector('.main-content');
         if (mainContent) {
@@ -93,28 +139,39 @@ class EventTypeManager {
         document.body.insertBefore(content, footer);
     }
 
-    // Cria o cabeçalho da seção
+    /**
+     * Cria o cabeçalho da seção
+     * @private
+     * @returns {HTMLElement} Elemento do cabeçalho
+     */
     createHeader() {
         const sectionTitle = document.createElement('h2');
-        sectionTitle.textContent = 'Tipos de Eventos';
+        const titleText = document.createTextNode('Tipos de Eventos');
+        sectionTitle.appendChild(titleText);
         return sectionTitle;
     }
 
-    // Cria o container com os botões de ação
+    /**
+     * Cria o container com os botões de ação
+     * @private
+     * @returns {HTMLElement} Container com os botões de ação
+     */
     createButtonContainer() {
         const buttonContainer = document.createElement('div');
         buttonContainer.classList.add('button-container');
 
         const buttons = [
-            { text: 'Criar', action: () => this.showEventTypeForm() },
-            { text: 'Editar', action: () => this.handleEdit() },
-            { text: 'Apagar', action: () => this.handleDelete() }
+            { text: 'Criar', id: 'btn-type-create', action: () => this.showEventTypeForm() },
+            { text: 'Editar', id: 'btn-type-edit', action: () => this.handleEdit() },
+            { text: 'Apagar', id: 'btn-type-delete', action: () => this.handleDelete() }
         ];
 
-        buttons.forEach(({ text, action }) => {
+        buttons.forEach(({ text, id, action }) => {
             const button = document.createElement('button');
-            button.textContent = text;
             button.classList.add('action-button');
+            button.id = id;
+            const buttonText = document.createTextNode(text);
+            button.appendChild(buttonText);
             button.addEventListener('click', action);
             buttonContainer.appendChild(button);
         });
@@ -122,10 +179,15 @@ class EventTypeManager {
         return buttonContainer;
     }
 
-    // Cria a lista de tipos de eventos
+    /**
+     * Cria a lista de tipos de eventos
+     * @private
+     * @returns {HTMLElement} Container com a lista de tipos de eventos
+     */
     createEventTypesList() {
         const eventList = document.createElement('div');
         eventList.classList.add('event-types-list');
+        eventList.id = 'event-types-list';
 
         const tableHeader = this.createTableHeader();
         eventList.appendChild(tableHeader);
@@ -142,15 +204,21 @@ class EventTypeManager {
         return eventList;
     }
 
-    // Cria o cabeçalho da tabela de tipos de eventos
+    /**
+     * Cria o cabeçalho da tabela
+     * @private
+     * @returns {HTMLElement} Elemento do cabeçalho da tabela
+     */
     createTableHeader() {
         const header = document.createElement('div');
         header.classList.add('event-types-header');
+        header.id = 'event-types-header';
         
         const headers = ['Id', 'Descritivo'];
         headers.forEach(text => {
             const cell = document.createElement('div');
-            cell.textContent = text;
+            const cellText = document.createTextNode(text);
+            cell.appendChild(cellText);
             cell.classList.add('header-cell');
             header.appendChild(cell);
         });
@@ -158,16 +226,23 @@ class EventTypeManager {
         return header;
     }
 
-    // Cria um item individual da lista de tipos de eventos
+    /**
+     * Cria um item individual da lista
+     * @private
+     * @param {EventType} eventType - Tipo de evento a ser exibido
+     * @returns {HTMLElement} Elemento representando o tipo de evento
+     */
     createEventTypeItem(eventType) {
         const item = document.createElement('div');
         item.classList.add('event-type-item');
+        item.id = `event-type-${eventType.id}`;
         item.dataset.eventTypeId = eventType.id;
 
         const cells = [eventType.id, eventType.description];
         cells.forEach(text => {
             const cell = document.createElement('div');
-            cell.textContent = text;
+            const cellText = document.createTextNode(text);
+            cell.appendChild(cellText);
             cell.classList.add('item-cell');
             item.appendChild(cell);
         });
@@ -176,15 +251,24 @@ class EventTypeManager {
         return item;
     }
 
-    // Cria a mensagem para quando não há tipos de eventos cadastrados
+    /**
+     * Cria mensagem para quando não há tipos de eventos
+     * @private
+     * @returns {HTMLElement} Elemento com a mensagem
+     */
     createEmptyMessage() {
         const message = document.createElement('p');
-        message.textContent = 'Não existem tipos de eventos cadastrados.';
         message.classList.add('empty-message');
+        const messageText = document.createTextNode(MessageEvents.NO_EVENT_TYPES);
+        message.appendChild(messageText);
         return message;
     }
 
-    // Exibe o formulário para criar/editar um tipo de evento
+    /**
+     * Exibe o formulário de tipo de evento
+     * @private
+     * @param {EventType} [selectedEventType=null] - Tipo de evento sendo editado
+     */
     showEventTypeForm(selectedEventType = null) {
         const content = document.querySelector('.main-content');
         while (content.firstChild) {
@@ -192,21 +276,30 @@ class EventTypeManager {
         }
 
         const formTitle = document.createElement('h2');
-        formTitle.textContent = selectedEventType ? 'Alterar Tipo de Evento' : 'Novo Tipo de Evento';
+        const titleText = document.createTextNode(
+            selectedEventType ? 'Alterar Tipo de Evento' : 'Novo Tipo de Evento'
+        );
+        formTitle.appendChild(titleText);
         content.appendChild(formTitle);
 
-        const form = this.createForm(selectedEventType);
-        content.appendChild(form);
+        content.appendChild(this.createForm(selectedEventType));
     }
 
-    // Cria o formulário para entrada de dados
+    /**
+     * Cria o formulário para entrada de dados
+     * @private
+     * @param {EventType} [selectedEventType=null] - Tipo de evento sendo editado
+     * @returns {HTMLElement} Container do formulário
+     */
     createForm(selectedEventType) {
         const formContainer = document.createElement('div');
         formContainer.classList.add('form-container');
+        formContainer.id = 'event-type-form';
 
         const input = document.createElement('input');
         input.type = 'text';
         input.classList.add('event-type-input');
+        input.id = 'event-type-input';
         if (selectedEventType) {
             input.value = selectedEventType.description;
         }
@@ -215,13 +308,17 @@ class EventTypeManager {
         buttonContainer.classList.add('button-container');
 
         const saveButton = document.createElement('button');
-        saveButton.textContent = 'Gravar';
+        const saveText = document.createTextNode('Gravar');
+        saveButton.appendChild(saveText);
         saveButton.classList.add('action-button');
+        saveButton.id = 'btn-save-event-type';
         saveButton.addEventListener('click', () => this.handleSave(input.value, selectedEventType));
 
         const cancelButton = document.createElement('button');
-        cancelButton.textContent = 'Cancelar';
+        const cancelText = document.createTextNode('Cancelar');
+        cancelButton.appendChild(cancelText);
         cancelButton.classList.add('action-button');
+        cancelButton.id = 'btn-cancel-event-type';
         cancelButton.addEventListener('click', () => this.showEventTypes());
 
         buttonContainer.appendChild(saveButton);
@@ -232,11 +329,27 @@ class EventTypeManager {
         return formContainer;
     }
 
-    // Gerencia a ação de editar um tipo de evento
+    /**
+     * Gerencia a seleção de um tipo de evento
+     * @private
+     * @param {HTMLElement} element - Elemento selecionado
+     */
+    selectEventType(element) {
+        const previousSelected = document.querySelector('.event-type-item.selected');
+        if (previousSelected) {
+            previousSelected.classList.remove('selected');
+        }
+        element.classList.add('selected');
+    }
+
+    /**
+     * Gerencia a edição de um tipo de evento
+     * @private
+     */
     handleEdit() {
         const selected = document.querySelector('.event-type-item.selected');
         if (!selected) {
-            MessageEvents.showError(MessageEvents.SELECT_EVENT_TYPE_EDIT, document.querySelector('.main-content'));
+            MessageEvents.showError(MessageEvents.SELECT_EVENT_TYPE_EDIT);
             return;
         }
         const eventTypeId = parseInt(selected.dataset.eventTypeId);
@@ -244,7 +357,10 @@ class EventTypeManager {
         this.showEventTypeForm(eventType);
     }
 
-    // Gerencia a ação de deletar
+    /**
+     * Gerencia a exclusão de um tipo de evento
+     * @private
+     */
     handleDelete() {
         const selected = document.querySelector('.event-type-item.selected');
         if (!selected) {
@@ -253,7 +369,7 @@ class EventTypeManager {
         }
         
         const eventTypeId = parseInt(selected.dataset.eventTypeId);
-        MessageEvents.showConfirm('Tem certeza que deseja excluir este evento?', () => {
+        MessageEvents.showConfirm('Tem certeza que deseja excluir este tipo de evento?', () => {
             try {
                 this.deleteEventType(eventTypeId);
                 MessageEvents.showSuccess(MessageEvents.SUCCESS_DELETE);
@@ -264,10 +380,15 @@ class EventTypeManager {
         });
     }
 
-    // Gerencia o salvamento
+    /**
+     * Gerencia o salvamento de um tipo de evento
+     * @private
+     * @param {string} value - Valor do input
+     * @param {EventType} [selectedEventType=null] - Tipo de evento sendo editado
+     */
     handleSave(value, selectedEventType) {
         if (!value.trim()) {
-            MessageEvents.showError(MessageEvents.REQUIRED_FIELDS, document.querySelector('.main-content'));
+            MessageEvents.showError(MessageEvents.REQUIRED_FIELDS);
             return;
         }
 
@@ -281,17 +402,8 @@ class EventTypeManager {
             }
             this.showEventTypes();
         } catch (error) {
-            MessageEvents.showError(error.message, document.querySelector('.main-content'));
+            MessageEvents.showError(error.message);
         }
-    }
-
-    // Gerencia a seleção de um item na lista
-    selectEventType(element) {
-        const previousSelected = document.querySelector('.event-type-item.selected');
-        if (previousSelected) {
-            previousSelected.classList.remove('selected');
-        }
-        element.classList.add('selected');
     }
 
     getEventsByTypes(preferredEventIds) {

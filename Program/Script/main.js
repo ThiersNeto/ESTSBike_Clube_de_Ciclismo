@@ -1,74 +1,133 @@
-// Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
-// André Rocha - 202300185 - 202300185@estudantes.ips.pt
+/**
+ * @fileoverview Arquivo principal de inicialização do sistema ESTSBike
+ * @author Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+ * @author André Rocha - 202300185 - 202300185@estudantes.ips.pt
+ */
 
-// Add initial event types
-eventTypeManager.addEventType("Estrada");
-eventTypeManager.addEventType("BTT");
-eventTypeManager.addEventType("BMX");
-eventTypeManager.addEventType("Pista");
-eventTypeManager.addEventType("Ciclocrosse");
-eventTypeManager.addEventType("Cicloturismo");
-eventTypeManager.addEventType("Motociata");
+/**
+ * Inicializa os tipos de eventos padrão do sistema
+ * @function initializeEventTypes
+ */
+function initializeEventTypes() {
+    eventTypeManager.addEventType("Estrada");
+    eventTypeManager.addEventType("BTT");
+    eventTypeManager.addEventType("BMX");
+    eventTypeManager.addEventType("Pista");
+    eventTypeManager.addEventType("Ciclocrosse");
+    eventTypeManager.addEventType("Cicloturismo");
+    eventTypeManager.addEventType("Motociata");
+}
 
-// Add initial events
-eventManager.addEvent(1, "Clássica da Arrábida", new Date("2025-10-15"));
-eventManager.addEvent(2, "BTT Noturno", new Date("2025-11-15"));
-eventManager.addEvent(1, "Volta a Setúbal", new Date("2025-11-01"));
-eventManager.addEvent(6, "Passeio das Vindimas", new Date("2025-09-20"));
-eventManager.addEvent(6, "Tour do Alentejo", new Date("2025-09-30"));
-eventManager.addEvent(3, "BMX Extreme Show", new Date("2025-10-05"));
+/**
+ * Inicializa os eventos padrão do sistema
+ * @function initializeEvents
+ */
+function initializeEvents() {
+    eventManager.addEvent(1, "Clássica da Arrábida", new Date("2025-10-15"));
+    eventManager.addEvent(2, "BTT Noturno", new Date("2025-11-15"));
+    eventManager.addEvent(1, "Volta a Setúbal", new Date("2025-11-01"));
+    eventManager.addEvent(6, "Passeio das Vindimas", new Date("2025-09-20"));
+    eventManager.addEvent(6, "Tour do Alentejo", new Date("2025-09-30"));
+    eventManager.addEvent(3, "BMX Extreme Show", new Date("2025-10-05"));
+}
 
-// Add initial members
-membersModule.addMember("Thiers Neto", [1, 2]);
-membersModule.addMember("Lucas Gomes", [3, 4]);
-membersModule.addMember("Eduardo Vemba", [5, 6]);
-membersModule.addMember("Saymon Gabriel", [2, 4])
-membersModule.addMember("Gabriel Piscante", [7]);
-membersModule.addMember("João Silva", []);
+/**
+ * Inicializa os membros padrão do sistema
+ * @function initializeMembers
+ */
+function initializeMembers() {
+    membersModule.addMember("Thiers Neto", [1, 2]);
+    membersModule.addMember("Lucas Gomes", [3, 4]);
+    membersModule.addMember("Eduardo Vemba", [5, 6]);
+    membersModule.addMember("Saymon Gabriel", [2, 4]);
+    membersModule.addMember("Gabriel Piscante", [7]);
+    membersModule.addMember("João Silva", []);
+}
 
-// Header
-const header = document.createElement('header');
+/**
+ * Cria o cabeçalho da aplicação
+ * @function createHeader
+ * @returns {HTMLElement} Elemento do cabeçalho
+ */
+function createHeader() {
+    const header = document.createElement('header');
 
-// Título principal
-const title = document.createElement('div');
-title.textContent = "ESTSBike - Clube de Ciclismo";
-title.classList.add('title');
-header.appendChild(title);
+    // Título principal
+    const title = document.createElement('div');
+    const titleText = document.createTextNode("ESTSBike - Clube de Ciclismo");
+    title.appendChild(titleText);
+    title.classList.add('title');
+    header.appendChild(title);
 
-// Menu de navegação
-const nav = document.createElement('nav');
-nav.classList.add('nav');
+    // Menu de navegação
+    header.appendChild(createNavigation());
 
-// Itens do menu
-const menuItems = ['Membros', 'Eventos', 'Tipos de Eventos'];
+    return header;
+}
 
-menuItems.forEach(item => {
-    const menuItem = document.createElement('div');
-    menuItem.textContent = item;
-    menuItem.classList.add('nav-item');
-    
-    if (item === 'Tipos de Eventos') {
-        menuItem.addEventListener('click', () => eventTypeManager.showEventTypes());
-    } else if (item === 'Eventos') {
-        menuItem.addEventListener('click', () => eventManager.showEvents());
-    } else if (item === 'Membros') {
-        menuItem.addEventListener('click', () => membersModule.showMembers());
-    }
-    
-    nav.appendChild(menuItem);
-});
+/**
+ * Cria a navegação principal
+ * @function createNavigation
+ * @returns {HTMLElement} Elemento de navegação
+ */
+function createNavigation() {
+    const nav = document.createElement('nav');
+    nav.classList.add('nav');
 
-header.appendChild(nav);
-document.body.appendChild(header);
+    const menuItems = [
+        { text: 'Membros', id: 'nav-members', action: () => membersModule.showMembers() },
+        { text: 'Eventos', id: 'nav-events', action: () => eventManager.showEvents() },
+        { text: 'Tipos de Eventos', id: 'nav-event-types', action: () => eventTypeManager.showEventTypes() }
+    ];
 
-// Footer
-const footer = document.createElement('footer');
-footer.classList.add('footer');
+    menuItems.forEach(({ text, id, action }) => {
+        const menuItem = document.createElement('div');
+        const itemText = document.createTextNode(text);
+        menuItem.appendChild(itemText);
+        menuItem.classList.add('nav-item');
+        menuItem.id = id;
+        menuItem.addEventListener('click', action);
+        nav.appendChild(menuItem);
+    });
 
-const footerText = document.createElement('div');
-footerText.textContent = "2024 © Escola Superior de Tecnologia de Setúbal • Programação para a Web";
-footerText.classList.add('footer-text');
+    return nav;
+}
 
-footer.appendChild(footerText);
-document.body.appendChild(footer);
-eventTypeManager.showEventTypes();
+/**
+ * Cria o rodapé da aplicação
+ * @function createFooter
+ * @returns {HTMLElement} Elemento do rodapé
+ */
+function createFooter() {
+    const footer = document.createElement('footer');
+    footer.classList.add('footer');
+
+    const footerText = document.createElement('div');
+    const text = document.createTextNode("2024 © Escola Superior de Tecnologia de Setúbal • Programação para a Web");
+    footerText.appendChild(text);
+    footerText.classList.add('footer-text');
+
+    footer.appendChild(footerText);
+    return footer;
+}
+
+/**
+ * Inicializa a aplicação
+ * @function initializeApp
+ */
+function initializeApp() {
+    // Inicializa dados
+    initializeEventTypes();
+    initializeEvents();
+    initializeMembers();
+
+    // Cria estrutura básica da página
+    document.body.appendChild(createHeader());
+    document.body.appendChild(createFooter());
+
+    // Mostra a tela inicial
+    eventTypeManager.showEventTypes();
+}
+
+// Inicializa a aplicação quando o documento estiver carregado
+document.addEventListener('DOMContentLoaded', initializeApp);

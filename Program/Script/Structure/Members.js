@@ -1,7 +1,19 @@
-// Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
-// André Rocha - 202300185 - 202300185@estudantes.ips.pt
+/**
+ * @fileoverview Gerenciamento de membros do clube de ciclismo
+ * @author Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+ * @author André Rocha - 202300185 - 202300185@estudantes.ips.pt
+ */
 
-class Member {
+    /**
+     * Cria uma nova instância de membro
+     * @constructor
+     * @class Member
+     * @param {number} id - Identificador único do membro
+     * @param {string} name - Nome do membro
+     * @param {number[]} preferredEvents - Array com IDs dos tipos de eventos preferidos
+     * @throws {Error} Se o nome estiver vazio ou não for string
+     */
+    class Member {
     constructor(id, name, preferredEvents = []) {
         if (!name || typeof name !== 'string') {
             throw new Error(MessageEvents.REQUIRED_NAME);
@@ -76,7 +88,8 @@ class Members {
     // Cria o cabeçalho da seção
     createHeader() {
         const sectionTitle = document.createElement('h2');
-        sectionTitle.textContent = 'Membros';
+        const titleText = document.createTextNode('Membros');
+        sectionTitle.appendChild(titleText);
         return sectionTitle;
     }
 
@@ -86,19 +99,20 @@ class Members {
         buttonContainer.classList.add('button-container');
 
         const buttons = [
-            { text: 'Criar', action: () => this.showMemberForm() },
-            { text: 'Editar', action: () => this.handleEdit() },
-            { text: 'Apagar', action: () => this.handleDelete() },
-            { text: 'Inscrever em Evento', action: () => this.handleEventRegistration() }
+            { text: 'Criar', id: 'btn-member-create', action: () => this.showMemberForm() },
+            { text: 'Editar', id: 'btn-member-edit', action: () => this.handleEdit() },
+            { text: 'Apagar', id: 'btn-member-delete', action: () => this.handleDelete() },
+            { text: 'Inscrever em Evento', id: 'btn-member-subscribe', action: () => this.handleEventRegistration() }
         ];
 
-        buttons.forEach(({ text, action }) => {
+        buttons.forEach(({ text, id, action }) => {
             const button = document.createElement('button');
-            button.textContent = text;
             button.classList.add('action-button');
+            button.id = id;
+            const buttonText = document.createTextNode(text);
+            button.appendChild(buttonText);
             button.addEventListener('click', action);
             buttonContainer.appendChild(button);
-            
         });
 
         return buttonContainer;
@@ -416,13 +430,14 @@ class Members {
     createMemberItem(member) {
         const item = document.createElement('div');
         item.classList.add('member-item');
-        item.dataset.memberId = member.id;
+        item.id = `member-${member.id}`;
 
         const cells = [member.id, member.name];
         cells.forEach(text => {
             const cell = document.createElement('div');
-            cell.textContent = text;
             cell.classList.add('item-cell');
+            const cellText = document.createTextNode(text.toString());
+            cell.appendChild(cellText);
             item.appendChild(cell);
         });
 
@@ -433,8 +448,9 @@ class Members {
     // Cria a mensagem para quando não há membros
     createEmptyMessage() {
         const message = document.createElement('p');
-        message.textContent = 'Não existem membros registrados.';
         message.classList.add('empty-message');
+        const messageText = document.createTextNode(MessageEvents.NO_MEMBERS);
+        message.appendChild(messageText);
         return message;
     }
 
@@ -520,40 +536,49 @@ class Members {
     }
 
     showEventModal(member, events) {
-        console.log('Mostrando modal para', member.name);  // Adicionar log
         const modal = document.createElement('div');
         modal.classList.add('event-modal');
-    
+        modal.id = 'event-subscription-modal';
+
         const title = document.createElement('h3');
-        title.textContent = `Inscrever ${member.name} em Evento`;
+        const titleText = document.createTextNode(`Inscrever ${member.name} em Evento`);
+        title.appendChild(titleText);
         modal.appendChild(title);
-    
+
         const eventSelect = document.createElement('select');
+        eventSelect.id = 'event-select';
         events.forEach(event => {
             const option = document.createElement('option');
             option.value = event.id;
-            option.textContent = event.description;
+            const optionText = document.createTextNode(event.description);
+            option.appendChild(optionText);
             eventSelect.appendChild(option);
         });
         modal.appendChild(eventSelect);
-    
+
         const buttonContainer = document.createElement('div');
         const saveButton = document.createElement('button');
-        saveButton.textContent = 'Inscrever';
+        const saveText = document.createTextNode('Inscrever');
+        saveButton.appendChild(saveText);
+        saveButton.id = 'btn-subscribe-confirm';
+        
+        const cancelButton = document.createElement('button');
+        const cancelText = document.createTextNode('Cancelar');
+        cancelButton.appendChild(cancelText);
+        cancelButton.id = 'btn-subscribe-cancel';
+
         saveButton.addEventListener('click', () => {
             const selectedEventId = eventSelect.value;
-            alert(`${member.name} foi inscrito no evento ID ${selectedEventId}`);
+            this.subscribeToEvent(member.id, parseInt(selectedEventId));
             modal.remove();
         });
-    
-        const cancelButton = document.createElement('button');
-        cancelButton.textContent = 'Cancelar';
+
         cancelButton.addEventListener('click', () => modal.remove());
-    
+
         buttonContainer.appendChild(saveButton);
         buttonContainer.appendChild(cancelButton);
         modal.appendChild(buttonContainer);
-    
+
         document.body.appendChild(modal);
     }
 }

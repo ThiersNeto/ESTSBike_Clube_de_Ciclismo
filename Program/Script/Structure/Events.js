@@ -1,8 +1,24 @@
-// Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
-// André Rocha - 202300185 - 202300185@estudantes.ips.pt
+/**
+ * @fileoverview Gerenciamento de eventos do clube de ciclismo
+ * @author Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+ * @author André Rocha - 202300185 - 202300185@estudantes.ips.pt
+ */
 
+/**
+ * Classe que representa um evento individual
+ * @class Event
+ */
 class Event {
-    // Construtor para criar um novo evento
+    /**
+     * Cria uma nova instância de Event
+     * @constructor
+     * @param {number} id - Identificador único do evento
+     * @param {number} typeId - ID do tipo de evento associado
+     * @param {string} description - Descrição do evento
+     * @param {Date} date - Data do evento
+     * @throws {Error} Se a descrição estiver vazia ou não for string
+     * @throws {Error} Se a data não for um objeto Date válido
+     */
     constructor(id, typeId, description, date) {
         if (!description || typeof description !== 'string') {
             throw new Error(MessageEvents.REQUIRED_DESCRIPTION);
@@ -17,14 +33,28 @@ class Event {
     }
 }
 
+/**
+ * Classe responsável pelo gerenciamento de eventos
+ * @class EventManager
+ */
 class EventManager {
-    // Inicializa as estruturas de dados necessárias
+    /**
+     * Inicializa o gerenciador de eventos
+     * @constructor
+     */
     constructor() {
         this.events = [];
         this.currentId = 0;
     }
 
-    // Adiciona um novo evento à lista
+    /**
+     * Adiciona um novo evento
+     * @param {number} typeId - ID do tipo de evento
+     * @param {string} description - Descrição do evento
+     * @param {Date} date - Data do evento
+     * @returns {Event} O evento criado
+     * @throws {Error} Se o tipo de evento não existir
+     */
     addEvent(typeId, description, date) {
         if (!eventTypeManager.getEventType(typeId)) {
             throw new Error(MessageEvents.INVALID_EVENT_TYPE);
@@ -35,12 +65,23 @@ class EventManager {
         return event;
     }
 
-    // Retorna todos os eventos ordenados por data
+    /**
+     * Retorna todos os eventos ordenados por data
+     * @returns {Event[]} Array de eventos ordenados
+     */
     getAllEvents() {
         return [...this.events].sort((a, b) => a.date - b.date);
     }
 
-    // Atualiza um evento existente
+    /**
+     * Atualiza um evento existente
+     * @param {number} id - ID do evento a ser atualizado
+     * @param {number} typeId - Novo ID do tipo de evento
+     * @param {string} description - Nova descrição
+     * @param {Date} date - Nova data
+     * @returns {boolean} true se atualizado com sucesso
+     * @throws {Error} Se o evento não for encontrado ou tipo de evento for inválido
+     */
     updateEvent(id, typeId, description, date) {
         const event = this.events.find(e => e.id === id);
         if (!event) {
@@ -55,7 +96,12 @@ class EventManager {
         return true;
     }
 
-    // Remove um evento
+    /**
+     * Remove um evento
+     * @param {number} id - ID do evento a ser removido
+     * @returns {boolean} true se removido com sucesso
+     * @throws {Error} Se o evento não for encontrado
+     */
     deleteEvent(id) {
         const index = this.events.findIndex(e => e.id === id);
         if (index === -1) {
@@ -65,7 +111,10 @@ class EventManager {
         return true;
     }
 
-    // Exibe a interface principal de eventos
+    /**
+     * Exibe a interface principal de eventos
+     * @private
+     */
     showEvents() {
         const mainContent = document.querySelector('.main-content');
         if (mainContent) {
@@ -83,14 +132,23 @@ class EventManager {
         document.body.insertBefore(content, footer);
     }
 
-    // Cria o cabeçalho da seção
+    /**
+     * Cria o cabeçalho da seção de eventos
+     * @private
+     * @returns {HTMLElement} Elemento do cabeçalho
+     */
     createHeader() {
         const sectionTitle = document.createElement('h2');
-        sectionTitle.textContent = 'Eventos';
+        const titleText = document.createTextNode('Eventos');
+        sectionTitle.appendChild(titleText);
         return sectionTitle;
     }
 
-    // Cria a lista de eventos
+    /**
+     * Cria a lista de eventos
+     * @private
+     * @returns {HTMLElement} Elemento contendo a lista de eventos
+     */
     createEventsList() {
         const eventList = document.createElement('div');
         eventList.classList.add('events-list');
@@ -110,7 +168,11 @@ class EventManager {
         return eventList;
     }
 
-    // Cria o cabeçalho da tabela
+    /**
+     * Cria o cabeçalho da tabela de eventos
+     * @private
+     * @returns {HTMLElement} Elemento do cabeçalho da tabela
+     */
     createTableHeader() {
         const header = document.createElement('div');
         header.classList.add('events-header');
@@ -118,25 +180,31 @@ class EventManager {
         const headers = ['Id', 'Tipo', 'Descritivo', 'Data'];
         headers.forEach(text => {
             const cell = document.createElement('div');
-            cell.textContent = text;
             cell.classList.add('header-cell');
+            const cellText = document.createTextNode(text);
+            cell.appendChild(cellText);
             header.appendChild(cell);
         });
         
         return header;
     }
 
-    // Cria um item individual da lista de eventos
+    /**
+     * Cria um item individual da lista de eventos
+     * @private
+     * @param {Event} event - Evento a ser exibido
+     * @returns {HTMLElement} Elemento representando o evento
+     */
     createEventItem(event) {
         const item = document.createElement('div');
         item.classList.add('event-item');
-        item.dataset.eventId = event.id;
+        item.id = `event-${event.id}`;
 
         const eventType = eventTypeManager.getEventType(event.typeId);
         const formattedDate = event.date.toISOString().split('T')[0];
         
         const cells = [
-            event.id, 
+            event.id.toString(), 
             eventType.description, 
             event.description, 
             formattedDate
@@ -144,8 +212,9 @@ class EventManager {
 
         cells.forEach(text => {
             const cell = document.createElement('div');
-            cell.textContent = text;
             cell.classList.add('item-cell');
+            const cellText = document.createTextNode(text);
+            cell.appendChild(cellText);
             item.appendChild(cell);
         });
 
@@ -153,29 +222,40 @@ class EventManager {
         return item;
     }
 
-    // Cria a mensagem para quando não há eventos
+    /**
+     * Cria mensagem para quando não há eventos
+     * @private
+     * @returns {HTMLElement} Elemento com a mensagem
+     */
     createEmptyMessage() {
         const message = document.createElement('p');
-        message.textContent = MessageEvents.NO_EVENTS;
         message.classList.add('empty-message');
+        const messageText = document.createTextNode(MessageEvents.NO_EVENTS);
+        message.appendChild(messageText);
         return message;
     }
 
-    // Cria o container com os botões de ação
+    /**
+     * Cria o container com os botões de ação
+     * @private
+     * @returns {HTMLElement} Container com os botões
+     */
     createButtonContainer() {
         const buttonContainer = document.createElement('div');
         buttonContainer.classList.add('button-container');
 
         const buttons = [
-            { text: 'Criar', action: () => this.showEventForm() },
-            { text: 'Editar', action: () => this.handleEdit() },
-            { text: 'Apagar', action: () => this.handleDelete() }
+            { text: 'Criar', id: 'btn-event-create', action: () => this.showEventForm() },
+            { text: 'Editar', id: 'btn-event-edit', action: () => this.handleEdit() },
+            { text: 'Apagar', id: 'btn-event-delete', action: () => this.handleDelete() }
         ];
 
-        buttons.forEach(({ text, action }) => {
+        buttons.forEach(({ text, id, action }) => {
             const button = document.createElement('button');
-            button.textContent = text;
             button.classList.add('action-button');
+            button.id = id;
+            const buttonText = document.createTextNode(text);
+            button.appendChild(buttonText);
             button.addEventListener('click', action);
             buttonContainer.appendChild(button);
         });
@@ -183,22 +263,37 @@ class EventManager {
         return buttonContainer;
     }
 
-    // Exibe o formulário para criar/editar um evento
+    /**
+     * Exibe o formulário de evento
+     * @private
+     * @param {Event} [selectedEvent=null] - Evento a ser editado, se houver
+     */
     showEventForm(selectedEvent = null) {
-        const content = document.querySelector('.main-content');
-        while (content.firstChild) {
-            content.removeChild(content.firstChild);
+        const mainContent = document.querySelector('.main-content');
+        if (mainContent) {
+            mainContent.remove();
         }
 
-        const formTitle = document.createElement('h2');
-        formTitle.textContent = selectedEvent ? 'Alterar Evento' : 'Novo Evento';
-        content.appendChild(formTitle);
+        const content = document.createElement('div');
+        content.classList.add('main-content', 'form-content');
 
-        const form = this.createForm(selectedEvent);
-        content.appendChild(form);
+        const title = document.createElement('h2');
+        const titleText = document.createTextNode(selectedEvent ? 'Editar Evento' : 'Novo Evento');
+        title.appendChild(titleText);
+        content.appendChild(title);
+
+        content.appendChild(this.createForm(selectedEvent));
+
+        const footer = document.querySelector('.footer');
+        document.body.insertBefore(content, footer);
     }
 
-    // Cria o formulário para entrada de dados
+    /**
+     * Cria o formulário para entrada de dados do evento
+     * @private
+     * @param {Event} [selectedEvent=null] - Evento a ser editado, se houver
+     * @returns {HTMLElement} Formulário do evento
+     */
     createForm(selectedEvent) {
         const formContainer = document.createElement('div');
         formContainer.classList.add('form-container');
@@ -266,7 +361,11 @@ class EventManager {
         return formContainer;
     }
 
-    // Gerencia a seleção de um item na lista
+    /**
+     * Gerencia a seleção de um evento na lista
+     * @private
+     * @param {HTMLElement} element - Elemento selecionado
+     */
     selectEvent(element) {
         const previousSelected = document.querySelector('.event-item.selected');
         if (previousSelected) {
@@ -275,7 +374,10 @@ class EventManager {
         element.classList.add('selected');
     }
 
-    // Gerencia a ação de editar
+    /**
+     * Gerencia a ação de editar um evento
+     * @private
+     */
     handleEdit() {
         const selected = document.querySelector('.event-item.selected');
         if (!selected) {
@@ -287,7 +389,10 @@ class EventManager {
         this.showEventForm(event);
     }
 
-    // Gerencia a ação de deletar
+    /**
+     * Gerencia a ação de deletar um evento
+     * @private
+     */
     handleDelete() {
         const selected = document.querySelector('.event-item.selected');
         if (!selected) {
@@ -304,7 +409,14 @@ class EventManager {
         }
     }
 
-    // Gerencia o salvamento
+    /**
+     * Gerencia o salvamento de um evento
+     * @private
+     * @param {number} typeId - ID do tipo de evento
+     * @param {string} description - Descrição do evento
+     * @param {Date} date - Data do evento
+     * @param {Event} [selectedEvent=null] - Evento sendo editado, se houver
+     */
     handleSave(typeId, description, date, selectedEvent) {
         if (!description.trim() || !date || isNaN(date.getTime())) {
             MessageEvents.showError(MessageEvents.REQUIRED_FIELDS, document.querySelector('.main-content'));
@@ -326,6 +438,13 @@ class EventManager {
         }
     }
 
+    /**
+     * Valida se a data do evento é futura
+     * @private
+     * @param {Date} date - Data a ser validada
+     * @returns {boolean} true se a data for válida
+     * @throws {Error} Se a data for anterior a hoje
+     */
     validateDate(date) {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -337,6 +456,82 @@ class EventManager {
             throw new Error('A data do evento não pode ser anterior a hoje');
         }
         return true;
+    }
+
+    /**
+     * Retorna um evento pelo seu ID
+     * @param {number} id - ID do evento
+     * @returns {Event|null} Evento encontrado ou null se não existir
+     */
+    getEvent(id) {
+        return this.events.find(e => e.id === id) || null;
+    }
+
+    /**
+     * Retorna eventos por tipo
+     * @param {number} typeId - ID do tipo de evento
+     * @returns {Event[]} Array de eventos do tipo especificado
+     */
+    getEventsByType(typeId) {
+        return this.events.filter(e => e.typeId === typeId);
+    }
+
+    /**
+     * Retorna eventos por data
+     * @param {Date} date - Data para filtrar
+     * @returns {Event[]} Array de eventos na data especificada
+     */
+    getEventsByDate(date) {
+        return this.events.filter(e => {
+            const eventDate = new Date(e.date);
+            return eventDate.toDateString() === date.toDateString();
+        });
+    }
+
+    /**
+     * Verifica se existe um evento com o ID especificado
+     * @param {number} id - ID do evento
+     * @returns {boolean} true se o evento existir
+     */
+    hasEvent(id) {
+        return this.events.some(e => e.id === id);
+    }
+
+    /**
+     * Limpa todos os eventos
+     * @returns {void}
+     */
+    clearEvents() {
+        this.events = [];
+        this.currentId = 0;
+    }
+
+    /**
+     * Retorna o número total de eventos
+     * @returns {number} Quantidade de eventos
+     */
+    getEventCount() {
+        return this.events.length;
+    }
+
+    /**
+     * Retorna eventos futuros
+     * @returns {Event[]} Array de eventos com data futura
+     */
+    getFutureEvents() {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return this.events.filter(e => e.date >= today);
+    }
+
+    /**
+     * Retorna eventos passados
+     * @returns {Event[]} Array de eventos com data passada
+     */
+    getPastEvents() {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return this.events.filter(e => e.date < today);
     }
 }
 
