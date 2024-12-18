@@ -223,20 +223,7 @@ class Members {
             eventTypes.forEach(eventType => {
                 const checkboxContainer = document.createElement('div');
                 checkboxContainer.classList.add('checkbox-container');
-        const eventTypes = eventTypeManager.getAllEventTypes();
-        if (eventTypes.length === 0) {
-            const noEventsMessage = document.createElement('p');
-            noEventsMessage.textContent = 'Nenhum tipo de evento disponível. Adicione tipos de eventos primeiro.';
-            eventsContainer.appendChild(noEventsMessage);
-        } else {
-            eventTypes.forEach(eventType => {
-        const eventTypes = eventTypeManager.getAllEventTypes();
-        if (eventTypes.length === 0) {
-            const noEventsMessage = document.createElement('p');
-            noEventsMessage.textContent = 'Nenhum tipo de evento disponível. Adicione tipos de eventos primeiro.';
-            eventsContainer.appendChild(noEventsMessage);
-        } else {
-            eventTypes.forEach(eventType => {
+                
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 checkbox.value = eventType.id;
@@ -249,11 +236,10 @@ class Members {
                 const label = document.createElement('label');
                 label.htmlFor = `event-${eventType.id}`;
                 label.textContent = eventType.description;
+                
                 checkboxContainer.appendChild(checkbox);
                 checkboxContainer.appendChild(label);
                 checkboxGrid.appendChild(checkboxContainer);
-                eventsContainer.appendChild(checkbox);
-                eventsContainer.appendChild(label);
             });
 
             eventsContainer.appendChild(checkboxGrid);
@@ -504,7 +490,9 @@ class Members {
 
         this.eventSubscriptions.splice(index, 1);
         return true;
+    }
 
+    // Método para gerenciar inscrição em eventos
     handleEventRegistration() {
         const selected = document.querySelector('.member-item.selected');
         if (!selected) {
@@ -515,14 +503,12 @@ class Members {
         const memberId = parseInt(selected.dataset.memberId);
         const member = this.members.find(e => e.id === memberId);
     
-        // Obtém as preferências de tipos de eventos do membro diretamente
-        const memberPreferences = member.preferredEvents;  // Acesse diretamente o preferredEvents
+        const memberPreferences = member.preferredEvents;
         if (memberPreferences.length === 0) {
             this.showError('Este membro não tem preferências de tipo de evento.');
             return;
         }
     
-        // Busca os eventos compatíveis com base nas preferências
         const compatibleEvents = eventTypeManager.getEventsByTypes(memberPreferences);
     
         if (compatibleEvents.length === 0) {
@@ -532,7 +518,6 @@ class Members {
     
         this.showEventModal(member, compatibleEvents);
     }
-    
 
     showEventModal(member, events) {
         console.log('Mostrando modal para', member.name);  // Adicionar log
