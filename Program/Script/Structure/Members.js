@@ -106,9 +106,9 @@ class Members {
 
         try {
             if (selectedMember) {
-                this.updateMember(selectedMember.id, name, selectedEvents);
+                this.updateMember(selectedMember.id, name, selectedEvents.map(Number));
             } else {
-                this.addMember(name, selectedEvents);
+                this.addMember(name, selectedEvents.map(Number));
             }
             this.showMembers();
         } catch (error) {
@@ -195,19 +195,20 @@ class Members {
                 checkbox.value = eventType.id;
                 checkbox.id = `event-${eventType.id}`;
                 checkbox.classList.add('event-checkbox');
-        
+
                 if (selectedMember && selectedMember.preferredEvents.includes(eventType.id)) {
                     checkbox.checked = true;
                 }
-        
+
                 const label = document.createElement('label');
                 label.htmlFor = `event-${eventType.id}`;
                 label.textContent = eventType.description;
-        
+
                 eventsContainer.appendChild(checkbox);
                 eventsContainer.appendChild(label);
             });
         }
+
 
 
         const buttonContainer = document.createElement('div');

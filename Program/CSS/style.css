@@ -276,10 +276,30 @@ select.member-input {
     box-shadow: 0 0 0 2px rgba(27, 41, 75, 0.1);
 }
 
+
+
 /* Alinhamento dos títulos das seções */
 .main-content h2 {
     max-width: 800px;
     width: 95%;
     margin: 20px auto;
     padding: 0;
+}
+
+.events-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    max-width: 800px;
+    width: 95%;
+    margin: 0 auto;
+}
+
+.checkbox-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.event-checkbox {
+    margin-right: 5px;
 }
