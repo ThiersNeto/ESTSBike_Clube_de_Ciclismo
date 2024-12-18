@@ -1,3 +1,6 @@
+// Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+// André Richa - 202300185 - 202300185@estudantes.ips.pt
+
 class MessageEvents {
     // Mensagens de seleção
     static SELECT_MEMBER_EDIT = 'Selecione um membro para editar.';

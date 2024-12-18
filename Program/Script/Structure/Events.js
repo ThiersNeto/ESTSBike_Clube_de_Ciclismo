@@ -1,3 +1,6 @@
+// Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+// André Richa - 202300185 - 202300185@estudantes.ips.pt
+
 class Event {
     // Construtor para criar um novo evento
     constructor(id, typeId, description, date) {

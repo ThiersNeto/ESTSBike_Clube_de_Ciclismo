@@ -1,3 +1,6 @@
+// Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+// André Richa - 202300185 - 202300185@estudantes.ips.pt
+
 class Member {
     constructor(id, name, preferredEvents = []) {
         if (!name || typeof name !== 'string') {
