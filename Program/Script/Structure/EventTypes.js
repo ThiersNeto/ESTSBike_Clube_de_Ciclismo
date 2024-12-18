@@ -6,16 +6,13 @@
 
 /**
  * Classe que representa um tipo de evento individual
+ * @constructor
  * @class EventType
+ * @param {number} id - Identificador único do tipo de evento
+ * @param {string} description - Descrição do tipo de evento
+ * @throws {Error} Se a descrição estiver vazia ou não for string
  */
 class EventType {
-    /**
-     * Cria uma nova instância de tipo de evento
-     * @constructor
-     * @param {number} id - Identificador único do tipo de evento
-     * @param {string} description - Descrição do tipo de evento
-     * @throws {Error} Se a descrição estiver vazia ou não for string
-     */
     constructor(id, description) {
         if (!description || typeof description !== 'string') {
             throw new Error(MessageEvents.REQUIRED_DESCRIPTION);
@@ -27,13 +24,11 @@ class EventType {
 
 /**
  * Classe responsável pelo gerenciamento de tipos de eventos
+ * Inicializa o gerenciador de tipos de eventos
  * @class EventTypeManager
+ * @constructor
  */
 class EventTypeManager {
-    /**
-     * Inicializa o gerenciador de tipos de eventos
-     * @constructor
-     */
     constructor() {
         this.eventTypes = [];
         this.currentId = 0;
@@ -419,5 +414,4 @@ class EventTypeManager {
     }
 }
 
-// Instância global do gerenciador de tipos de eventos
 const eventTypeManager = new EventTypeManager(); 

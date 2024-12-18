@@ -116,12 +116,11 @@ function createFooter() {
  * @function initializeApp
  */
 function initializeApp() {
-    // Inicializa dados
     initializeEventTypes();
     initializeEvents();
     initializeMembers();
 
-    // Cria estrutura básica da página
+    // Cria estrutura básica
     document.body.appendChild(createHeader());
     document.body.appendChild(createFooter());
 
@@ -129,5 +128,4 @@ function initializeApp() {
     eventTypeManager.showEventTypes();
 }
 
-// Inicializa a aplicação quando o documento estiver carregado
 document.addEventListener('DOMContentLoaded', initializeApp);

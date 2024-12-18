@@ -583,5 +583,4 @@ class Members {
     }
 }
 
-// Criar instância global
 const membersModule = new Members();    

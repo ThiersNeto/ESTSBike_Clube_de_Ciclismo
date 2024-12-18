@@ -6,19 +6,17 @@
 
 /**
  * Classe que representa um evento individual
+ * Cria uma nova instância de Event
  * @class Event
+ * @constructor
+ * @param {number} id - Identificador único do evento
+ * @param {number} typeId - ID do tipo de evento associado
+ * @param {string} description - Descrição do evento
+ * @param {Date} date - Data do evento
+ * @throws {Error} Se a descrição estiver vazia ou não for string
+ * @throws {Error} Se a data não for um objeto Date válido
  */
 class Event {
-    /**
-     * Cria uma nova instância de Event
-     * @constructor
-     * @param {number} id - Identificador único do evento
-     * @param {number} typeId - ID do tipo de evento associado
-     * @param {string} description - Descrição do evento
-     * @param {Date} date - Data do evento
-     * @throws {Error} Se a descrição estiver vazia ou não for string
-     * @throws {Error} Se a data não for um objeto Date válido
-     */
     constructor(id, typeId, description, date) {
         if (!description || typeof description !== 'string') {
             throw new Error(MessageEvents.REQUIRED_DESCRIPTION);
