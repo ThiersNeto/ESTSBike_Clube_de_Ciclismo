@@ -256,6 +256,26 @@ select.event-input {
     border-left: 4px solid var(--primary-color);
 }
 
+.member-input {
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    width: 100%;
+    max-width: 300px;
+    font-size: 14px;
+}
+
+select.member-input {
+    background-color: white;
+    cursor: pointer;
+}
+
+.member-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(27, 41, 75, 0.1);
+}
+
 /* Alinhamento dos títulos das seções */
 .main-content h2 {
     max-width: 800px;

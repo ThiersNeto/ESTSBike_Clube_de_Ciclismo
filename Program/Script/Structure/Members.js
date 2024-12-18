@@ -14,7 +14,6 @@ class Members {
         this.members = [];
         this.currentId = 0;
         this.selectedMember = null;
-        this.events = [];
     }
 
     // Adiciona um novo membro
@@ -184,25 +183,26 @@ class Members {
         eventsLabel.textContent = 'Tipos de Eventos Preferidos';
         eventsContainer.appendChild(eventsLabel);
 
-        if (this.events.length === 0) {
+        const eventTypes = eventTypeManager.getAllEventTypes();
+        if (eventTypes.length === 0) {
             const noEventsMessage = document.createElement('p');
-            noEventsMessage.textContent = 'Nenhum evento disponível. Adicione eventos primeiro.';
+            noEventsMessage.textContent = 'Nenhum tipo de evento disponível. Adicione tipos de eventos primeiro.';
             eventsContainer.appendChild(noEventsMessage);
         } else {
-            this.events.forEach(event => {
+            eventTypes.forEach(eventType => {
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
-                checkbox.value = event;
-                checkbox.id = `event-${event}`;
+                checkbox.value = eventType.id;
+                checkbox.id = `event-${eventType.id}`;
                 checkbox.classList.add('event-checkbox');
         
-                if (selectedMember && selectedMember.preferredEvents.includes(event)) {
+                if (selectedMember && selectedMember.preferredEvents.includes(eventType.id)) {
                     checkbox.checked = true;
                 }
         
                 const label = document.createElement('label');
-                label.htmlFor = `event-${event}`;
-                label.textContent = event;
+                label.htmlFor = `event-${eventType.id}`;
+                label.textContent = eventType.description;
         
                 eventsContainer.appendChild(checkbox);
                 eventsContainer.appendChild(label);
