@@ -307,6 +307,41 @@ select.member-input {
     margin-right: 5px;
 }
 
+.event-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.event-modal select {
+    display: block;
+    margin: 10px auto;
+    padding: 8px;
+    font-size: 16px;
+}
+
+.event-modal button {
+    margin: 5px;
+    padding: 10px 15px;
+    background-color: #1B294B;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.event-modal button:hover {
+    background-color: #2c3e6f;
+}
+
 @media (max-width: 768px) {
 
     .main-content {
@@ -406,3 +441,4 @@ select.member-input {
         justify-content: center;
     }
 }
+

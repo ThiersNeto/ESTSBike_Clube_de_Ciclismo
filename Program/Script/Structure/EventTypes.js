@@ -288,6 +288,18 @@ class EventTypeManager {
         }
         element.classList.add('selected');
     }
+
+    getEventsByTypes(preferredEventIds) {
+        return this.eventTypes.filter(event => preferredEventIds.includes(event.id));
+    }
+
+    addMemberPreferences(memberId, eventTypeIds) {
+        this.memberPreferences.push({ memberId, eventTypeIds });
+    }
+
+    getMemberPreferences(memberId) {
+        return this.memberPreferences.find(mp => mp.memberId === memberId);
+    }
 }
 
 // Instância global do gerenciador de tipos de eventos

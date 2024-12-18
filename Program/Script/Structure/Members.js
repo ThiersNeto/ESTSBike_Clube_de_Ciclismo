@@ -86,7 +86,8 @@ class Members {
         const buttons = [
             { text: 'Criar', action: () => this.showMemberForm() },
             { text: 'Editar', action: () => this.handleEdit() },
-            { text: 'Apagar', action: () => this.handleDelete() }
+            { text: 'Apagar', action: () => this.handleDelete() },
+            { text: 'Inscrever em Evento', action: () => this.handleEventRegistration() }
         ];
 
         buttons.forEach(({ text, action }) => {
@@ -95,6 +96,7 @@ class Members {
             button.classList.add('action-button');
             button.addEventListener('click', action);
             buttonContainer.appendChild(button);
+            
         });
 
         return buttonContainer;
@@ -329,6 +331,73 @@ class Members {
         content.insertBefore(errorContainer, content.firstChild);
 
         setTimeout(() => errorContainer.remove(), 3000);
+    }
+
+    handleEventRegistration() {
+        const selected = document.querySelector('.member-item.selected');
+        if (!selected) {
+            this.showError('Selecione um membro para inscrever em eventos.');
+            return;
+        }
+    
+        const memberId = parseInt(selected.dataset.memberId);
+        const member = this.members.find(e => e.id === memberId);
+    
+        // Obtém as preferências de tipos de eventos do membro diretamente
+        const memberPreferences = member.preferredEvents;  // Acesse diretamente o preferredEvents
+        if (memberPreferences.length === 0) {
+            this.showError('Este membro não tem preferências de tipo de evento.');
+            return;
+        }
+    
+        // Busca os eventos compatíveis com base nas preferências
+        const compatibleEvents = eventTypeManager.getEventsByTypes(memberPreferences);
+    
+        if (compatibleEvents.length === 0) {
+            this.showError('Não há eventos compatíveis com os tipos preferidos deste membro.');
+            return;
+        }
+    
+        this.showEventModal(member, compatibleEvents);
+    }
+    
+
+    showEventModal(member, events) {
+        console.log('Mostrando modal para', member.name);  // Adicionar log
+        const modal = document.createElement('div');
+        modal.classList.add('event-modal');
+    
+        const title = document.createElement('h3');
+        title.textContent = `Inscrever ${member.name} em Evento`;
+        modal.appendChild(title);
+    
+        const eventSelect = document.createElement('select');
+        events.forEach(event => {
+            const option = document.createElement('option');
+            option.value = event.id;
+            option.textContent = event.description;
+            eventSelect.appendChild(option);
+        });
+        modal.appendChild(eventSelect);
+    
+        const buttonContainer = document.createElement('div');
+        const saveButton = document.createElement('button');
+        saveButton.textContent = 'Inscrever';
+        saveButton.addEventListener('click', () => {
+            const selectedEventId = eventSelect.value;
+            alert(`${member.name} foi inscrito no evento ID ${selectedEventId}`);
+            modal.remove();
+        });
+    
+        const cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Cancelar';
+        cancelButton.addEventListener('click', () => modal.remove());
+    
+        buttonContainer.appendChild(saveButton);
+        buttonContainer.appendChild(cancelButton);
+        modal.appendChild(buttonContainer);
+    
+        document.body.appendChild(modal);
     }
 }
 
