@@ -11,11 +11,11 @@ eventTypeManager.addEventType("Cicloturismo");
 
 // Add initial events
 eventManager.addEvent(6, "Passeio das Vindimas", new Date("2024-09-20"));
-eventManager.addEvent(6, "Tour do Alentejo", new Date("2024-09-30"));
-eventManager.addEvent(3, "BMX Extreme Show", new Date("2024-10-05"));
-eventManager.addEvent(1, "Clássica da Arrábida", new Date("2024-10-15"));
-eventManager.addEvent(2, "BTT Noturno", new Date("2024-11-15"));
-eventManager.addEvent(1, "Volta a Setúbal", new Date("2024-11-01"));
+eventManager.addEvent(6, "Tour do Alentejo", new Date("2025-09-30"));
+eventManager.addEvent(3, "BMX Extreme Show", new Date("2025-10-05"));
+eventManager.addEvent(1, "Clássica da Arrábida", new Date("2025-10-15"));
+eventManager.addEvent(2, "BTT Noturno", new Date("2025-11-15"));
+eventManager.addEvent(1, "Volta a Setúbal", new Date("2025-11-01"));
 
 // Add initial members
 membersModule.addMember("Thiers Neto", [1, 2]);
