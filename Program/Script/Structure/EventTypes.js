@@ -344,7 +344,7 @@ class EventTypeManager {
     handleEdit() {
         const selected = document.querySelector('.event-type-item.selected');
         if (!selected) {
-            MessageEvents.showError(MessageEvents.SELECT_EVENT_TYPE_EDIT);
+            MessageEvents.showError(MessageEvents.SELECT_EVENT_TYPE_EDIT, document.querySelector(".main-content"));
             return;
         }
         const eventTypeId = parseInt(selected.dataset.eventTypeId);
@@ -359,10 +359,10 @@ class EventTypeManager {
     handleDelete() {
         const selected = document.querySelector('.event-type-item.selected');
         if (!selected) {
-            MessageEvents.showError(MessageEvents.SELECT_EVENT_TYPE_DELETE);
+            MessageEvents.showError(MessageEvents.SELECT_EVENT_TYPE_DELETE, document.querySelector(".main-content"));
             return;
         }
-        
+
         const eventTypeId = parseInt(selected.dataset.eventTypeId);
         MessageEvents.showConfirm('Tem certeza que deseja excluir este tipo de evento?', () => {
             try {
@@ -370,7 +370,7 @@ class EventTypeManager {
                 MessageEvents.showSuccess(MessageEvents.SUCCESS_DELETE);
                 this.showEventTypes();
             } catch (error) {
-                MessageEvents.showError(error.message);
+                MessageEvents.showError(error.message, document.querySelector(".main-content"));
             }
         });
     }
@@ -383,7 +383,7 @@ class EventTypeManager {
      */
     handleSave(value, selectedEventType) {
         if (!value.trim()) {
-            MessageEvents.showError(MessageEvents.REQUIRED_FIELDS);
+            MessageEvents.showError(MessageEvents.REQUIRED_FIELDS, document.querySelector(".main-content"));
             return;
         }
 
@@ -397,7 +397,7 @@ class EventTypeManager {
             }
             this.showEventTypes();
         } catch (error) {
-            MessageEvents.showError(error.message);
+            MessageEvents.showError(error.message, document.querySelector(".main-content"));
         }
     }
 

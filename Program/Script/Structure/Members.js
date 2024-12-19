@@ -342,7 +342,7 @@ class Members {
                                 MessageEvents.showSuccess('Inscrito com sucesso no evento!');
                                 this.showMemberForm(selectedMember);
                             } catch (error) {
-                                MessageEvents.showError(error.message);
+                                MessageEvents.showError(error.message, document.querySelector(".main-content"));
                             }
                         });
 
@@ -491,20 +491,6 @@ class Members {
         }
 
         this.eventSubscriptions.push({ memberId, eventId });
-        return true;
-    }
-
-    // Método para cancelar inscrição
-    unsubscribeFromEvent(memberId, eventId) {
-        const index = this.eventSubscriptions.findIndex(
-            sub => sub.memberId === memberId && sub.eventId === eventId
-        );
-
-        if (index === -1) {
-            throw new Error('Inscrição não encontrada');
-        }
-
-        this.eventSubscriptions.splice(index, 1);
         return true;
     }
 

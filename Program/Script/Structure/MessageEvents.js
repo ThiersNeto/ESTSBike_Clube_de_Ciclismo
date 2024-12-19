@@ -75,7 +75,7 @@ class MessageEvents {
      * @static
      * @param {string} message - Mensagem de erro a ser exibida
      */
-    static showError(message) {
+    static showError(message, element) {
         MessageEvents.removeExistingMessages();
         
         const errorContainer = document.createElement('div');

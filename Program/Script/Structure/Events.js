@@ -379,7 +379,7 @@ class EventManager {
     handleEdit() {
         const selected = document.querySelector('.event-item.selected');
         if (!selected) {
-            MessageEvents.showError(MessageEvents.SELECT_EVENT_EDIT, document.querySelector('.main-content'));
+            MessageEvents.showError(MessageEvents.SELECT_EVENT_EDIT, document.querySelector(".main-content"));
             return;
         }
         const eventId = parseInt(selected.dataset.eventId);
@@ -394,7 +394,7 @@ class EventManager {
     handleDelete() {
         const selected = document.querySelector('.event-item.selected');
         if (!selected) {
-            MessageEvents.showError(MessageEvents.SELECT_EVENT_DELETE, document.querySelector('.main-content'));
+            MessageEvents.showError(MessageEvents.SELECT_EVENT_DELETE, document.querySelector(".main-content"));
             return;
         }
         
@@ -403,7 +403,7 @@ class EventManager {
             this.deleteEvent(eventId);
             this.showEvents();
         } catch (error) {
-            MessageEvents.showError(error.message, document.querySelector('.main-content'));
+            MessageEvents.showError(error.message, document.querySelector(".main-content"));
         }
     }
 
@@ -417,7 +417,7 @@ class EventManager {
      */
     handleSave(typeId, description, date, selectedEvent) {
         if (!description.trim() || !date || isNaN(date.getTime())) {
-            MessageEvents.showError(MessageEvents.REQUIRED_FIELDS, document.querySelector('.main-content'));
+            MessageEvents.showError(MessageEvents.REQUIRED_FIELDS, document.querySelector(".main-content"));
             return;
         }
 
@@ -454,82 +454,6 @@ class EventManager {
             throw new Error('A data do evento não pode ser anterior a hoje');
         }
         return true;
-    }
-
-    /**
-     * Retorna um evento pelo seu ID
-     * @param {number} id - ID do evento
-     * @returns {Event|null} Evento encontrado ou null se não existir
-     */
-    getEvent(id) {
-        return this.events.find(e => e.id === id) || null;
-    }
-
-    /**
-     * Retorna eventos por tipo
-     * @param {number} typeId - ID do tipo de evento
-     * @returns {Event[]} Array de eventos do tipo especificado
-     */
-    getEventsByType(typeId) {
-        return this.events.filter(e => e.typeId === typeId);
-    }
-
-    /**
-     * Retorna eventos por data
-     * @param {Date} date - Data para filtrar
-     * @returns {Event[]} Array de eventos na data especificada
-     */
-    getEventsByDate(date) {
-        return this.events.filter(e => {
-            const eventDate = new Date(e.date);
-            return eventDate.toDateString() === date.toDateString();
-        });
-    }
-
-    /**
-     * Verifica se existe um evento com o ID especificado
-     * @param {number} id - ID do evento
-     * @returns {boolean} true se o evento existir
-     */
-    hasEvent(id) {
-        return this.events.some(e => e.id === id);
-    }
-
-    /**
-     * Limpa todos os eventos
-     * @returns {void}
-     */
-    clearEvents() {
-        this.events = [];
-        this.currentId = 0;
-    }
-
-    /**
-     * Retorna o número total de eventos
-     * @returns {number} Quantidade de eventos
-     */
-    getEventCount() {
-        return this.events.length;
-    }
-
-    /**
-     * Retorna eventos futuros
-     * @returns {Event[]} Array de eventos com data futura
-     */
-    getFutureEvents() {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        return this.events.filter(e => e.date >= today);
-    }
-
-    /**
-     * Retorna eventos passados
-     * @returns {Event[]} Array de eventos com data passada
-     */
-    getPastEvents() {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        return this.events.filter(e => e.date < today);
     }
 }
 
