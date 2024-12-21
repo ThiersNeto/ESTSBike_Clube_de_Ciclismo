@@ -86,16 +86,22 @@ class EventTypeManager {
      * @throws {Error} Se o tipo de evento estiver em uso ou não for encontrado
      */
     deleteEventType(id) {
-        if (this.eventAssociations.some(ea => ea.eventTypeId === id)) {
+        // Verifica se existem eventos usando este tipo
+        const eventsUsingType = eventManager.events.some(event => event.typeId === id);
+        if (eventsUsingType) {
             throw new Error(MessageEvents.EVENT_TYPE_IN_USE);
         }
+
+        // Verifica se existem preferências de membros usando este tipo
         if (this.memberPreferences.some(mp => mp.eventTypeId === id)) {
             throw new Error(MessageEvents.EVENT_TYPE_IN_PREFERENCES);
         }
+
         const index = this.eventTypes.findIndex(et => et.id === id);
         if (index === -1) {
             throw new Error(MessageEvents.EVENT_TYPE_NOT_FOUND);
         }
+
         this.eventTypes.splice(index, 1);
         return true;
     }
@@ -363,16 +369,14 @@ class EventTypeManager {
             return;
         }
 
-        const eventTypeId = parseInt(selected.dataset.eventTypeId);
-        MessageEvents.showConfirm('Tem certeza que deseja excluir este tipo de evento?', () => {
-            try {
-                this.deleteEventType(eventTypeId);
-                MessageEvents.showSuccess(MessageEvents.SUCCESS_DELETE);
-                this.showEventTypes();
-            } catch (error) {
-                MessageEvents.showError(error.message, document.querySelector(".main-content"));
-            }
-        });
+        try {
+            const eventTypeId = parseInt(selected.dataset.eventTypeId);
+            this.deleteEventType(eventTypeId);
+            MessageEvents.showSuccess(MessageEvents.SUCCESS_DELETE);
+            this.showEventTypes();
+        } catch (error) {
+            MessageEvents.showError(error.message, document.querySelector(".main-content"));
+        }
     }
 
     /**

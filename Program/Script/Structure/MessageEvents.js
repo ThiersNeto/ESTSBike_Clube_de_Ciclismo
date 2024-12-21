@@ -1,7 +1,7 @@
 /**
  * @fileoverview Gerenciamento de mensagens e notificações do sistema
- * @author Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
- * @author André Rocha - 202300185 - 202300185@estudantes.ips.pt
+ * @author Thiers Neto - 201902549
+ * @author André Rocha - 202300185
  */
 
 /**
@@ -10,41 +10,8 @@
  */
 class MessageEvents {
     /**
-     * @static
-     * @description Mensagens do sistema organizadas por categoria
-     * 
-     * Mensagens de Seleção:
-     * - SELECT_MEMBER_EDIT: Seleção de membro para edição
-     * - SELECT_MEMBER_DELETE: Seleção de membro para exclusão
-     * - SELECT_EVENT_EDIT: Seleção de evento para edição
-     * - SELECT_EVENT_DELETE: Seleção de evento para exclusão
-     * - SELECT_EVENT_TYPE_EDIT: Seleção de tipo de evento para edição
-     * - SELECT_EVENT_TYPE_DELETE: Seleção de tipo de evento para exclusão
-     * 
-     * Mensagens de Validação:
-     * - REQUIRED_FIELDS: Campos obrigatórios
-     * - REQUIRED_DESCRIPTION: Descrição obrigatória
-     * - REQUIRED_NAME: Nome obrigatório
-     * - INVALID_DATE: Data inválida
-     * - INVALID_EVENT_TYPE: Tipo de evento inválido
-     * 
-     * Mensagens de Erro:
-     * - MEMBER_NOT_FOUND: Membro não encontrado
-     * - EVENT_NOT_FOUND: Evento não encontrado
-     * - EVENT_TYPE_NOT_FOUND: Tipo de evento não encontrado
-     * - EVENT_TYPE_IN_USE: Tipo de evento em uso
-     * - EVENT_TYPE_IN_PREFERENCES: Tipo de evento em preferências
-     * 
-     * Mensagens de Estado:
-     * - NO_MEMBERS: Lista de membros vazia
-     * - NO_EVENTS: Lista de eventos vazia
-     * - NO_EVENT_TYPES: Lista de tipos de eventos vazia
-     * - NO_EVENTS_AVAILABLE: Nenhum evento disponível
-     * 
-     * Mensagens de Sucesso:
-     * - SUCCESS_CREATE: Sucesso na criação
-     * - SUCCESS_UPDATE: Sucesso na atualização
-     * - SUCCESS_DELETE: Sucesso na exclusão
+     * Mensagens de Seleção
+     * Utilizadas para orientar o usuário sobre seleções necessárias
      */
     static SELECT_MEMBER_EDIT = 'Selecione um membro para editar.';
     static SELECT_MEMBER_DELETE = 'Selecione um membro para apagar.';
@@ -52,20 +19,40 @@ class MessageEvents {
     static SELECT_EVENT_DELETE = 'Selecione um evento para apagar.';
     static SELECT_EVENT_TYPE_EDIT = 'Selecione um tipo de evento para editar';
     static SELECT_EVENT_TYPE_DELETE = 'Selecione um tipo de evento para apagar';
+
+    /**
+     * Mensagens de Validação
+     * Utilizadas para validação de campos e dados
+     */
     static REQUIRED_FIELDS = 'Preencha todos os campos.';
     static REQUIRED_DESCRIPTION = 'A descrição deve ser uma string não vazia';
     static REQUIRED_NAME = 'O nome deve ser uma string não vazia';
     static INVALID_DATE = 'A data deve ser um objeto Date válido';
     static INVALID_EVENT_TYPE = 'Tipo de evento inválido';
+
+    /**
+     * Mensagens de Erro
+     * Utilizadas para indicar erros no sistema
+     */
     static MEMBER_NOT_FOUND = 'Membro não encontrado';
     static EVENT_NOT_FOUND = 'Evento não encontrado';
     static EVENT_TYPE_NOT_FOUND = 'Tipo de evento não encontrado';
-    static EVENT_TYPE_IN_USE = 'Não é possível excluir: tipo de evento associado a eventos existentes';
+    static EVENT_TYPE_IN_USE = 'Não é possível excluir: existem eventos cadastrados com este tipo';
     static EVENT_TYPE_IN_PREFERENCES = 'Não é possível excluir: tipo de evento associado a preferências de membros';
+
+    /**
+     * Mensagens de Estado
+     * Utilizadas para indicar estados do sistema
+     */
     static NO_MEMBERS = 'Não existem membros registrados.';
     static NO_EVENTS = 'Não existem eventos cadastrados.';
     static NO_EVENT_TYPES = 'Não existem tipos de eventos cadastrados.';
     static NO_EVENTS_AVAILABLE = 'Nenhum evento disponível. Adicione eventos primeiro.';
+
+    /**
+     * Mensagens de Sucesso
+     * Utilizadas para confirmar operações bem-sucedidas
+     */
     static SUCCESS_CREATE = 'Registro criado com sucesso!';
     static SUCCESS_UPDATE = 'Registro atualizado com sucesso!';
     static SUCCESS_DELETE = 'Registro excluído com sucesso!';
@@ -74,6 +61,7 @@ class MessageEvents {
      * Exibe uma mensagem de erro
      * @static
      * @param {string} message - Mensagem de erro a ser exibida
+     * @param {HTMLElement} [element] - Elemento onde a mensagem será exibida
      */
     static showError(message, element) {
         MessageEvents.removeExistingMessages();
@@ -81,17 +69,15 @@ class MessageEvents {
         const errorContainer = document.createElement('div');
         errorContainer.classList.add('error-message');
         errorContainer.id = 'error-message';
-        const messageText = document.createTextNode(message);
-        errorContainer.appendChild(messageText);
+        errorContainer.textContent = message;
         
-        document.body.appendChild(errorContainer);
+        if (element) {
+            element.appendChild(errorContainer);
+        } else {
+            document.body.appendChild(errorContainer);
+        }
 
-        setTimeout(() => {
-            const container = document.getElementById('error-message');
-            if (container) {
-                container.remove();
-            }
-        }, 3000);
+        setTimeout(() => errorContainer.remove(), 3000);
     }
 
     /**
@@ -105,21 +91,15 @@ class MessageEvents {
         const successContainer = document.createElement('div');
         successContainer.classList.add('success-message');
         successContainer.id = 'success-message';
-        const messageText = document.createTextNode(message);
-        successContainer.appendChild(messageText);
+        successContainer.textContent = message;
         
         document.body.appendChild(successContainer);
 
-        setTimeout(() => {
-            const container = document.getElementById('success-message');
-            if (container) {
-                container.remove();
-            }
-        }, 3000);
+        setTimeout(() => successContainer.remove(), 3000);
     }
 
     /**
-     * Remove todas as mensagens existentes na tela
+     * Remove mensagens existentes na tela
      * @static
      * @private
      */
@@ -140,20 +120,17 @@ class MessageEvents {
         confirmContainer.id = 'confirm-dialog';
         
         const messageElement = document.createElement('p');
-        const messageText = document.createTextNode(message);
-        messageElement.appendChild(messageText);
+        messageElement.textContent = message;
         
         const buttonContainer = document.createElement('div');
         buttonContainer.classList.add('confirm-buttons');
         
         const confirmButton = document.createElement('button');
-        const confirmText = document.createTextNode('Confirmar');
-        confirmButton.appendChild(confirmText);
+        confirmButton.textContent = 'Confirmar';
         confirmButton.id = 'btn-confirm';
         
         const cancelButton = document.createElement('button');
-        const cancelText = document.createTextNode('Cancelar');
-        cancelButton.appendChild(cancelText);
+        cancelButton.textContent = 'Cancelar';
         cancelButton.id = 'btn-cancel';
         
         confirmButton.addEventListener('click', () => {

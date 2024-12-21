@@ -105,6 +105,7 @@ class EventManager {
         if (index === -1) {
             throw new Error(MessageEvents.EVENT_NOT_FOUND);
         }
+        
         this.events.splice(index, 1);
         return true;
     }
@@ -196,7 +197,7 @@ class EventManager {
     createEventItem(event) {
         const item = document.createElement('div');
         item.classList.add('event-item');
-        item.id = `event-${event.id}`;
+        item.dataset.eventId = event.id;
 
         const eventType = eventTypeManager.getEventType(event.typeId);
         const formattedDate = event.date.toISOString().split('T')[0];
@@ -400,8 +401,14 @@ class EventManager {
         
         try {
             const eventId = parseInt(selected.dataset.eventId);
-            this.deleteEvent(eventId);
-            this.showEvents();
+            console.log("Tentando excluir evento ID:", eventId);
+
+            Validacao.validarExclusaoEvento(eventId, membersModule.eventSubscriptions);
+            
+            if (this.deleteEvent(eventId)) {
+                MessageEvents.showSuccess(MessageEvents.SUCCESS_DELETE);
+                this.showEvents();
+            }
         } catch (error) {
             MessageEvents.showError(error.message, document.querySelector(".main-content"));
         }

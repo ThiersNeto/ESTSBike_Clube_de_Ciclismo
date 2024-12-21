@@ -101,8 +101,7 @@ class Members {
         const buttons = [
             { text: 'Criar', id: 'btn-member-create', action: () => this.showMemberForm() },
             { text: 'Editar', id: 'btn-member-edit', action: () => this.handleEdit() },
-            { text: 'Apagar', id: 'btn-member-delete', action: () => this.handleDelete() },
-            { text: 'Inscrever em Evento', id: 'btn-member-subscribe', action: () => this.handleEventRegistration() }
+            { text: 'Apagar', id: 'btn-member-delete', action: () => this.handleDelete() }
         ];
 
         buttons.forEach(({ text, id, action }) => {
@@ -277,7 +276,7 @@ class Members {
             // Cabeçalho da tabela de eventos
             const tableHeader = document.createElement('div');
             tableHeader.classList.add('events-header');
-            ['Id', 'Tipo', 'Descritivo', 'Data'].forEach(text => {
+            ['Id', 'Tipo', 'Descritivo', 'Data', 'Ação'].forEach(text => {
                 const cell = document.createElement('div');
                 cell.textContent = text;
                 cell.classList.add('header-cell');
@@ -285,73 +284,84 @@ class Members {
             });
             eventsListContainer.appendChild(tableHeader);
 
-            // Verifica se o membro tem tipos de eventos preferidos
-            if (selectedMember.preferredEvents.length === 0) {
+            // Filtra eventos pelos tipos preferidos
+            const availableEvents = eventManager.events.filter(event => {
+                const eventDate = new Date(event.date);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                return eventDate >= today && selectedMember.preferredEvents.includes(event.typeId);
+            });
+
+            if (availableEvents.length === 0) {
                 const emptyMessage = document.createElement('p');
-                emptyMessage.textContent = 'Não há Eventos - Este membro não tem tipos de eventos preferidos';
+                emptyMessage.textContent = 'Não há eventos disponíveis para os tipos preferidos';
                 emptyMessage.classList.add('empty-message');
                 eventsListContainer.appendChild(emptyMessage);
             } else {
-                // Filtra eventos pelos tipos preferidos
-                const availableEvents = eventManager.events.filter(event => {
-                    // Verifica se o evento é futuro
-                    const eventDate = new Date(event.date);
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
+                const eventsList = document.createElement('div');
+                eventsList.classList.add('events-grid');
+
+                availableEvents.forEach(event => {
+                    const eventRow = document.createElement('div');
+                    eventRow.classList.add('event-row');
+
+                    const eventType = eventTypeManager.getEventType(event.typeId);
                     
-                    // Verifica se o evento é do tipo preferido E é uma data futura
-                    return eventDate >= today && selectedMember.preferredEvents.includes(event.typeId);
-                });
+                    // Células de informação
+                    const cells = [
+                        { text: event.id, width: '60px' },
+                        { text: eventType.description, width: '100px' },
+                        { text: event.description, width: 'auto' },
+                        { text: new Date(event.date).toLocaleDateString(), width: '100px' }
+                    ];
 
-                if (availableEvents.length === 0) {
-                    const emptyMessage = document.createElement('p');
-                    emptyMessage.textContent = 'Não há Eventos futuros do seu Tipo de Evento Preferido';
-                    emptyMessage.classList.add('empty-message');
-                    eventsListContainer.appendChild(emptyMessage);
-                } else {
-                    availableEvents.forEach(event => {
-                        const eventRow = document.createElement('div');
-                        eventRow.classList.add('event-row');
+                    cells.forEach(({text, width}) => {
+                        const cell = document.createElement('div');
+                        cell.textContent = text;
+                        cell.classList.add('item-cell');
+                        cell.style.width = width;
+                        eventRow.appendChild(cell);
+                    });
 
-                        const eventType = eventTypeManager.getEventType(event.typeId);
-                        const cells = [
-                            event.id,
-                            eventType.description,
-                            event.description,
-                            event.date.toISOString().split('T')[0]
-                        ];
+                    // Botão de ação
+                    const actionCell = document.createElement('div');
+                    actionCell.classList.add('item-cell', 'action-cell');
 
-                        cells.forEach(text => {
-                            const cell = document.createElement('div');
-                            cell.textContent = text;
-                            cell.classList.add('item-cell');
-                            eventRow.appendChild(cell);
-                        });
+                    const isSubscribed = this.eventSubscriptions.some(
+                        sub => sub.memberId === selectedMember.id && sub.eventId === event.id
+                    );
 
-                        // Adiciona o botão de inscrição
-                        const inscricaoCell = document.createElement('div');
-                        inscricaoCell.classList.add('item-cell');
+                    const actionButton = document.createElement('button');
+                    if (isSubscribed) {
+                        actionButton.textContent = 'Cancelar';
+                        actionButton.classList.add('action-button', 'cancel-button');
+                    } else {
+                        actionButton.textContent = 'Inscrever';
+                        actionButton.classList.add('action-button', 'subscribe-button');
+                    }
 
-                        const inscricaoButton = document.createElement('button');
-                        inscricaoButton.textContent = 'Inscrever';
-                        inscricaoButton.classList.add('inscricao-button');
-                        inscricaoButton.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            try {
+                    actionButton.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        try {
+                            if (isSubscribed) {
+                                this.cancelEventSubscription(selectedMember.id, event.id);
+                                MessageEvents.showSuccess('Inscrição cancelada com sucesso!');
+                            } else {
                                 this.subscribeToEvent(selectedMember.id, event.id);
                                 MessageEvents.showSuccess('Inscrito com sucesso no evento!');
-                                this.showMemberForm(selectedMember);
-                            } catch (error) {
-                                MessageEvents.showError(error.message, document.querySelector(".main-content"));
                             }
-                        });
-
-                        inscricaoCell.appendChild(inscricaoButton);
-                        eventRow.appendChild(inscricaoCell);
-
-                        eventsListContainer.appendChild(eventRow);
+                            this.showMemberForm(selectedMember);
+                        } catch (error) {
+                            MessageEvents.showError(error.message, document.querySelector(".main-content"));
+                        }
                     });
-                }
+
+                    actionCell.appendChild(actionButton);
+                    eventRow.appendChild(actionCell);
+                    eventsList.appendChild(eventRow);
+                });
+
+                eventsListContainer.appendChild(eventsList);
             }
 
             rightColumn.appendChild(eventsListLabel);
@@ -431,6 +441,7 @@ class Members {
         const item = document.createElement('div');
         item.classList.add('member-item');
         item.id = `member-${member.id}`;
+        item.dataset.memberId = member.id;
 
         const cells = [member.id, member.name];
         cells.forEach(text => {
@@ -559,13 +570,50 @@ class Members {
             modal.remove();
         });
 
-        cancelButton.addEventListener('click', () => modal.remove());
+        cancelButton.addEventListener('click', () => {
+            this.handleCancelSubscription(member.id, parseInt(eventSelect.value));
+        });
 
         buttonContainer.appendChild(saveButton);
         buttonContainer.appendChild(cancelButton);
         modal.appendChild(buttonContainer);
 
         document.body.appendChild(modal);
+    }
+
+    /**
+     * Cancela a inscrição de um membro em um evento
+     * @param {number} memberId - ID do membro
+     * @param {number} eventId - ID do evento
+     * @returns {boolean} - true se cancelado com sucesso, false caso contrário
+     */
+    cancelEventSubscription(memberId, eventId) {
+        const index = this.eventSubscriptions.findIndex(
+            subscription => subscription.memberId === memberId && 
+                          subscription.eventId === eventId
+        );
+
+        if (index === -1) {
+            throw new Error('Inscrição não encontrada');
+        }
+
+        this.eventSubscriptions.splice(index, 1);
+        MessageEvents.showSuccess('Inscrição cancelada com sucesso');
+        return true;
+    }
+
+    /**
+     * Manipula o cancelamento de inscrição via interface
+     * @param {number} memberId - ID do membro
+     * @param {number} eventId - ID do evento
+     */
+    handleCancelSubscription(memberId, eventId) {
+        try {
+            this.cancelEventSubscription(memberId, eventId);
+            this.showMemberForm(this.members.find(m => m.id === memberId));
+        } catch (error) {
+            MessageEvents.showError(error.message);
+        }
     }
 }
 
