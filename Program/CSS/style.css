@@ -772,42 +772,6 @@ select.member-input {
 }
 
 /* responsividade */
-@media (min-width: 1400px) {
-    .main-content {
-        max-width: 1320px;
-        margin: 0 auto;
-    }
-
-    .form-container {
-        max-width: 1280px;
-    }
-
-    .form-columns {
-        grid-template-columns: 350px 1fr;
-        gap: 3rem;
-    }
-
-    .events-header,
-    .event-row {
-        grid-template-columns: 60px 120px minmax(500px, 1fr) 140px 120px;
-    }
-
-    .title {
-        font-size: 2rem;
-    }
-
-    .main-content h2 {
-        font-size: 1.8rem;
-    }
-
-    .member-input,
-    .event-input,
-    .event-type-input {
-        font-size: 1.1rem;
-    }
-}
-
-/* responsividade */
 @media (max-width: 1200px) {
     .main-content {
         padding: 0 1rem;
