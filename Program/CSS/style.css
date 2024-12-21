@@ -249,42 +249,6 @@ body {
     width: 100%;
 }
 
-/* Responsividade */
-@media (max-width: 768px) {
-    .nav {
-        flex-wrap: wrap;
-    }
-
-    .nav-item {
-        flex: 1 1 auto;
-        text-align: center;
-    }
-
-    .button-container {
-        flex-direction: column;
-    }
-
-    .action-button {
-        width: 100%;
-    }
-
-    .member-item,
-    .event-item,
-    .event-type-item {
-        font-size: 0.875rem;
-    }
-
-    .title {
-        padding: 1.5rem 1rem;
-        text-align: center;
-        justify-content: center;
-    }
-
-    .nav {
-        padding-left: 0;
-    }
-}
-
 /* Ajustes para o layout de duas colunas */
 .form-columns {
     display: grid;
@@ -392,40 +356,6 @@ body {
     font-weight: 500;
     color: var(--text-color);
     margin-bottom: 1rem;
-}
-
-/* Responsividade */
-@media (max-width: 1024px) {
-    .form-columns {
-        grid-template-columns: 250px 1fr;
-        gap: 1.5rem;
-    }
-}
-
-@media (max-width: 768px) {
-    .form-columns {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-    }
-
-    .form-container {
-        padding: 1.5rem;
-    }
-
-    .events-header,
-    .event-row {
-        grid-template-columns: 50px 100px 1fr 100px 90px;
-        font-size: 0.875rem;
-        padding: 0.75rem;
-    }
-
-    .button-container {
-        flex-direction: column;
-    }
-
-    .action-button {
-        width: 100%;
-    }
 }
 
 /* Layout do formulário de membros */
@@ -572,31 +502,6 @@ body {
 
 .action-button:hover {
     opacity: 0.9;
-}
-
-/* Responsividade */
-@media (max-width: 1024px) {
-    .form-columns {
-        grid-template-columns: 250px 1fr;
-        gap: 1.5rem;
-    }
-}
-
-@media (max-width: 768px) {
-    .form-columns {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
-
-    .events-header,
-    .event-row {
-        grid-template-columns: 50px 80px minmax(150px, 1fr) 100px 80px;
-        font-size: 0.875rem;
-    }
-
-    .item-cell {
-        padding: 0 0.25rem;
-    }
 }
 
 /* Ajuste na tabela para acomodar o botão */
@@ -794,106 +699,6 @@ select.member-input {
     background-color: #2c3e6f;
 }
 
-@media (max-width: 768px) {
-
-    .main-content {
-        padding: 10px;
-    }
-
-    .title {
-        font-size: 20px;
-        padding: 10px 15px;
-    }
-
-    .nav {
-        flex-direction: column;
-    }
-
-    .nav-item {
-        border-right: none;
-        border-bottom: 1px solid var(--border-color);
-        text-align: center;
-    }
-
-    .events-list,
-    .event-types-list,
-    .members-list {
-        width: 100%;
-        margin: 10px 0;
-    }
-
-    .events-header,
-    .event-types-header,
-    .members-header {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .event-item,
-    .event-type-item,
-    .member-item {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .form-container {
-        gap: 10px;
-        width: 100%;
-    }
-
-    .event-input,
-    .event-type-input,
-    .member-input {
-        max-width: 100%;
-    }
-
-    .button-container {
-        flex-direction: column;
-        gap: 5px;
-    }
-
-    .action-button {
-        width: 100%;
-    }
-}
-
-@media (max-width: 480px) {
-
-    .main-content {
-        padding: 5px;
-    }
-
-    .title {
-        font-size: 18px;
-        padding: 8px 10px;
-    }
-
-    .nav-item {
-        padding: 8px;
-    }
-
-    .events-header,
-    .event-types-header,
-    .members-header,
-    .event-item,
-    .event-type-item,
-    .member-item {
-        grid-template-columns: 1fr;
-        text-align: center;
-    }
-
-    .event-item.selected,
-    .member-item.selected {
-        border-left: none;
-    }
-
-    .events-container {
-        grid-template-columns: 1fr;
-    }
-
-    .checkbox-wrapper {
-        justify-content: center;
-    }
-}
-
 /* Estilos para a lista de eventos */
 .events-grid {
     border: 1px solid var(--border-color);
@@ -966,3 +771,190 @@ select.member-input {
     background-color: #28a745;
 }
 
+/* responsividade */
+@media (min-width: 1400px) {
+    .main-content {
+        max-width: 1320px;
+        margin: 0 auto;
+    }
+
+    .form-container {
+        max-width: 1280px;
+    }
+
+    .form-columns {
+        grid-template-columns: 350px 1fr;
+        gap: 3rem;
+    }
+
+    .events-header,
+    .event-row {
+        grid-template-columns: 60px 120px minmax(500px, 1fr) 140px 120px;
+    }
+
+    .title {
+        font-size: 2rem;
+    }
+
+    .main-content h2 {
+        font-size: 1.8rem;
+    }
+
+    .member-input,
+    .event-input,
+    .event-type-input {
+        font-size: 1.1rem;
+    }
+}
+
+/* responsividade */
+@media (max-width: 1200px) {
+    .main-content {
+        padding: 0 1rem;
+    }
+
+    .form-container {
+        padding: 2rem 1.5rem;
+    }
+
+    .form-columns {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
+
+/* responsividade */
+@media (max-width: 992px) {
+    .events-header,
+    .event-row {
+        grid-template-columns: 50px 80px minmax(150px, 1fr) 100px 90px;
+    }
+
+    .item-cell {
+        font-size: 0.9rem;
+    }
+}
+
+/* responsividade */
+@media (max-width: 768px) {
+    .title {
+        font-size: 1.1rem;
+        padding: 1rem 1.5rem;
+    }
+
+    .nav {
+        flex-wrap: wrap;
+        padding-left: 0;
+    }
+
+    .nav-item {
+        flex: 1 0 50%;
+        text-align: center;
+        padding: 0.75rem 1rem;
+    }
+
+    .main-content h2 {
+        font-size: 1.3rem;
+    }
+
+    .members-list,
+    .events-list,
+    .event-types-list {
+        width: 100%;
+    }
+
+    .members-header,
+    .member-item,
+    .events-header,
+    .event-item,
+    .event-types-header,
+    .event-type-item {
+        grid-template-columns: 1fr;
+    }
+
+    .events-header,
+    .event-row {
+        grid-template-columns: 1fr;
+    }
+
+    .item-cell {
+        padding: 0.5rem;
+        text-align: left;
+    }
+
+    .button-container {
+        flex-direction: column;
+    }
+
+    .action-button {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-container {
+        padding: 1.5rem 1rem;
+    }
+
+    .events-checkbox-container {
+        padding: 1rem 0.5rem;
+    }
+
+    .checkbox-container {
+        padding: 0.25rem;
+    }
+}
+
+/* responsividade */
+@media (max-width: 576px) {
+    .title {
+        font-size: 1rem;
+        padding: 0.75rem 1rem;
+    }
+
+    .nav-item {
+        flex: 1 0 100%;
+    }
+
+    .main-content h2 {
+        font-size: 1.2rem;
+    }
+
+    .member-input,
+    .event-input,
+    .event-type-input {
+        font-size: 0.9rem;
+    }
+
+    .events-container {
+        grid-template-columns: 1fr;
+    }
+
+    .event-modal {
+        width: 90%;
+        max-width: 300px;
+    }
+}
+
+/* responsividade */
+@media (max-width: 400px) {
+    .title {
+        font-size: 0.9rem;
+    }
+
+    .nav-item {
+        padding: 0.5rem;
+    }
+
+    .main-content {
+        padding: 0 0.5rem;
+    }
+
+    .form-container {
+        padding: 1rem 0.5rem;
+    }
+
+    .action-button {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+    }
+}
