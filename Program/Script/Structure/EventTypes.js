@@ -6,6 +6,8 @@
  * @param {number} id - Identificador único do tipo de evento
  * @param {string} description - Descrição do tipo de evento
  * @throws {Error} Se a descrição estiver vazia ou não for string
+ * @author Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+ * @author André Rocha - 202300185 - 202300185@estudantes.ips.pt
  */
 class EventType {
     constructor(id, description) {

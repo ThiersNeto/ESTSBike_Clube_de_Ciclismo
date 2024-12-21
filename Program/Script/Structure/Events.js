@@ -10,6 +10,8 @@
  * @param {Date} date - Data do evento
  * @throws {Error} Se a descrição estiver vazia ou não for string
  * @throws {Error} Se a data não for um objeto Date válido
+ * @author Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+ * @author André Rocha - 202300185 - 202300185@estudantes.ips.pt
  */
 class Event {
     constructor(id, typeId, description, date) {

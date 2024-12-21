@@ -2,6 +2,8 @@
 /**
  * Classe responsável pelo gerenciamento de mensagens do sistema
  * @class MessageEvents
+ * @author Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+ * @author André Rocha - 202300185 - 202300185@estudantes.ips.pt
  */
 class MessageEvents {
     /**

@@ -7,6 +7,8 @@
      * @param {string} name - Nome do membro
      * @param {number[]} preferredEvents - Array com IDs dos tipos de eventos preferidos
      * @throws {Error} Se o nome estiver vazio ou não for string
+     * @author Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+     * @author André Rocha - 202300185 - 202300185@estudantes.ips.pt
      */
 class Member {
     constructor(id, name, preferredEvents = []) {

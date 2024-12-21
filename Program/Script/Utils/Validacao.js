@@ -1,3 +1,7 @@
+/*
+* @author Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+* @author André Rocha - 202300185 - 202300185@estudantes.ips.pt
+ */
 class Validacao {
     /**
      * Verifica se um membro pode ser excluído
