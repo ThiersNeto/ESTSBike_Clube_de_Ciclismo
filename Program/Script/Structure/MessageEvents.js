@@ -1,8 +1,3 @@
-/**
- * @fileoverview Gerenciamento de mensagens e notificações do sistema
- * @author Thiers Neto - 201902549
- * @author André Rocha - 202300185
- */
 
 /**
  * Classe responsável pelo gerenciamento de mensagens do sistema
@@ -12,9 +7,7 @@ class MessageEvents {
     /**
      * Mensagens de Seleção
      * Utilizadas para orientar o usuário sobre seleções necessárias
-     */
-    static SELECT_MEMBER_EDIT = 'Selecione um membro para editar.';
-    static SELECT_MEMBER_DELETE = 'Selecione um membro para apagar.';
+     */;
     static SELECT_EVENT_EDIT = 'Selecione um evento para editar.';
     static SELECT_EVENT_DELETE = 'Selecione um evento para apagar.';
     static SELECT_EVENT_TYPE_EDIT = 'Selecione um tipo de evento para editar';
@@ -47,7 +40,6 @@ class MessageEvents {
     static NO_MEMBERS = 'Não existem membros registrados.';
     static NO_EVENTS = 'Não existem eventos cadastrados.';
     static NO_EVENT_TYPES = 'Não existem tipos de eventos cadastrados.';
-    static NO_EVENTS_AVAILABLE = 'Nenhum evento disponível. Adicione eventos primeiro.';
 
     /**
      * Mensagens de Sucesso

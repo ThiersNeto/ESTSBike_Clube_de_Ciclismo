@@ -1,8 +1,3 @@
-/**
- * @fileoverview Gerenciamento de membros do clube de ciclismo
- * @author Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
- * @author André Rocha - 202300185 - 202300185@estudantes.ips.pt
- */
 
     /**
      * Cria uma nova instância de membro
@@ -13,7 +8,7 @@
      * @param {number[]} preferredEvents - Array com IDs dos tipos de eventos preferidos
      * @throws {Error} Se o nome estiver vazio ou não for string
      */
-    class Member {
+class Member {
     constructor(id, name, preferredEvents = []) {
         if (!name || typeof name !== 'string') {
             throw new Error(MessageEvents.REQUIRED_NAME);

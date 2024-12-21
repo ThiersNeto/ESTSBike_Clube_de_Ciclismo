@@ -1,8 +1,3 @@
-/**
- * @fileoverview Gerenciamento de tipos de eventos do clube de ciclismo
- * @author Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
- * @author André Rocha - 202300185 - 202300185@estudantes.ips.pt
- */
 
 /**
  * Classe que representa um tipo de evento individual
