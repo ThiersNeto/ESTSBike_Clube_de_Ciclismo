@@ -1,0 +1,148 @@
+/* Breakpoint para telas grandes */
+@media (max-width: 1200px) {
+    .main-content {
+        padding: 0 1rem;
+    }
+
+    .form-container {
+        padding: 2rem 1.5rem;
+    }
+
+    .form-columns {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
+
+/* Breakpoint para tablets */
+@media (max-width: 992px) {
+    .events-header,
+    .event-row {
+        grid-template-columns: 50px 80px minmax(150px, 1fr) 100px 90px;
+    }
+
+    .item-cell {
+        font-size: 0.9rem;
+    }
+}
+
+/* Breakpoint para tablets pequenos e celulares grandes */
+@media (max-width: 768px) {
+    .title {
+        font-size: 1.1rem;
+        padding: 1rem 1.5rem;
+    }
+
+    .nav {
+        flex-wrap: wrap;
+        padding-left: 0;
+    }
+
+    .nav-item {
+        flex: 1 0 50%;
+        text-align: center;
+        padding: 0.75rem 1rem;
+    }
+
+    .main-content h2 {
+        font-size: 1.3rem;
+    }
+
+    .members-list,
+    .events-list,
+    .event-types-list {
+        width: 100%;
+    }
+
+    .members-header,
+    .member-item,
+    .events-header,
+    .event-item,
+    .event-types-header,
+    .event-type-item,
+    .events-header,
+    .event-row {
+        grid-template-columns: 1fr;
+    }
+
+    .item-cell {
+        padding: 0.5rem;
+        text-align: left;
+    }
+
+    .button-container {
+        flex-direction: column;
+    }
+
+    .action-button {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-container {
+        padding: 1.5rem 1rem;
+    }
+
+    .events-checkbox-container {
+        padding: 1rem 0.5rem;
+    }
+
+    .checkbox-container {
+        padding: 0.25rem;
+    }
+}
+
+/* Breakpoint para celulares */
+@media (max-width: 576px) {
+    .title {
+        font-size: 1rem;
+        padding: 0.75rem 1rem;
+    }
+
+    .nav-item {
+        flex: 1 0 100%;
+    }
+
+    .main-content h2 {
+        font-size: 1.2rem;
+    }
+
+    .member-input,
+    .event-input,
+    .event-type-input {
+        font-size: 0.9rem;
+    }
+
+    .events-container {
+        grid-template-columns: 1fr;
+    }
+
+    .event-modal {
+        width: 90%;
+        max-width: 300px;
+    }
+}
+
+/* Breakpoint para celulares pequenos */
+@media (max-width: 400px) {
+    .title {
+        font-size: 0.9rem;
+    }
+
+    .nav-item {
+        padding: 0.5rem;
+    }
+
+    .main-content {
+        padding: 0 0.5rem;
+    }
+
+    .form-container {
+        padding: 1rem 0.5rem;
+    }
+
+    .action-button {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+    }
+}

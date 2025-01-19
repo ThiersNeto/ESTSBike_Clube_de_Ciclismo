@@ -1,7 +1,7 @@
 /* Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
    André Rocha - 202300185 - 202300185@estudantes.ips.pt */
 
-/* Variáveis Globais */
+/* Config Base */
 :root {
     --primary-color: #1B294B;
     --secondary-color: #f8f9fa;
@@ -27,7 +27,7 @@ body {
     line-height: 1.5;
 }
 
-/* Header */
+/* Cabeçalho */
 .title {
     background-color: var(--primary-color);
     color: white;
@@ -56,7 +56,7 @@ body {
     background-color: var(--hover-color);
 }
 
-/* Layout Principal */
+/* Layout */
 .main-content {
     max-width: 1400px;
     margin: 2rem auto 5rem;
@@ -137,84 +137,87 @@ body {
     border-left: 3px solid var(--primary-color);
 }
 
+/* Tabelas */
+.events-header,
+.event-row {
+    display: grid;
+    grid-template-columns: 50px 100px minmax(200px, 1fr) 120px 100px;
+    padding: 0.75rem;
+    align-items: center;
+}
+
+.events-header {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
+}
+
+.event-row {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.event-row:nth-child(even) {
+    background-color: var(--secondary-color);
+}
+
+.event-row:hover {
+    background-color: var(--hover-color);
+}
+
+.item-cell {
+    padding: 0 0.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 /* Formulários */
 .form-container {
-    max-width: 1400px;
-    width: 95%;
-    margin: 0 auto;
     background: white;
-    padding: 2.5rem;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
     border: 1px solid var(--border-color);
+    border-radius: 4px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .form-label {
-    display: block;
-    margin-bottom: 0.5rem;
     color: var(--text-color);
-}
-
-.member-input,
-.event-input,
-.event-type-input {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
+    font-weight: 500;
     margin-bottom: 1rem;
 }
 
-.member-input:focus,
-.event-input:focus,
-.event-type-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-}
-
-/* Checkboxes */
-.events-checkbox-container {
-    background: var(--secondary-color);
+.member-input {
+    width: 100%;
+    padding: 0.75rem;
     border: 1px solid var(--border-color);
     border-radius: 4px;
-    padding: 1.5rem;
-}
-
-.checkbox-container {
-    padding: 0.5rem;
-    margin: 0.25rem 0;
-    display: flex;
-    align-items: center;
-    transition: background-color 0.2s;
-}
-
-.checkbox-container:hover {
-    background-color: white;
-    border-radius: 4px;
-}
-
-.event-checkbox {
-    margin-right: 0.75rem;
-    width: 16px;
-    height: 16px;
+    font-size: 1rem;
 }
 
 /* Botões */
 .button-container {
-    margin-top: 1rem;
     display: flex;
     gap: 0.5rem;
-    justify-content: flex-start;
+    justify-content: center;
+    margin: 1rem auto;
     max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
 }
 
-.action-button {
-    padding: 0.75rem 1.5rem;
-    min-width: 120px;
-    font-size: 1rem;
-    border-radius: 6px;
+.action-button,
+.inscricao-button {
+    padding: 0.5rem 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.action-button:hover,
+.inscricao-button:hover {
+    opacity: 0.9;
 }
 
 /* Mensagens */
@@ -238,7 +241,7 @@ body {
     background-color: var(--success-color);
 }
 
-/* Footer */
+/* Rodapé */
 .footer {
     background-color: var(--primary-color);
     color: white;
@@ -270,67 +273,6 @@ body {
     margin-top: 10px;
 }
 
-.events-header {
-    display: grid;
-    grid-template-columns: 60px 100px 1fr 100px 100px;
-    background-color: var(--primary-color);
-    color: white;
-    padding: 8px;
-    font-weight: bold;
-    align-items: center;
-}
-
-.event-row {
-    display: grid;
-    grid-template-columns: 60px 120px minmax(400px, 1fr) 120px 100px;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--border-color);
-    align-items: center;
-}
-
-.event-row:nth-child(even) {
-    background-color: #f8f9fa;
-}
-
-.item-cell {
-    padding: 0.5rem 1rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    line-height: 1.4;
-}
-
-.action-cell {
-    text-align: center;
-}
-
-.action-button {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9em;
-    width: 80px;
-}
-
-.subscribe-button {
-    background-color: var(--primary-color);
-    color: white;
-}
-
-.cancel-button {
-    background-color: var(--error-color);
-    color: white;
-}
-
-.event-row:last-child {
-    border-bottom: none;
-}
-
-.item-cell {
-    padding: 0 0.5rem;
-}
-
 /* Botão de inscrição */
 .inscricao-button {
     padding: 0.5rem 1rem;
@@ -340,45 +282,8 @@ body {
     border-radius: 4px;
     cursor: pointer;
     font-size: 0.875rem;
-    transition: all 0.2s;
     width: 90px;
     text-align: center;
-}
-
-.inscricao-button:hover {
-    background-color: #2c3e50;
-    transform: translateY(-1px);
-}
-
-/* Títulos das seções */
-.form-label {
-    font-size: 1.1rem;
-    font-weight: 500;
-    color: var(--text-color);
-    margin-bottom: 1rem;
-}
-
-/* Layout do formulário de membros */
-.form-container {
-    background: white;
-    padding: 2rem;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-/* Seção do nome */
-.name-section {
-    margin-bottom: 2rem;
-}
-
-.member-input {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    font-size: 1rem;
 }
 
 /* Layout das colunas */
@@ -414,24 +319,6 @@ body {
     overflow: hidden;
 }
 
-.events-header {
-    display: grid;
-    grid-template-columns: 50px 100px minmax(200px, 1fr) 120px 100px;
-    background-color: var(--primary-color);
-    color: white;
-    padding: 0.75rem;
-    font-weight: 500;
-    align-items: center;
-}
-
-.event-row {
-    display: grid;
-    grid-template-columns: 50px 100px minmax(200px, 1fr) 120px 100px;
-    padding: 0.75rem;
-    border-bottom: 1px solid var(--border-color);
-    align-items: center;
-}
-
 .event-row:nth-child(even) {
     background-color: var(--secondary-color);
 }
@@ -461,26 +348,6 @@ body {
     transition: all 0.2s;
 }
 
-.inscricao-button:hover {
-    opacity: 0.9;
-}
-
-.inscricao-button-cancel {
-    background-color: var(--error-color) !important;
-}
-
-.inscricao-button-cancel:hover {
-    background-color: #dc3545 !important;
-    opacity: 0.9;
-}
-
-/* Títulos das seções */
-.form-label {
-    color: var(--text-color);
-    font-weight: 500;
-    margin-bottom: 1rem;
-}
-
 /* Botões de ação */
 .button-container {
     display: flex;
@@ -498,427 +365,4 @@ body {
     cursor: pointer;
     min-width: 100px;
     transition: opacity 0.2s;
-}
-
-.action-button:hover {
-    opacity: 0.9;
-}
-
-/* Ajuste na tabela para acomodar o botão */
-.events-header,
-.event-row {
-    grid-template-columns: 50px 100px minmax(200px, 1fr) 120px 100px;
-}
-
-.item-cell {
-    padding: 0 0.5rem;
-    display: flex;
-    align-items: center;
-}
-
-.item-cell:last-child {
-    justify-content: center;
-}
-
-/* Ajuste na tabela de eventos */
-.events-header,
-.event-row {
-    grid-template-columns: 50px 100px minmax(200px, 1fr) 120px 100px;
-}
-
-.inscricao-button {
-    padding: 0.5rem 1rem;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.875rem;
-    width: 90px;
-    text-align: center;
-    transition: all 0.2s;
-}
-
-.inscricao-button:hover {
-    background-color: #2c3e50;
-    transform: translateY(-1px);
-}
-
-.item-cell {
-    padding: 0 0.5rem;
-    display: flex;
-    align-items: center;
-}
-
-.item-cell:last-child {
-    justify-content: center;
-}
-
-.empty-message {
-    text-align: center;
-    padding: 20px;
-    color: #666;
-    font-style: italic;
-    background-color: #f8f9fa;
-    border-radius: 4px;
-    margin: 10px 0;
-}
-
-/* Rodapé */
-.footer {
-    background-color: var(--primary-color);
-    color: white;
-    padding: 10px 20px;
-    text-align: center;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    font-size: 14px;
-}
-
-/* Lista de Membros */
-.members-list {
-    margin: 20px auto;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    overflow: hidden;
-    background-color: white;
-    max-width: 800px;
-    width: 95%;
-}
-
-.members-header {
-    display: grid;
-    grid-template-columns: 60px 1fr;
-    background-color: var(--primary-color);
-    color: white;
-    font-weight: bold;
-}
-
-.member-item {
-    display: grid;
-    grid-template-columns: 60px 1fr;
-    border-bottom: 1px solid var(--secondary-color);
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.member-item:nth-child(odd) {
-    background-color: var(--secondary-color);
-}
-
-.member-item:hover {
-    background-color: var(--hover-color);
-}
-
-.member-item.selected {
-    background-color: var(--selected-color);
-    border-left: 4px solid var(--primary-color);
-}
-
-.member-input {
-    padding: 8px 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    width: 100%;
-    max-width: 300px;
-    font-size: 14px;
-}
-
-select.member-input {
-    background-color: white;
-    cursor: pointer;
-}
-
-.member-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(27, 41, 75, 0.1);
-}
-
-
-
-/* Alinhamento dos títulos das seções */
-.main-content h2 {
-    max-width: 800px;
-    width: 95%;
-    margin: 20px auto;
-    padding: 0;
-}
-
-.events-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    max-width: 800px;
-    width: 95%;
-    margin: 0 auto;
-}
-
-.checkbox-wrapper {
-    display: flex;
-    align-items: center;
-}
-
-.event-checkbox {
-    margin-right: 5px;
-}
-
-.event-modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #fff;
-    padding: 20px;
-    border: 1px solid #ccc;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    border-radius: 8px;
-    text-align: center;
-}
-
-.event-modal select {
-    display: block;
-    margin: 10px auto;
-    padding: 8px;
-    font-size: 16px;
-}
-
-.event-modal button {
-    margin: 5px;
-    padding: 10px 15px;
-    background-color: #1B294B;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.event-modal button:hover {
-    background-color: #2c3e6f;
-}
-
-/* Estilos para a lista de eventos */
-.events-grid {
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.event-row {
-    display: grid;
-    grid-template-columns: 60px 100px 1fr 120px 100px;
-    padding: 8px;
-    border-bottom: 1px solid var(--border-color);
-    align-items: center;
-}
-
-.event-row:last-child {
-    border-bottom: none;
-}
-
-.event-row:nth-child(even) {
-    background-color: var(--secondary-color);
-}
-
-.item-cell {
-    padding: 8px;
-}
-
-.id-cell {
-    text-align: center;
-}
-
-.date-cell {
-    text-align: center;
-}
-
-.action-cell {
-    text-align: center;
-}
-
-.subscribe-button {
-    padding: 6px 12px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9em;
-}
-
-.subscribe-button:hover {
-    background-color: #2c3e6f;
-}
-
-.events-header {
-    display: grid;
-    grid-template-columns: 60px 100px 1fr 120px 100px;
-    background-color: var(--primary-color);
-    color: white;
-    padding: 8px;
-    font-weight: bold;
-}
-
-.subscribe-button.subscribed {
-    background-color: #28a745;
-    cursor: default;
-    opacity: 0.8;
-}
-
-.subscribe-button.subscribed:hover {
-    background-color: #28a745;
-}
-
-/* responsividade */
-@media (max-width: 1200px) {
-    .main-content {
-        padding: 0 1rem;
-    }
-
-    .form-container {
-        padding: 2rem 1.5rem;
-    }
-
-    .form-columns {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
-}
-
-/* responsividade */
-@media (max-width: 992px) {
-    .events-header,
-    .event-row {
-        grid-template-columns: 50px 80px minmax(150px, 1fr) 100px 90px;
-    }
-
-    .item-cell {
-        font-size: 0.9rem;
-    }
-}
-
-/* responsividade */
-@media (max-width: 768px) {
-    .title {
-        font-size: 1.1rem;
-        padding: 1rem 1.5rem;
-    }
-
-    .nav {
-        flex-wrap: wrap;
-        padding-left: 0;
-    }
-
-    .nav-item {
-        flex: 1 0 50%;
-        text-align: center;
-        padding: 0.75rem 1rem;
-    }
-
-    .main-content h2 {
-        font-size: 1.3rem;
-    }
-
-    .members-list,
-    .events-list,
-    .event-types-list {
-        width: 100%;
-    }
-
-    .members-header,
-    .member-item,
-    .events-header,
-    .event-item,
-    .event-types-header,
-    .event-type-item {
-        grid-template-columns: 1fr;
-    }
-
-    .events-header,
-    .event-row {
-        grid-template-columns: 1fr;
-    }
-
-    .item-cell {
-        padding: 0.5rem;
-        text-align: left;
-    }
-
-    .button-container {
-        flex-direction: column;
-    }
-
-    .action-button {
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-
-    .form-container {
-        padding: 1.5rem 1rem;
-    }
-
-    .events-checkbox-container {
-        padding: 1rem 0.5rem;
-    }
-
-    .checkbox-container {
-        padding: 0.25rem;
-    }
-}
-
-/* responsividade */
-@media (max-width: 576px) {
-    .title {
-        font-size: 1rem;
-        padding: 0.75rem 1rem;
-    }
-
-    .nav-item {
-        flex: 1 0 100%;
-    }
-
-    .main-content h2 {
-        font-size: 1.2rem;
-    }
-
-    .member-input,
-    .event-input,
-    .event-type-input {
-        font-size: 0.9rem;
-    }
-
-    .events-container {
-        grid-template-columns: 1fr;
-    }
-
-    .event-modal {
-        width: 90%;
-        max-width: 300px;
-    }
-}
-
-/* responsividade */
-@media (max-width: 400px) {
-    .title {
-        font-size: 0.9rem;
-    }
-
-    .nav-item {
-        padding: 0.5rem;
-    }
-
-    .main-content {
-        padding: 0 0.5rem;
-    }
-
-    .form-container {
-        padding: 1rem 0.5rem;
-    }
-
-    .action-button {
-        font-size: 0.9rem;
-        padding: 0.5rem 1rem;
-    }
 }
