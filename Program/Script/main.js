@@ -39,7 +39,6 @@ function initializeMembers() {
     membersModule.addMember("Lucas Gomes", [3, 4]);
     membersModule.addMember("Eduardo Vemba", [5, 6]);
     membersModule.addMember("Saymon Gabriel", [2, 4]);
-    membersModule.addMember("Gabriel Piscante", [7]);
     membersModule.addMember("João Silva", [1, 2, 3, 4, 5, 6,]);
 }
 

@@ -1,15 +1,7 @@
-
-    /**
-     * Cria uma nova instância de membro
-     * @constructor
-     * @class Member
-     * @param {number} id - Identificador único do membro
-     * @param {string} name - Nome do membro
-     * @param {number[]} preferredEvents - Array com IDs dos tipos de eventos preferidos
-     * @throws {Error} Se o nome estiver vazio ou não for string
-     * @author Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
-     * @author André Rocha - 202300185 - 202300185@estudantes.ips.pt
-     */
+/**
+ * Classe que representa um membro individual
+ * @class Member
+ */
 class Member {
     constructor(id, name, preferredEvents = []) {
         if (!name || typeof name !== 'string') {
@@ -21,6 +13,10 @@ class Member {
     }
 }
 
+/**
+ * Classe responsável pelo gerenciamento de membros
+ * @class Members
+ */
 class Members {
     constructor() {
         this.members = [];
@@ -30,7 +26,7 @@ class Members {
         this.eventSubscriptions = [];
     }
 
-    // Adiciona um novo membro
+    // Métodos CRUD básicos
     addMember(name, preferredEvents) {
         this.currentId++;
         const member = new Member(this.currentId, name, preferredEvents);
@@ -38,106 +34,161 @@ class Members {
         return member;
     }
 
-    // Retorna todos os membros
     getAllMembers() {
         return [...this.members];
     }
 
-    // Atualiza um membro existente
     updateMember(id, name, preferredEvents) {
         const member = this.members.find(e => e.id === id);
-        if (!member) {
-            throw new Error(MessageEvents.MEMBER_NOT_FOUND);
-        }
+        if (!member) throw new Error(MessageEvents.MEMBER_NOT_FOUND);
         member.name = name;
         member.preferredEvents = preferredEvents;
         return true;
     }
 
-    // Remove um membro
     deleteMember(id) {
         const index = this.members.findIndex(e => e.id === id);
-        if (index === -1) {
-            throw new Error(MessageEvents.MEMBER_NOT_FOUND);
-        }
+        if (index === -1) throw new Error(MessageEvents.MEMBER_NOT_FOUND);
         this.members.splice(index, 1);
         return true;
     }
 
-    // Exibe a interface principal de membros
+    // Métodos de UI
     showMembers() {
-        const mainContent = document.querySelector('.main-content');
-        if (mainContent) {
-            mainContent.remove();
-        }
-
-        const content = document.createElement('div');
-        content.classList.add('main-content');
-
+        const content = UIHelper.clearAndGetMainContent();
         content.appendChild(this.createHeader());
         content.appendChild(this.createMembersList());
         content.appendChild(this.createButtonContainer());
-
-        const footer = document.querySelector('.footer');
-        document.body.insertBefore(content, footer);
     }
 
-    // Cria o cabeçalho da seção
     createHeader() {
-        const sectionTitle = document.createElement('h2');
-        const titleText = document.createTextNode('Membros');
-        sectionTitle.appendChild(titleText);
-        return sectionTitle;
+        return UIHelper.createSectionHeader('Membros');
     }
 
-    // Cria o container com os botões de ação
     createButtonContainer() {
-        const buttonContainer = document.createElement('div');
-        buttonContainer.classList.add('button-container');
-
-        const buttons = [
+        return UIHelper.createButtonContainer([
             { text: 'Criar', id: 'btn-member-create', action: () => this.showMemberForm() },
             { text: 'Editar', id: 'btn-member-edit', action: () => this.handleEdit() },
             { text: 'Apagar', id: 'btn-member-delete', action: () => this.handleDelete() }
-        ];
-
-        buttons.forEach(({ text, id, action }) => {
-            const button = document.createElement('button');
-            button.classList.add('action-button');
-            button.id = id;
-            const buttonText = document.createTextNode(text);
-            button.appendChild(buttonText);
-            button.addEventListener('click', action);
-            buttonContainer.appendChild(button);
-        });
-
-        return buttonContainer;
+        ]);
     }
 
-    // Gerencia o salvamento
-    handleSave(name, selectedEvents, selectedMember) {
-        if (!name) {
-            this.showError('Preencha todos os campos.');
+    createMembersList() {
+        const membersList = document.createElement('div');
+        membersList.classList.add('members-list');
+
+        membersList.appendChild(UIHelper.createTableHeader(['Id', 'Nome'], 'members-header'));
+
+        const members = this.getAllMembers();
+        if (members.length === 0) {
+            membersList.appendChild(UIHelper.createEmptyMessage(MessageEvents.NO_MEMBERS));
+        } else {
+            members.forEach(member => membersList.appendChild(this.createMemberItem(member)));
+        }
+
+        return membersList;
+    }
+
+    createMemberItem(member) {
+        const item = document.createElement('div');
+        item.classList.add('member-item');
+        item.dataset.memberId = member.id;
+
+        [member.id, member.name].forEach(text => {
+            const cell = document.createElement('div');
+            cell.classList.add('item-cell');
+            cell.textContent = text.toString();
+            item.appendChild(cell);
+        });
+
+        item.addEventListener('click', () => UIHelper.handleItemSelection(item, '.member-item'));
+        return item;
+    }
+
+    // Métodos de Formulário
+    showMemberForm(selectedMember = null) {
+        const content = UIHelper.clearAndGetMainContent();
+        
+        // Criar o container do formulário
+        const formContainer = document.createElement('div');
+        formContainer.classList.add('form-container');
+
+        // Adicionar título
+        const title = document.createElement('h2');
+        title.textContent = selectedMember ? 'Alterar Membro' : 'Novo Membro';
+        formContainer.appendChild(title);
+
+        // Criar e adicionar o conteúdo do formulário
+        const formContent = this.createForm(selectedMember);
+        formContainer.appendChild(formContent);
+
+        // Criar botões usando o UIHelper
+        const buttonContainer = UIHelper.createButtonContainer([
+            {
+                text: 'Gravar',
+                id: 'btn-save',
+                action: () => this.handleSave(selectedMember)
+            },
+            {
+                text: 'Cancelar',
+                id: 'btn-cancel',
+                action: () => this.showMembers()
+            }
+        ]);
+
+        formContainer.appendChild(buttonContainer);
+        content.appendChild(formContainer);
+    }
+
+    handleSave(selectedMember) {
+        const nameInput = document.querySelector('.member-input');
+        const checkboxes = document.querySelectorAll('.event-checkbox:checked');
+        const preferredEvents = Array.from(checkboxes).map(cb => parseInt(cb.value));
+
+        if (!nameInput.value.trim()) {
+            MessageEvents.showError('Nome é obrigatório');
             return;
         }
 
         try {
             if (selectedMember) {
-                this.updateMember(selectedMember.id, name, selectedEvents.map(Number));
+                this.updateMember(selectedMember.id, nameInput.value, preferredEvents);
+                MessageEvents.showSuccess(MessageEvents.SUCCESS_UPDATE);
             } else {
-                this.addMember(name, selectedEvents.map(Number));
+                this.addMember(nameInput.value, preferredEvents);
+                MessageEvents.showSuccess(MessageEvents.SUCCESS_CREATE);
             }
             this.showMembers();
         } catch (error) {
-            this.showError(error.message);
+            MessageEvents.showError(error.message);
         }
     }
 
-// Gerencia a ação de editar
+    // Métodos de Manipulação de Eventos
+    subscribeToEvent(memberId, eventId) {
+        if (this.eventSubscriptions.some(sub => sub.memberId === memberId && sub.eventId === eventId)) {
+            throw new Error('Membro já está inscrito neste evento');
+        }
+        this.eventSubscriptions.push({ memberId, eventId });
+        return true;
+    }
+
+    cancelEventSubscription(memberId, eventId) {
+        const index = this.eventSubscriptions.findIndex(
+            sub => sub.memberId === memberId && sub.eventId === eventId
+        );
+        if (index === -1) throw new Error('Inscrição não encontrada');
+        
+        this.eventSubscriptions.splice(index, 1);
+        MessageEvents.showSuccess('Inscrição cancelada com sucesso');
+        return true;
+    }
+
+    // Handlers
     handleEdit() {
         const selected = document.querySelector('.member-item.selected');
         if (!selected) {
-            this.showError('Selecione um membro para editar.');
+            MessageEvents.showError('Selecione um membro para editar.');
             return;
         }
         const memberId = parseInt(selected.dataset.memberId);
@@ -145,472 +196,195 @@ class Members {
         this.showMemberForm(member);
     }
 
-
-    // Gerencia a ação de deletar
     handleDelete() {
         const selected = document.querySelector('.member-item.selected');
         if (!selected) {
-            this.showError('Selecione um membro para apagar.');
+            MessageEvents.showError('Selecione um membro para apagar.');
             return;
         }
         
         try {
             const memberId = parseInt(selected.dataset.memberId);
+            Validacao.validarExclusaoMembro(memberId, this.eventSubscriptions);
             this.deleteMember(memberId);
+            MessageEvents.showSuccess(MessageEvents.SUCCESS_DELETE);
             this.showMembers();
-        } catch (error) {
-            this.showError(error.message);
-        }
-    }
-
-    // Exibe o formulário para criar/editar um membro
-    showMemberForm(selectedMember = null) {
-        const content = document.querySelector('.main-content');
-        while (content.firstChild) {
-            content.removeChild(content.firstChild);
-        }
-
-        const formTitle = document.createElement('h2');
-        formTitle.textContent = selectedMember ? 'Alterar Membro' : 'Novo Membro';
-        content.appendChild(formTitle);
-
-        const form = this.createForm(selectedMember);
-        content.appendChild(form);
-    }
-
-
-    // Cria o formulário para entrada de dados
-    createForm(selectedMember) {
-        const formContainer = document.createElement('div');
-        formContainer.classList.add('form-container');
-
-        // Nome (em cima)
-        const nameSection = document.createElement('div');
-        nameSection.classList.add('name-section');
-
-        const nameLabel = document.createElement('label');
-        nameLabel.textContent = 'Nome';
-        nameLabel.classList.add('form-label');
-
-        const nameInput = document.createElement('input');
-        nameInput.type = 'text';
-        nameInput.classList.add('member-input');
-        nameInput.placeholder = 'Nome';
-        if (selectedMember) {
-            nameInput.value = selectedMember.name;
-        }
-
-        nameSection.appendChild(nameLabel);
-        nameSection.appendChild(nameInput);
-
-        // Container para as duas colunas
-        const columnsContainer = document.createElement('div');
-        columnsContainer.classList.add('form-columns');
-
-        // Coluna da esquerda (Tipos de eventos preferidos)
-        const leftColumn = document.createElement('div');
-        leftColumn.classList.add('form-column');
-
-        const eventsLabel = document.createElement('p');
-        eventsLabel.textContent = 'Tipos de Eventos Preferidos';
-        eventsLabel.classList.add('form-label');
-
-        const eventsContainer = document.createElement('div');
-        eventsContainer.classList.add('events-checkbox-container');
-
-        // Busca todos os tipos de eventos disponíveis
-        const eventTypes = eventTypeManager.getAllEventTypes();
-        
-        if (eventTypes.length === 0) {
-            const noEventsMessage = document.createElement('p');
-            noEventsMessage.textContent = MessageEvents.NO_EVENT_TYPES;
-            noEventsMessage.classList.add('empty-message');
-            eventsContainer.appendChild(noEventsMessage);
-        } else {
-            const checkboxGrid = document.createElement('div');
-            checkboxGrid.classList.add('checkbox-grid');
-
-            eventTypes.forEach(eventType => {
-                const checkboxContainer = document.createElement('div');
-                checkboxContainer.classList.add('checkbox-container');
-                
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.value = eventType.id;
-                checkbox.id = `event-${eventType.id}`;
-                checkbox.classList.add('event-checkbox');
-                if (selectedMember && selectedMember.preferredEvents.includes(eventType.id)) {
-                    checkbox.checked = true;
-                }
-
-                const label = document.createElement('label');
-                label.htmlFor = `event-${eventType.id}`;
-                label.textContent = eventType.description;
-                
-                checkboxContainer.appendChild(checkbox);
-                checkboxContainer.appendChild(label);
-                checkboxGrid.appendChild(checkboxContainer);
-            });
-
-            eventsContainer.appendChild(checkboxGrid);
-        }
-
-        leftColumn.appendChild(eventsLabel);
-        leftColumn.appendChild(eventsContainer);
-
-        // Coluna da direita (Eventos disponíveis)
-        const rightColumn = document.createElement('div');
-        rightColumn.classList.add('form-column');
-
-        if (selectedMember) {
-            const eventsListLabel = document.createElement('p');
-            eventsListLabel.textContent = 'Eventos';
-            eventsListLabel.classList.add('form-label');
-
-            const eventsListContainer = document.createElement('div');
-            eventsListContainer.classList.add('events-list-container');
-
-            // Cabeçalho da tabela de eventos
-            const tableHeader = document.createElement('div');
-            tableHeader.classList.add('events-header');
-            ['Id', 'Tipo', 'Descritivo', 'Data', 'Ação'].forEach(text => {
-                const cell = document.createElement('div');
-                cell.textContent = text;
-                cell.classList.add('header-cell');
-                tableHeader.appendChild(cell);
-            });
-            eventsListContainer.appendChild(tableHeader);
-
-            // Filtra eventos pelos tipos preferidos
-            const availableEvents = eventManager.events.filter(event => {
-                const eventDate = new Date(event.date);
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                return eventDate >= today && selectedMember.preferredEvents.includes(event.typeId);
-            });
-
-            if (availableEvents.length === 0) {
-                const emptyMessage = document.createElement('p');
-                emptyMessage.textContent = 'Não há eventos disponíveis para os tipos preferidos';
-                emptyMessage.classList.add('empty-message');
-                eventsListContainer.appendChild(emptyMessage);
-            } else {
-                const eventsList = document.createElement('div');
-                eventsList.classList.add('events-grid');
-
-                availableEvents.forEach(event => {
-                    const eventRow = document.createElement('div');
-                    eventRow.classList.add('event-row');
-
-                    const eventType = eventTypeManager.getEventType(event.typeId);
-                    
-                    // Células de informação
-                    const cells = [
-                        { text: event.id, width: '60px' },
-                        { text: eventType.description, width: '100px' },
-                        { text: event.description, width: 'auto' },
-                        { text: new Date(event.date).toLocaleDateString(), width: '100px' }
-                    ];
-
-                    cells.forEach(({text, width}) => {
-                        const cell = document.createElement('div');
-                        cell.textContent = text;
-                        cell.classList.add('item-cell');
-                        cell.style.width = width;
-                        eventRow.appendChild(cell);
-                    });
-
-                    // Botão de ação
-                    const actionCell = document.createElement('div');
-                    actionCell.classList.add('item-cell', 'action-cell');
-
-                    const isSubscribed = this.eventSubscriptions.some(
-                        sub => sub.memberId === selectedMember.id && sub.eventId === event.id
-                    );
-
-                    const actionButton = document.createElement('button');
-                    if (isSubscribed) {
-                        actionButton.textContent = 'Cancelar';
-                        actionButton.classList.add('action-button', 'cancel-button');
-                    } else {
-                        actionButton.textContent = 'Inscrever';
-                        actionButton.classList.add('action-button', 'subscribe-button');
-                    }
-
-                    actionButton.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        try {
-                            if (isSubscribed) {
-                                this.cancelEventSubscription(selectedMember.id, event.id);
-                                MessageEvents.showSuccess('Inscrição cancelada com sucesso!');
-                            } else {
-                                this.subscribeToEvent(selectedMember.id, event.id);
-                                MessageEvents.showSuccess('Inscrito com sucesso no evento!');
-                            }
-                            this.showMemberForm(selectedMember);
-                        } catch (error) {
-                            MessageEvents.showError(error.message, document.querySelector(".main-content"));
-                        }
-                    });
-
-                    actionCell.appendChild(actionButton);
-                    eventRow.appendChild(actionCell);
-                    eventsList.appendChild(eventRow);
-                });
-
-                eventsListContainer.appendChild(eventsList);
-            }
-
-            rightColumn.appendChild(eventsListLabel);
-            rightColumn.appendChild(eventsListContainer);
-        }
-
-        columnsContainer.appendChild(leftColumn);
-        columnsContainer.appendChild(rightColumn);
-
-        // Botões
-        const buttonContainer = document.createElement('div');
-        buttonContainer.classList.add('button-container');
-
-        const saveButton = document.createElement('button');
-        saveButton.textContent = 'Gravar';
-        saveButton.classList.add('action-button');
-        saveButton.addEventListener('click', () => {
-            const selectedEvents = Array.from(document.querySelectorAll('.event-checkbox:checked'))
-                .map(checkbox => parseInt(checkbox.value));
-            this.handleSave(nameInput.value, selectedEvents, selectedMember);
-        });
-
-        const cancelButton = document.createElement('button');
-        cancelButton.textContent = 'Cancelar';
-        cancelButton.classList.add('action-button');
-        cancelButton.addEventListener('click', () => this.showMembers());
-
-        buttonContainer.appendChild(saveButton);
-        buttonContainer.appendChild(cancelButton);
-
-        // Montagem final do formulário
-        formContainer.appendChild(nameSection);
-        formContainer.appendChild(columnsContainer);
-        formContainer.appendChild(buttonContainer);
-
-        return formContainer;
-    }
-
-    // Cria a lista de membros
-    createMembersList() {
-        const membersList = document.createElement('div');
-        membersList.classList.add('members-list');
-
-        const tableHeader = this.createTableHeader();
-        membersList.appendChild(tableHeader);
-
-        const members = this.getAllMembers();
-        if (members.length === 0) {
-            membersList.appendChild(this.createEmptyMessage());
-        } else {
-            members.forEach(member => {
-                membersList.appendChild(this.createMemberItem(member));
-            });
-        }
-
-        return membersList;
-    }
-
-    // Cria o cabeçalho da tabela
-    createTableHeader() {
-        const header = document.createElement('div');
-        header.classList.add('members-header');
-        
-        const headers = ['Id', 'Nome'];
-        headers.forEach(text => {
-            const cell = document.createElement('div');
-            cell.textContent = text;
-            cell.classList.add('header-cell');
-            header.appendChild(cell);
-        });
-        
-        return header;
-    }
-
-    // Cria um item individual da lista de membros
-    createMemberItem(member) {
-        const item = document.createElement('div');
-        item.classList.add('member-item');
-        item.id = `member-${member.id}`;
-        item.dataset.memberId = member.id;
-
-        const cells = [member.id, member.name];
-        cells.forEach(text => {
-            const cell = document.createElement('div');
-            cell.classList.add('item-cell');
-            const cellText = document.createTextNode(text.toString());
-            cell.appendChild(cellText);
-            item.appendChild(cell);
-        });
-
-        item.addEventListener('click', () => this.selectMember(item));
-        return item;
-    }
-
-    // Cria a mensagem para quando não há membros
-    createEmptyMessage() {
-        const message = document.createElement('p');
-        message.classList.add('empty-message');
-        const messageText = document.createTextNode(MessageEvents.NO_MEMBERS);
-        message.appendChild(messageText);
-        return message;
-    }
-
-    // Gerencia a seleção de um item na lista
-    selectMember(element) {
-        const previousSelected = document.querySelector('.member-item.selected');
-        if (previousSelected) {
-            previousSelected.classList.remove('selected');
-        }
-        element.classList.add('selected');
-    }
-
-    // Exibe mensagens de erro temporárias
-    showError(message) {
-        const content = document.querySelector('.main-content');
-        const existingError = content.querySelector('.error-message');
-        if (existingError) {
-            existingError.remove();
-        }
-
-        const errorContainer = document.createElement('div');
-        errorContainer.classList.add('error-message');
-        errorContainer.textContent = message;
-        content.insertBefore(errorContainer, content.firstChild);
-
-        setTimeout(() => errorContainer.remove(), 3000);
-    }
-
-    // Método para inscrever em evento
-    subscribeToEvent(memberId, eventId) {
-        // Verifica se já está inscrito
-        const isSubscribed = this.eventSubscriptions.some(
-            sub => sub.memberId === memberId && sub.eventId === eventId
-        );
-
-        if (isSubscribed) {
-            throw new Error('Membro já está inscrito neste evento');
-        }
-
-        this.eventSubscriptions.push({ memberId, eventId });
-        return true;
-    }
-
-    // Método para gerenciar inscrição em eventos
-    handleEventRegistration() {
-        const selected = document.querySelector('.member-item.selected');
-        if (!selected) {
-            this.showError('Selecione um membro para inscrever em eventos.');
-            return;
-        }
-    
-        const memberId = parseInt(selected.dataset.memberId);
-        const member = this.members.find(e => e.id === memberId);
-    
-        const memberPreferences = member.preferredEvents;
-        if (memberPreferences.length === 0) {
-            this.showError('Este membro não tem preferências de tipo de evento.');
-            return;
-        }
-    
-        const compatibleEvents = eventTypeManager.getEventsByTypes(memberPreferences);
-    
-        if (compatibleEvents.length === 0) {
-            this.showError('Não há eventos compatíveis com os tipos preferidos deste membro.');
-            return;
-        }
-    
-        this.showEventModal(member, compatibleEvents);
-    }
-
-    showEventModal(member, events) {
-        const modal = document.createElement('div');
-        modal.classList.add('event-modal');
-        modal.id = 'event-subscription-modal';
-
-        const title = document.createElement('h3');
-        const titleText = document.createTextNode(`Inscrever ${member.name} em Evento`);
-        title.appendChild(titleText);
-        modal.appendChild(title);
-
-        const eventSelect = document.createElement('select');
-        eventSelect.id = 'event-select';
-        events.forEach(event => {
-            const option = document.createElement('option');
-            option.value = event.id;
-            const optionText = document.createTextNode(event.description);
-            option.appendChild(optionText);
-            eventSelect.appendChild(option);
-        });
-        modal.appendChild(eventSelect);
-
-        const buttonContainer = document.createElement('div');
-        const saveButton = document.createElement('button');
-        const saveText = document.createTextNode('Inscrever');
-        saveButton.appendChild(saveText);
-        saveButton.id = 'btn-subscribe-confirm';
-        
-        const cancelButton = document.createElement('button');
-        const cancelText = document.createTextNode('Cancelar');
-        cancelButton.appendChild(cancelText);
-        cancelButton.id = 'btn-subscribe-cancel';
-
-        saveButton.addEventListener('click', () => {
-            const selectedEventId = eventSelect.value;
-            this.subscribeToEvent(member.id, parseInt(selectedEventId));
-            modal.remove();
-        });
-
-        cancelButton.addEventListener('click', () => {
-            this.handleCancelSubscription(member.id, parseInt(eventSelect.value));
-        });
-
-        buttonContainer.appendChild(saveButton);
-        buttonContainer.appendChild(cancelButton);
-        modal.appendChild(buttonContainer);
-
-        document.body.appendChild(modal);
-    }
-
-    /**
-     * Cancela a inscrição de um membro em um evento
-     * @param {number} memberId - ID do membro
-     * @param {number} eventId - ID do evento
-     * @returns {boolean} - true se cancelado com sucesso, false caso contrário
-     */
-    cancelEventSubscription(memberId, eventId) {
-        const index = this.eventSubscriptions.findIndex(
-            subscription => subscription.memberId === memberId && 
-                          subscription.eventId === eventId
-        );
-
-        if (index === -1) {
-            throw new Error('Inscrição não encontrada');
-        }
-
-        this.eventSubscriptions.splice(index, 1);
-        MessageEvents.showSuccess('Inscrição cancelada com sucesso');
-        return true;
-    }
-
-    /**
-     * Manipula o cancelamento de inscrição via interface
-     * @param {number} memberId - ID do membro
-     * @param {number} eventId - ID do evento
-     */
-    handleCancelSubscription(memberId, eventId) {
-        try {
-            this.cancelEventSubscription(memberId, eventId);
-            this.showMemberForm(this.members.find(m => m.id === memberId));
         } catch (error) {
             MessageEvents.showError(error.message);
         }
+    }
+
+    createForm(selectedMember) {
+        const formContent = document.createElement('div');
+        formContent.classList.add('form-content');
+
+        // Seção do nome
+        formContent.appendChild(this.createNameSection(selectedMember));
+
+        // Container de duas colunas para eventos
+        const columnsContainer = this.createEventsSection(selectedMember);
+        formContent.appendChild(columnsContainer);
+
+        return formContent;
+    }
+
+    createNameSection(selectedMember) {
+        const nameSection = document.createElement('div');
+        nameSection.classList.add('form-row');
+        
+        const nameLabel = document.createElement('label');
+        nameLabel.textContent = 'Nome';
+        nameLabel.classList.add('form-label');
+        
+        const nameInput = UIHelper.createTextInput(
+            'member-input',
+            selectedMember?.name || '',
+            'Nome do membro'
+        );
+        
+        nameSection.appendChild(nameLabel);
+        nameSection.appendChild(nameInput);
+        return nameSection;
+    }
+
+    createEventsSection(selectedMember) {
+        const columnsContainer = UIHelper.createFormColumns();
+
+        // Coluna esquerda - Tipos de eventos preferidos
+        const preferredEventsColumn = this.createPreferredEventsColumn(selectedMember);
+        columnsContainer.appendChild(preferredEventsColumn);
+
+        // Coluna direita - Eventos disponíveis (apenas para edição)
+        if (selectedMember) {
+            const availableEventsColumn = this.createAvailableEventsColumn(selectedMember);
+            columnsContainer.appendChild(availableEventsColumn);
+        }
+
+        return columnsContainer;
+    }
+
+    createPreferredEventsColumn(selectedMember) {
+        const column = UIHelper.createFormColumn();
+        const eventTypes = eventTypeManager.getAllEventTypes();
+        
+        if (eventTypes.length > 0) {
+            const checkboxSection = UIHelper.createCheckboxSection(
+                'Tipos de Eventos Preferidos',
+                eventTypes,
+                selectedMember?.preferredEvents || [],
+                'event-checkbox'
+            );
+            column.appendChild(checkboxSection);
+        } else {
+            column.appendChild(UIHelper.createEmptyMessage(MessageEvents.NO_EVENT_TYPES));
+        }
+        
+        return column;
+    }
+
+    createAvailableEventsColumn(member) {
+        const column = UIHelper.createFormColumn();
+        const container = document.createElement('div');
+        container.classList.add('events-list-container');
+
+        // Título da seção
+        const title = document.createElement('h3');
+        title.textContent = 'Eventos Disponíveis';
+        title.classList.add('form-label');
+        container.appendChild(title);
+
+        // Lista de eventos disponíveis
+        const availableEvents = this.getAvailableEventsForMember(member);
+        
+        if (availableEvents.length === 0) {
+            container.appendChild(
+                UIHelper.createEmptyMessage('Não há eventos disponíveis para os tipos preferidos')
+            );
+        } else {
+            container.appendChild(this.createEventsGrid(availableEvents, member));
+        }
+
+        column.appendChild(container);
+        return column;
+    }
+
+    getAvailableEventsForMember(member) {
+        return eventManager.events.filter(event => {
+            const eventDate = new Date(event.date);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return eventDate >= today && member.preferredEvents.includes(event.typeId);
+        });
+    }
+
+    createEventsGrid(events, member) {
+        const grid = document.createElement('div');
+        grid.classList.add('events-grid');
+
+        // Cabeçalho
+        grid.appendChild(
+            UIHelper.createTableHeader(
+                ['Id', 'Tipo', 'Descritivo', 'Data', 'Ação'],
+                'events-header'
+            )
+        );
+
+        // Linhas de eventos
+        events.forEach(event => {
+            grid.appendChild(this.createEventRow(event, member));
+        });
+
+        return grid;
+    }
+
+    createEventRow(event, member) {
+        const row = document.createElement('div');
+        row.classList.add('event-row');
+
+        const eventType = eventTypeManager.getEventType(event.typeId);
+        const isSubscribed = this.eventSubscriptions.some(
+            sub => sub.memberId === member.id && sub.eventId === event.id
+        );
+
+        // Células de informação
+        [
+            event.id,
+            eventType.description,
+            event.description,
+            new Date(event.date).toLocaleDateString()
+        ].forEach(text => {
+            const cell = document.createElement('div');
+            cell.classList.add('item-cell');
+            cell.textContent = text;
+            row.appendChild(cell);
+        });
+
+        // Célula de ação
+        const actionCell = document.createElement('div');
+        actionCell.classList.add('item-cell', 'action-cell');
+
+        const actionButton = document.createElement('button');
+        actionButton.textContent = isSubscribed ? 'Cancelar' : 'Inscrever';
+        actionButton.classList.add('action-button', isSubscribed ? 'cancel-button' : 'subscribe-button');
+        
+        actionButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            try {
+                if (isSubscribed) {
+                    this.cancelEventSubscription(member.id, event.id);
+                } else {
+                    this.subscribeToEvent(member.id, event.id);
+                }
+                this.showMemberForm(member);
+            } catch (error) {
+                MessageEvents.showError(error.message);
+            }
+        });
+
+        actionCell.appendChild(actionButton);
+        row.appendChild(actionCell);
+
+        return row;
     }
 }
 

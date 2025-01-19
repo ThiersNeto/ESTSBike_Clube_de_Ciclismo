@@ -1,4 +1,3 @@
-
 /**
  * Classe que representa um evento individual
  * Cria uma nova instância de Event
@@ -112,20 +111,10 @@ class EventManager {
      * @private
      */
     showEvents() {
-        const mainContent = document.querySelector('.main-content');
-        if (mainContent) {
-            mainContent.remove();
-        }
-
-        const content = document.createElement('div');
-        content.classList.add('main-content', 'events-content');
-
+        const content = UIHelper.clearAndGetMainContent();
         content.appendChild(this.createHeader());
         content.appendChild(this.createEventsList());
         content.appendChild(this.createButtonContainer());
-
-        const footer = document.querySelector('.footer');
-        document.body.insertBefore(content, footer);
     }
 
     /**
@@ -134,10 +123,7 @@ class EventManager {
      * @returns {HTMLElement} Elemento do cabeçalho
      */
     createHeader() {
-        const sectionTitle = document.createElement('h2');
-        const titleText = document.createTextNode('Eventos');
-        sectionTitle.appendChild(titleText);
-        return sectionTitle;
+        return UIHelper.createSectionHeader('Eventos');
     }
 
     /**
@@ -170,19 +156,10 @@ class EventManager {
      * @returns {HTMLElement} Elemento do cabeçalho da tabela
      */
     createTableHeader() {
-        const header = document.createElement('div');
-        header.classList.add('events-header');
-        
-        const headers = ['Id', 'Tipo', 'Descritivo', 'Data'];
-        headers.forEach(text => {
-            const cell = document.createElement('div');
-            cell.classList.add('header-cell');
-            const cellText = document.createTextNode(text);
-            cell.appendChild(cellText);
-            header.appendChild(cell);
-        });
-        
-        return header;
+        return UIHelper.createTableHeader(
+            ['Id', 'Tipo', 'Descritivo', 'Data'],
+            'events-header'
+        );
     }
 
     /**
@@ -224,11 +201,7 @@ class EventManager {
      * @returns {HTMLElement} Elemento com a mensagem
      */
     createEmptyMessage() {
-        const message = document.createElement('p');
-        message.classList.add('empty-message');
-        const messageText = document.createTextNode(MessageEvents.NO_EVENTS);
-        message.appendChild(messageText);
-        return message;
+        return UIHelper.createEmptyMessage(MessageEvents.NO_EVENTS);
     }
 
     /**
@@ -237,26 +210,11 @@ class EventManager {
      * @returns {HTMLElement} Container com os botões
      */
     createButtonContainer() {
-        const buttonContainer = document.createElement('div');
-        buttonContainer.classList.add('button-container');
-
-        const buttons = [
+        return UIHelper.createButtonContainer([
             { text: 'Criar', id: 'btn-event-create', action: () => this.showEventForm() },
             { text: 'Editar', id: 'btn-event-edit', action: () => this.handleEdit() },
             { text: 'Apagar', id: 'btn-event-delete', action: () => this.handleDelete() }
-        ];
-
-        buttons.forEach(({ text, id, action }) => {
-            const button = document.createElement('button');
-            button.classList.add('action-button');
-            button.id = id;
-            const buttonText = document.createTextNode(text);
-            button.appendChild(buttonText);
-            button.addEventListener('click', action);
-            buttonContainer.appendChild(button);
-        });
-
-        return buttonContainer;
+        ]);
     }
 
     /**
@@ -265,23 +223,27 @@ class EventManager {
      * @param {Event} [selectedEvent=null] - Evento a ser editado, se houver
      */
     showEventForm(selectedEvent = null) {
-        const mainContent = document.querySelector('.main-content');
-        if (mainContent) {
-            mainContent.remove();
-        }
-
-        const content = document.createElement('div');
-        content.classList.add('main-content', 'form-content');
-
-        const title = document.createElement('h2');
-        const titleText = document.createTextNode(selectedEvent ? 'Editar Evento' : 'Novo Evento');
-        title.appendChild(titleText);
-        content.appendChild(title);
-
-        content.appendChild(this.createForm(selectedEvent));
-
-        const footer = document.querySelector('.footer');
-        document.body.insertBefore(content, footer);
+        const content = UIHelper.clearAndGetMainContent();
+        const formContent = this.createForm(selectedEvent);
+        
+        content.appendChild(
+            UIHelper.createFormContainer(
+                selectedEvent ? 'Editar Evento' : 'Novo Evento',
+                formContent,
+                () => {
+                    const typeSelect = formContent.querySelector('select');
+                    const descInput = formContent.querySelector('input[type="text"]');
+                    const dateInput = formContent.querySelector('input[type="date"]');
+                    this.handleSave(
+                        parseInt(typeSelect.value),
+                        descInput.value,
+                        new Date(dateInput.value),
+                        selectedEvent
+                    );
+                },
+                () => this.showEvents()
+            )
+        );
     }
 
     /**
@@ -363,11 +325,7 @@ class EventManager {
      * @param {HTMLElement} element - Elemento selecionado
      */
     selectEvent(element) {
-        const previousSelected = document.querySelector('.event-item.selected');
-        if (previousSelected) {
-            previousSelected.classList.remove('selected');
-        }
-        element.classList.add('selected');
+        UIHelper.handleItemSelection(element, '.event-item');
     }
 
     /**

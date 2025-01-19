@@ -1,4 +1,3 @@
-
 /**
  * Classe que representa um tipo de evento individual
  * @constructor
@@ -121,20 +120,10 @@ class EventTypeManager {
      * Exibe a interface principal de tipos de eventos
      */
     showEventTypes() {
-        const mainContent = document.querySelector('.main-content');
-        if (mainContent) {
-            mainContent.remove();
-        }
-
-        const content = document.createElement('div');
-        content.classList.add('main-content');
-
+        const content = UIHelper.clearAndGetMainContent();
         content.appendChild(this.createHeader());
         content.appendChild(this.createEventTypesList());
         content.appendChild(this.createButtonContainer());
-
-        const footer = document.querySelector('.footer');
-        document.body.insertBefore(content, footer);
     }
 
     /**
@@ -143,10 +132,7 @@ class EventTypeManager {
      * @returns {HTMLElement} Elemento do cabeçalho
      */
     createHeader() {
-        const sectionTitle = document.createElement('h2');
-        const titleText = document.createTextNode('Tipos de Eventos');
-        sectionTitle.appendChild(titleText);
-        return sectionTitle;
+        return UIHelper.createSectionHeader('Tipos de Eventos');
     }
 
     /**
@@ -155,26 +141,11 @@ class EventTypeManager {
      * @returns {HTMLElement} Container com os botões de ação
      */
     createButtonContainer() {
-        const buttonContainer = document.createElement('div');
-        buttonContainer.classList.add('button-container');
-
-        const buttons = [
+        return UIHelper.createButtonContainer([
             { text: 'Criar', id: 'btn-type-create', action: () => this.showEventTypeForm() },
             { text: 'Editar', id: 'btn-type-edit', action: () => this.handleEdit() },
             { text: 'Apagar', id: 'btn-type-delete', action: () => this.handleDelete() }
-        ];
-
-        buttons.forEach(({ text, id, action }) => {
-            const button = document.createElement('button');
-            button.classList.add('action-button');
-            button.id = id;
-            const buttonText = document.createTextNode(text);
-            button.appendChild(buttonText);
-            button.addEventListener('click', action);
-            buttonContainer.appendChild(button);
-        });
-
-        return buttonContainer;
+        ]);
     }
 
     /**
@@ -208,20 +179,10 @@ class EventTypeManager {
      * @returns {HTMLElement} Elemento do cabeçalho da tabela
      */
     createTableHeader() {
-        const header = document.createElement('div');
-        header.classList.add('event-types-header');
-        header.id = 'event-types-header';
-        
-        const headers = ['Id', 'Descritivo'];
-        headers.forEach(text => {
-            const cell = document.createElement('div');
-            const cellText = document.createTextNode(text);
-            cell.appendChild(cellText);
-            cell.classList.add('header-cell');
-            header.appendChild(cell);
-        });
-        
-        return header;
+        return UIHelper.createTableHeader(
+            ['Id', 'Descritivo'],
+            'event-types-header'
+        );
     }
 
     /**
@@ -255,11 +216,7 @@ class EventTypeManager {
      * @returns {HTMLElement} Elemento com a mensagem
      */
     createEmptyMessage() {
-        const message = document.createElement('p');
-        message.classList.add('empty-message');
-        const messageText = document.createTextNode(MessageEvents.NO_EVENT_TYPES);
-        message.appendChild(messageText);
-        return message;
+        return UIHelper.createEmptyMessage(MessageEvents.NO_EVENT_TYPES);
     }
 
     /**
@@ -268,19 +225,20 @@ class EventTypeManager {
      * @param {EventType} [selectedEventType=null] - Tipo de evento sendo editado
      */
     showEventTypeForm(selectedEventType = null) {
-        const content = document.querySelector('.main-content');
-        while (content.firstChild) {
-            content.removeChild(content.firstChild);
-        }
-
-        const formTitle = document.createElement('h2');
-        const titleText = document.createTextNode(
-            selectedEventType ? 'Alterar Tipo de Evento' : 'Novo Tipo de Evento'
+        const content = UIHelper.clearAndGetMainContent();
+        const formContent = this.createForm(selectedEventType);
+        
+        content.appendChild(
+            UIHelper.createFormContainer(
+                selectedEventType ? 'Alterar Tipo de Evento' : 'Novo Tipo de Evento',
+                formContent,
+                () => {
+                    const input = formContent.querySelector('.event-type-input');
+                    this.handleSave(input.value, selectedEventType);
+                },
+                () => this.showEventTypes()
+            )
         );
-        formTitle.appendChild(titleText);
-        content.appendChild(formTitle);
-
-        content.appendChild(this.createForm(selectedEventType));
     }
 
     /**
@@ -333,11 +291,7 @@ class EventTypeManager {
      * @param {HTMLElement} element - Elemento selecionado
      */
     selectEventType(element) {
-        const previousSelected = document.querySelector('.event-type-item.selected');
-        if (previousSelected) {
-            previousSelected.classList.remove('selected');
-        }
-        element.classList.add('selected');
+        UIHelper.handleItemSelection(element, '.event-type-item');
     }
 
     /**

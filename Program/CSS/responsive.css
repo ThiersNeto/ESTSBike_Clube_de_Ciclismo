@@ -1,148 +1,99 @@
-/* Breakpoint para telas grandes */
-@media (max-width: 1200px) {
+/* Breakpoints principais */
+
+/* Desktop (1024px) */
+@media (max-width: 1024px) {
+    .main-content {
+        max-width: 900px;
+        padding: 0 1.5rem;
+    }
+}
+
+/* Tablet (768px) */
+@media (max-width: 768px) {
     .main-content {
         padding: 0 1rem;
     }
 
-    .form-container {
-        padding: 2rem 1.5rem;
+    .form-container,
+    .events-checkbox-container,
+    .events-list-container {
+        max-width: 100%;
+        padding: 1rem;
     }
 
-    .form-columns {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
+    .checkbox-group {
+        grid-template-columns: repeat(2, 1fr);
     }
-}
 
-/* Breakpoint para tablets */
-@media (max-width: 992px) {
     .events-header,
     .event-row {
-        grid-template-columns: 50px 80px minmax(150px, 1fr) 100px 90px;
-    }
-
-    .item-cell {
-        font-size: 0.9rem;
+        grid-template-columns: 40px 90px 1fr 90px;
+        font-size: 0.875rem;
     }
 }
 
-/* Breakpoint para tablets pequenos e celulares grandes */
-@media (max-width: 768px) {
-    .title {
-        font-size: 1.1rem;
-        padding: 1rem 1.5rem;
-    }
-
-    .nav {
-        flex-wrap: wrap;
-        padding-left: 0;
-    }
-
-    .nav-item {
-        flex: 1 0 50%;
-        text-align: center;
-        padding: 0.75rem 1rem;
-    }
-
-    .main-content h2 {
-        font-size: 1.3rem;
-    }
-
-    .members-list,
-    .events-list,
-    .event-types-list {
-        width: 100%;
-    }
-
-    .members-header,
-    .member-item,
-    .events-header,
-    .event-item,
-    .event-types-header,
-    .event-type-item,
-    .events-header,
-    .event-row {
-        grid-template-columns: 1fr;
-    }
-
-    .item-cell {
-        padding: 0.5rem;
-        text-align: left;
-    }
-
-    .button-container {
-        flex-direction: column;
-    }
-
-    .action-button {
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-
-    .form-container {
-        padding: 1.5rem 1rem;
-    }
-
-    .events-checkbox-container {
-        padding: 1rem 0.5rem;
-    }
-
-    .checkbox-container {
-        padding: 0.25rem;
-    }
-}
-
-/* Breakpoint para celulares */
+/* Mobile (576px) */
 @media (max-width: 576px) {
-    .title {
-        font-size: 1rem;
-        padding: 0.75rem 1rem;
+    .form-container {
+        padding: 1rem;
     }
 
-    .nav-item {
-        flex: 1 0 100%;
-    }
-
-    .main-content h2 {
-        font-size: 1.2rem;
-    }
-
-    .member-input,
-    .event-input,
-    .event-type-input {
-        font-size: 0.9rem;
-    }
-
-    .events-container {
+    .checkbox-group {
         grid-template-columns: 1fr;
     }
 
-    .event-modal {
-        width: 90%;
-        max-width: 300px;
-    }
-}
-
-/* Breakpoint para celulares pequenos */
-@media (max-width: 400px) {
-    .title {
-        font-size: 0.9rem;
-    }
-
-    .nav-item {
+    .events-header,
+    .event-row {
+        grid-template-columns: 35px 80px 1fr 75px;
+        font-size: 0.813rem;
         padding: 0.5rem;
     }
 
+    /* Botões em dispositivos móveis */
+    .event-row .action-button {
+        width: 100%;
+        min-width: 70px;
+        padding: 0.5rem;
+        font-size: 0.75rem;
+        background-color: var(--primary-color);
+        color: white;
+        border-radius: 4px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+/* Mobile Pequeno (360px) */
+@media (max-width: 360px) {
+    .events-header,
+    .event-row {
+        grid-template-columns: 30px 70px 1fr 70px;
+        font-size: 0.75rem;
+        padding: 0.4375rem;
+    }
+
+    .event-row .action-button {
+        min-width: 65px;
+        padding: 0.4375rem;
+        font-size: 0.7rem;
+    }
+
+    .item-cell {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+/* Orientação Paisagem */
+@media (orientation: landscape) {
     .main-content {
-        padding: 0 0.5rem;
+        padding-bottom: 3rem;
     }
 
-    .form-container {
-        padding: 1rem 0.5rem;
-    }
-
-    .action-button {
-        font-size: 0.9rem;
-        padding: 0.5rem 1rem;
+    .checkbox-group {
+        grid-template-columns: repeat(3, 1fr);
     }
 }
