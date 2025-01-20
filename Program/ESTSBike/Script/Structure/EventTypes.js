@@ -367,6 +367,40 @@ class EventTypeManager {
     getMemberPreferences(memberId) {
         return this.memberPreferences.find(mp => mp.memberId === memberId);
     }
+
+
+    // Métodos para interação com a API
+    static async getAllEventTypes() {
+        try {
+          const response = await fetch('http://localhost:3000/api/event-types');
+          if (!response.ok) {
+            throw new Error('Failed to fetch event types');
+          }
+          return await response.json();
+        } catch (error) {
+          console.error('Error:', error);
+          return [];
+        }
+      }
+    
+      static async createEventType(eventType) {
+        try {
+          const response = await fetch('http://localhost:3000/api/event-types', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(eventType),
+          });
+          if (!response.ok) {
+            throw new Error('Failed to create event type');
+          }
+          return await response.json();
+        } catch (error) {
+          console.error('Error:', error);
+          return null;
+        }
+      }
 }
 
 const eventTypeManager = new EventTypeManager(); 
