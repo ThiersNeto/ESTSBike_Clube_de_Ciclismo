@@ -1,13 +1,12 @@
 const express = require('express');
-const cors = require('cors');
+const bodyParser = require('body-parser');
 const eventTypeRoutes = require('./Routes/eventTypeRoutes');
 const eventRoutes = require('./Routes/eventRoutes');
 const memberRoutes = require('./Routes/memberRoutes');
 
 const app = express();
 
-app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
 
 app.use('/api/event-types', eventTypeRoutes);
 app.use('/api/events', eventRoutes);

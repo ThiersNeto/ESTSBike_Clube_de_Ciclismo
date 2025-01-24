@@ -2,8 +2,8 @@ import { execute, string, number, boolean, toBoolean, sendError, sendResponse } 
 
 const commandGetAll = 'SELECT * FROM members';
 const commandGetOne = 'SELECT * FROM members WHERE id = ?';
-const commandCreate = 'INSERT INTO members (name, phone) VALUES (?, ?)';
-const commandUpdate = 'UPDATE members SET name = ?, phone = ? WHERE id = ?';
+const commandCreate = 'INSERT INTO members (name) VALUES (?)';
+const commandUpdate = 'UPDATE members SET name = ? WHERE id = ?';
 const commandDelete = 'DELETE FROM members WHERE id = ?';
 const commandGetPreferences = `
     SELECT et.* 
@@ -13,6 +13,12 @@ const commandGetPreferences = `
 `;
 const commandAddPreference = 'INSERT INTO member_event_types (member_id, event_type_id) VALUES (?, ?)';
 const commandRemovePreference = 'DELETE FROM member_event_types WHERE member_id = ? AND event_type_id = ?';
+const commandGetMemberEvents = `
+    SELECT e.* 
+    FROM events e 
+    JOIN member_events me ON e.id = me.event_id 
+    WHERE me.member_id = ?
+`;
 
 export default {
     async getAllMembers(request, response) {
@@ -33,30 +39,27 @@ export default {
 
     async createMember(request, response) {
         const name = string(request.body.name);
-        const phone = string(request.body.phone);
 
-        if (name && phone) {
-            await sendResponse(response, commandCreate, [name, phone], (result) => ({
+        if (name) {
+            await sendResponse(response, commandCreate, [name], (result) => ({
                 id: result.insertId,
-                name,
-                phone
+                name
             }));
         } else {
-            sendError(response, "You must provide name and phone for the member!");
+            sendError(response, "You must provide a name for the member!");
         }
     },
 
     async updateMember(request, response) {
         const id = number(request.params.id);
         const name = string(request.body.name);
-        const phone = string(request.body.phone);
 
-        if (name && phone) {
-            await sendResponse(response, commandUpdate, [name, phone, id], () => ({
+        if (name) {
+            await sendResponse(response, commandUpdate, [name, id], () => ({
                 message: 'Member updated successfully'
             }));
         } else {
-            sendError(response, "You must provide name and phone for the member!");
+            sendError(response, "You must provide a name for the member!");
         }
     },
 

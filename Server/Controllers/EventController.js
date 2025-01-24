@@ -2,8 +2,8 @@ import { execute, string, number, date, boolean, toBoolean, sendError, sendRespo
 
 const commandGetAll = 'SELECT * FROM events';
 const commandGetOne = 'SELECT * FROM events WHERE id = ?';
-const commandCreate = 'INSERT INTO events (name, date, description, event_type_id) VALUES (?, ?, ?, ?)';
-const commandUpdate = 'UPDATE events SET name = ?, date = ?, description = ?, event_type_id = ? WHERE id = ?';
+const commandCreate = 'INSERT INTO events (type_id, description, date) VALUES (?, ?, ?)';
+const commandUpdate = 'UPDATE events SET type_id = ?, description = ?, date = ? WHERE id = ?';
 const commandDelete = 'DELETE FROM events WHERE id = ?';
 const commandCheckRegistrations = 'SELECT * FROM member_events WHERE event_id = ?';
 
@@ -25,37 +25,34 @@ export default {
     },
 
     async createEvent(request, response) {
-        const name = string(request.body.name);
-        const eventDate = date(request.body.date);
+        const typeId = number(request.body.type_id);
         const description = string(request.body.description);
-        const eventTypeId = number(request.body.event_type_id);
+        const eventDate = date(request.body.date);
 
-        if (name && eventDate && description && eventTypeId) {
-            await sendResponse(response, commandCreate, [name, eventDate, description, eventTypeId], (result) => ({
+        if (typeId && description && eventDate) {
+            await sendResponse(response, commandCreate, [typeId, description, eventDate], (result) => ({
                 id: result.insertId,
-                name,
-                date: eventDate,
+                type_id: typeId,
                 description,
-                event_type_id: eventTypeId
+                date: eventDate
             }));
         } else {
-            sendError(response, "You must provide name, date, description, and event type ID for the event!");
+            sendError(response, "You must provide type_id, description, and date for the event!");
         }
     },
 
     async updateEvent(request, response) {
         const id = number(request.params.id);
-        const name = string(request.body.name);
-        const eventDate = date(request.body.date);
+        const typeId = number(request.body.type_id);
         const description = string(request.body.description);
-        const eventTypeId = number(request.body.event_type_id);
+        const eventDate = date(request.body.date);
 
-        if (name && eventDate && description && eventTypeId) {
-            await sendResponse(response, commandUpdate, [name, eventDate, description, eventTypeId, id], () => ({
+        if (typeId && description && eventDate) {
+            await sendResponse(response, commandUpdate, [typeId, description, eventDate, id], () => ({
                 message: 'Event updated successfully'
             }));
         } else {
-            sendError(response, "You must provide name, date, description, and event type ID for the event!");
+            sendError(response, "You must provide type_id, description, and date for the event!");
         }
     },
 
