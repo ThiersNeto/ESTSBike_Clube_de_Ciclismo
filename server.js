@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import eventTypeController from './Server/Controllers/EventTypeController.js';
 import eventController from './Server/Controllers/EventController.js';
 import memberController from './Server/Controllers/MemberController.js';
+import cors from 'cors';
 import fs from 'fs';
 import { execute } from './Server/Config/Database.js';
 import path from 'path';
@@ -13,6 +14,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+app.use(cors());
 app.use(bodyParser.json());
 
 async function executeSQLScript() {
