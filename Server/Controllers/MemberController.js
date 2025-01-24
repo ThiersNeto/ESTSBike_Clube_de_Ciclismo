@@ -62,6 +62,7 @@ export default {
         } else {
             sendError(response, "You must provide a name for the member!");
         }
+        
     },
 
     async updateMember(request, response) {

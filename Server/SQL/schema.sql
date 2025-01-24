@@ -1,6 +1,9 @@
 CREATE DATABASE IF NOT EXISTS estsbike;
-CREATE USER IF NOT EXISTS pw_usr IDENTIFIED BY 'PW@20242025';
-GRANT ALL ON estsbike.* TO pw_usr;
+
+DROP USER IF EXISTS 'pw_usr'@'localhost';
+CREATE USER IF NOT EXISTS 'pw_usr'@'localhost' IDENTIFIED BY 'PW@20242025';
+GRANT ALL PRIVILEGES ON estsbike.* TO 'pw_usr'@'localhost';
+FLUSH PRIVILEGES;
 
 USE estsbike;
 

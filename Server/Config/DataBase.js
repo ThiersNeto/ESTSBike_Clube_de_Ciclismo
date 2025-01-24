@@ -3,19 +3,15 @@ import mysql from "mysql2/promise";
 
 import connectionOptions from "./connection-options.js";
 
+const pool = mysql.createPool(connectionOptions);
+
 async function execute(command, parameters = []) {
-    let connection;
     try {
-        connection = await mysql.createConnection(connectionOptions);
-        let [result] = await connection.execute(command, parameters);
+        let [result] = await pool.execute(command, parameters);
         return result;
-        //result value is different depending on the SQL Command executed:
-        //SELECT: [rows]
-        //INSERT/UPDATE/DELETE: {affectedRows,changedRows,insertId,fieldCount,info,serverStatus,warningStatus}
     } catch (error) {
+        console.error('Database error:', error);
         return void 0;
-    } finally {
-        connection?.end();
     }
 }
 
