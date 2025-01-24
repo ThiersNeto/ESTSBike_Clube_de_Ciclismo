@@ -274,12 +274,12 @@ input[type="date"] {
     transition: all 0.2s ease;
 }
 
-#btn-save {
+#btn-member-save {
     background-color: var(--primary-color);
 }
 
-#btn-cancel {
-    background-color: var(--primary-dark);
+#btn-member-cancel {
+    background-color: var(--primary-color);
 }
 
 .action-button:hover {
