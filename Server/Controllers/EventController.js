@@ -6,6 +6,15 @@ const commandCreate = 'INSERT INTO events (type_id, description, date) VALUES (?
 const commandUpdate = 'UPDATE events SET type_id = ?, description = ?, date = ? WHERE id = ?';
 const commandDelete = 'DELETE FROM events WHERE id = ?';
 const commandCheckRegistrations = 'SELECT * FROM member_events WHERE event_id = ?';
+const commandSubscribe = 'INSERT INTO member_events (member_id, event_id) VALUES (?, ?)';
+const commandUnsubscribe = 'DELETE FROM member_events WHERE member_id = ? AND event_id = ?';
+const checkPreferredTypeCommand = `
+            SELECT 1
+            FROM member_preferred_event_types mpt
+            JOIN events e ON e.type_id = mpt.event_type_id
+            WHERE mpt.member_id = ? AND e.id = ?
+        `;
+
 
 export default {
     async getAllEvents(request, response) {
@@ -68,5 +77,50 @@ export default {
         await sendResponse(response, commandDelete, [id], () => ({
             message: 'Event deleted successfully'
         }));
+    },
+
+    async subscribeToEvent(request, response) {
+        const eventId = number(request.params.id);
+        const memberId = number(request.body.member_id);
+
+        if (!eventId || !memberId) {
+            sendError(response, "Event ID and Member ID are required!", 400);
+            return;
+        }
+
+        try {
+
+            const preferredTypeResult = await execute(checkPreferredTypeCommand, [memberId, eventId]);
+        
+            if (preferredTypeResult.length === 0) {
+                sendError(response, "Member cannot subscribe to events of non-preferred types", 400);
+                return;
+            }
+
+            await sendResponse(response, commandSubscribe, [memberId, eventId], () => ({
+                message: 'Successfully subscribed to the event'
+            }));
+        } catch (error) {
+            sendError(response, "Error subscribing to event. The member might already be subscribed.", 400);
+        }
+    },
+
+    async unsubscribeFromEvent(request, response) {
+        const eventId = number(request.params.id);
+        const memberId = number(request.body.member_id);
+
+        if (!eventId || !memberId) {
+            sendError(response, "Event ID and Member ID are required!", 400);
+            return;
+        }
+
+        await sendResponse(response, commandUnsubscribe, [memberId, eventId], (result) => {
+            if (result.affectedRows > 0) {
+                return { message: 'Successfully unsubscribed from the event' };
+            } else {
+                sendError(response, "Member was not subscribed to this event", 404);
+                return null;
+            }
+        });
     }
 };

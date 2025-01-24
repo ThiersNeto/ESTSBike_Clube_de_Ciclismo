@@ -19,6 +19,20 @@ const commandGetMemberEvents = `
     JOIN member_events me ON e.id = me.event_id 
     WHERE me.member_id = ?
 `;
+const checkCommand = 'SELECT * FROM member_event_types WHERE member_id = ? AND event_type_id = ?';
+const checkEventsCommand = `
+            SELECT COUNT(*) as eventCount
+            FROM member_events me
+            JOIN events e ON me.event_id = e.id
+            WHERE me.member_id = ? AND e.event_type_id = ?
+        `;
+const checkExistingPreference = 'SELECT * FROM member_event_types WHERE member_id = ? AND event_type_id = ?';
+const checkPreferredEventType = `
+                SELECT COUNT(*) as count
+                FROM member_event_types met
+                JOIN events e ON met.event_type_id = e.event_type_id
+                WHERE met.member_id = ? AND e.id = ?
+            `;
 
 export default {
     async getAllMembers(request, response) {
@@ -86,22 +100,99 @@ export default {
     async addMemberPreference(request, response) {
         const memberId = number(request.params.id);
         const eventTypeId = number(request.body.event_type_id);
-
-        if (memberId && eventTypeId) {
-            await sendResponse(response, commandAddPreference, [memberId, eventTypeId], () => ({
-                message: 'Member preference added successfully'
-            }));
-        } else {
-            sendError(response, "You must provide member ID and event type ID!");
+    
+        if (!memberId || !eventTypeId) {
+            return sendError(response, "Invalid member ID or event type ID", 400);
+        }
+    
+        try {
+            // Verifica se o membro já tem essa preferência
+            const existingPreference = await execute(checkExistingPreference, [memberId, eventTypeId]);
+    
+            if (existingPreference && existingPreference.length > 0) {
+                return sendError(response, "Member already has this event type preference", 400);
+            }
+    
+            // Se a preferência não existe, adiciona
+            await sendResponse(response, commandAddPreference, [memberId, eventTypeId], (result) => {
+                if (result.affectedRows > 0) {
+                    return { message: 'Member preference added successfully' };
+                } else {
+                    throw new Error("Failed to add preference");
+                }
+            });
+        } catch (error) {
+            console.error('Error in addMemberPreference:', error);
+            sendError(response, "An error occurred while adding the preference", 500);
         }
     },
 
     async removeMemberPreference(request, response) {
         const memberId = number(request.params.id);
         const eventTypeId = number(request.params.eventTypeId);
+    
+        if (!memberId || !eventTypeId) {
+            return sendError(response, "Invalid member ID or event type ID", 400);
+        }
+    
+        try {
+            // Verifica se a preferência existe
+            const existingPreference = await execute(checkCommand, [memberId, eventTypeId]);
+    
+            if (!existingPreference || existingPreference.length === 0) {
+                return sendError(response, "Preference not found", 404);
+            }
 
-        await sendResponse(response, commandRemovePreference, [memberId, eventTypeId], () => ({
-            message: 'Member preference removed successfully'
-        }));
+            const [eventCount] = await execute(checkEventsCommand, [memberId, eventTypeId]);
+
+            if (eventCount && eventCount.eventCount > 0) {
+                return sendError(response, "Cannot remove preference. Member has associated events of this type.", 400);
+            }
+    
+            // Se a preferência existe, remove-a
+            await sendResponse(response, commandRemovePreference, [memberId, eventTypeId], (result) => {
+                if (result.affectedRows > 0) {
+                    return { message: 'Member preference removed successfully' };
+                } else {
+                    throw new Error("Failed to remove preference");
+                }
+            });
+        } catch (error) {
+            console.error('Error in removeMemberPreference:', error);
+            sendError(response, "An error occurred while removing the preference", 500);
+        }
+    },
+
+    async addMemberEvent(request, response) {
+        const memberId = number(request.params.id);
+        const eventId = number(request.body.event_id);
+    
+        if (!memberId || !eventId) {
+            return sendError(response, "Invalid member ID or event ID", 400);
+        }
+    
+        try {
+            // Verifica se o evento é de um tipo preferido pelo membro
+        
+            const [result] = await execute(checkPreferredEventType, [memberId, eventId]);
+    
+            if (result.count === 0) {
+                return sendError(response, "Cannot add event. Event type is not in member's preferences.", 400);
+            }
+    
+            // Se o evento é de um tipo preferido, adiciona a associação
+            const addMemberEventCommand = 'INSERT INTO member_events (member_id, event_id) VALUES (?, ?)';
+            await sendResponse(response, addMemberEventCommand, [memberId, eventId], (result) => {
+                if (result.affectedRows > 0) {
+                    return { message: 'Member associated with event successfully' };
+                } else {
+                    throw new Error("Failed to associate member with event");
+                }
+            });
+        } catch (error) {
+            console.error('Error in addMemberEvent:', error);
+            sendError(response, "An error occurred while associating member with event", 500);
+        }
     }
+
 };

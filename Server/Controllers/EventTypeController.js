@@ -6,6 +6,7 @@ const commandCreate = 'INSERT INTO event_types (description) VALUES (?)';
 const commandUpdate = 'UPDATE event_types SET description = ? WHERE id = ?';
 const commandDelete = 'DELETE FROM event_types WHERE id = ?';
 const commandCheckEvents = 'SELECT * FROM events WHERE event_type_id = ?';
+const commandCheckPreferences = 'SELECT * FROM member_preferred_event_types WHERE event_type_id = ?';
 
 export default {
     async getAllEventTypes(request, response) {
@@ -56,6 +57,12 @@ export default {
         const events = await execute(commandCheckEvents, [id]);
         if (events && events.length > 0) {
             sendError(response, 'Cannot delete event type with associated events', 400);
+            return;
+        }
+
+        const preferences = await execute(commandCheckPreferences, [id]);
+        if (preferences && preferences.length > 0) {
+            sendError(response, 'Cannot delete event type with associated member preferences', 400);
             return;
         }
         
