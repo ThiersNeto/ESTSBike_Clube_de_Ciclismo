@@ -61,4 +61,13 @@ async function sendResponse(response, command, parameters, processResult) {
     }
 }
 
-export { execute, number, string, date, boolean, toBoolean, sendError, sendResponse };
+export {
+    execute,
+    string,
+    number,
+    date,
+    boolean,
+    toBoolean,
+    sendError,
+    sendResponse
+};

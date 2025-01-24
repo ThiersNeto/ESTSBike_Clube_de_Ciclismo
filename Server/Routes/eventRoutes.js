@@ -1,6 +1,7 @@
-const express = require('express');
+import express from 'express';
+import eventController from '../Controllers/EventController.js';
+
 const router = express.Router();
-const eventController = require('../Controllers/EventController');
 
 router.get('/', eventController.getAllEvents);
 router.get('/:id', eventController.getEvent);
@@ -14,4 +15,4 @@ router.delete('/:id/unsubscribe', eventController.unsubscribeFromEvent);
 
 router.get('/:id/members', eventController.getEventMembers);
 
-module.exports = router;
+export default router;

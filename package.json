@@ -1,0 +1,26 @@
+{
+  "name": "projetopw",
+  "version": "1.0.0",
+  "description": "ESTSBike é um sistema de gerenciamento para um clube de ciclismo, desenvolvido como projeto acadêmico para a Escola Superior de Tecnologia de Setúbal. O sistema permite o gerenciamento de membros, eventos e tipos de eventos do clube.",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThiersNeto/PW.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ThiersNeto/PW/issues"
+  },
+  "homepage": "https://github.com/ThiersNeto/PW#readme",
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "express": "^4.21.2",
+    "mysql2": "^3.12.0"
+  }
+}

@@ -14,6 +14,12 @@ const checkPreferredTypeCommand = `
             JOIN events e ON e.type_id = mpt.event_type_id
             WHERE mpt.member_id = ? AND e.id = ?
         `;
+        const commandGetMembers = `
+        SELECT m.id, m.name 
+        FROM members m 
+        JOIN member_events me ON m.id = me.member_id 
+        WHERE me.event_id = ?
+    `;
 
 
 export default {
@@ -122,5 +128,23 @@ export default {
                 return null;
             }
         });
+    },
+
+    async getEventMembers(request, response) {
+        const eventId = number(request.params.id);
+    
+        if (!eventId) {
+            sendError(response, "ID do evento é obrigatório!", 400);
+            return;
+        }
+    
+        try {
+            await sendResponse(response, commandGetMembers, [eventId], (result) => {
+                return result;
+            });
+        } catch (error) {
+            console.error('Erro em getEventMembers:', error);
+            sendError(response, "Ocorreu um erro ao obter os membros do evento", 500);
+        }
     }
 };

@@ -1,4 +1,4 @@
-import { execute, string, number, boolean, toBoolean, sendError, sendResponse } from '../Config/Database.js';
+import { execute, string, number, boolean, toBoolean, sendError, sendResponse } from '../Config/Database.js';""
 
 const commandGetAll = 'SELECT * FROM members';
 const commandGetOne = 'SELECT * FROM members WHERE id = ?';

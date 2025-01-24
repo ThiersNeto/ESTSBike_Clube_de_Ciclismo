@@ -1,11 +1,10 @@
-const express = require('express');
+import express from 'express';
+import memberController from '../Controllers/MemberController.js';
+
 const router = express.Router();
-const memberController = require('../Controllers/MemberController');
 
 router.get('/', memberController.getAllMembers);
 router.get('/:id', memberController.getMember);
-router.get('/:id/events', memberController.getMemberEvents);
-router.get('/:id/event-types', memberController.getMemberEventTypes);
 router.post('/', memberController.createMember);
 router.put('/:id', memberController.updateMember);
 router.delete('/:id', memberController.deleteMember);
@@ -18,4 +17,4 @@ router.delete('/:id/preferences/:eventTypeId', memberController.removeMemberPref
 // rota para adicionar um membro a um evento
 router.post('/:id/events', memberController.addMemberEvent);
 
-module.exports = router;
+export default router;
