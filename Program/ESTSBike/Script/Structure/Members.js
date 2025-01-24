@@ -122,22 +122,16 @@ class Members {
         const formContent = this.createForm(selectedMember);
         formContainer.appendChild(formContent);
 
-        // Criar botões usando o UIHelper
-        const buttonContainer = UIHelper.createButtonContainer([
-            {
-                text: 'Gravar',
-                id: 'btn-save',
-                action: () => this.handleSave(selectedMember)
-            },
-            {
-                text: 'Cancelar',
-                id: 'btn-cancel',
-                action: () => this.showMembers()
-            }
-        ]);
-
-        formContainer.appendChild(buttonContainer);
         content.appendChild(formContainer);
+
+        // Criar os botões usando UIHelper similar à lista de membros
+        const buttons = [
+            { text: 'Gravar', id: 'btn-member-save', action: () => this.handleSave(selectedMember) },
+            { text: 'Cancelar', id: 'btn-member-cancel', action: () => this.showMembers() }
+        ];
+        
+        const buttonContainer = UIHelper.createButtonContainer(buttons);
+        content.appendChild(buttonContainer);
     }
 
     handleSave(selectedMember) {
