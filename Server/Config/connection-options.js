@@ -15,16 +15,12 @@
  * - Utilizar variáveis de ambiente em produção
  */
 export default {
-    "mysqlOptions": {
-      "authProtocol": "default",
-      "enableSsl": "Disabled"
-    },
-    "previewLimit": 50,
-    "server": "localhost",
-    "port": 3307,
-    "driver": "MySQL",
-    "name": "sql",
-    "database": "estsbike",
-    "user": "root",
-    "password": "admin"
-  };
+    host: 'localhost',
+    user: 'root',
+    password: 'admin',
+    database: 'estsbike',
+    port: 3307,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+};
