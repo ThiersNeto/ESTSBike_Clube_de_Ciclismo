@@ -9,14 +9,37 @@ import { execute } from './Server/Config/Database.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+/**
+ * Converte a URL do módulo para um caminho de arquivo.
+ * @constant __filename
+ * @type {string}
+ */
 const __filename = fileURLToPath(import.meta.url);
+
+/**
+ * Obtém o diretório atual do arquivo.
+ * @constant __dirname
+ * @type {string}
+ */
 const __dirname = path.dirname(__filename);
 
+/**
+ * Instância do aplicativo Express.
+ * @constant app
+ * @type {express.Application}
+ */
 const app = express();
 
+// Middlewares
 app.use(cors());
 app.use(bodyParser.json());
 
+/**
+ * Executa um script SQL para criar o esquema do banco de dados.
+ * @async
+ * @function executeSQLScript
+ * @throws {Error} - Se ocorrer um erro ao executar o script SQL.
+ */
 async function executeSQLScript() {
     try {
         const sql = fs.readFileSync(path.join(__dirname, 'Server', 'SQL', 'schema.sql'), 'utf8');
@@ -32,6 +55,12 @@ async function executeSQLScript() {
     }
 }
 
+/**
+ * Inicia o servidor e configura as rotas.
+ * @async
+ * @function startServer
+ * @throws {Error} Se ocorrer um erro ao iniciar o servidor.
+ */
 async function startServer() {
     try {
         await executeSQLScript();
