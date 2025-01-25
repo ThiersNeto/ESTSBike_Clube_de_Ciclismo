@@ -7,11 +7,11 @@ FLUSH PRIVILEGES;
 
 USE estsbike;
 
-DROP TABLE IF EXISTS `event_types`;
+DROP TABLE IF EXISTS `member_events`;
+DROP TABLE IF EXISTS `member_preferred_event_types`;
 DROP TABLE IF EXISTS `events`;
 DROP TABLE IF EXISTS `members`;
-DROP TABLE IF EXISTS `member_event_types`;
-DROP TABLE IF EXISTS `member_events`;
+DROP TABLE IF EXISTS `event_types`;
 
 CREATE TABLE event_types (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -46,3 +46,39 @@ CREATE TABLE member_events (
     FOREIGN KEY (member_id) REFERENCES members(id),
     FOREIGN KEY (event_id) REFERENCES events(id)
 );
+
+DELETE FROM member_events;
+DELETE FROM member_preferred_event_types;
+DELETE FROM events;
+DELETE FROM members;
+DELETE FROM event_types;
+
+INSERT INTO event_types (description) VALUES 
+('Estrada'), 
+('BTT'), 
+('BMX'), 
+('Pista'), 
+('Ciclocrosse'), 
+('Cicloturismo');
+
+INSERT INTO members (name) VALUES 
+('Thiers Neto'), 
+('Lucas Gomes'), 
+('Eduardo Vemba'), 
+('Saymon Gabriel'), 
+('João Silva');
+
+INSERT INTO events (description, type_id, date) VALUES 
+('Clássica da Arrábida', 1, '2025-10-15'), 
+('BTT Noturno', 2, '2025-11-15'), 
+('Volta a Setúbal', 1, '2025-11-01'), 
+('Passeio das Vindimas', 6, '2025-09-20'), 
+('Tour do Alentejo', 6, '2025-09-30'), 
+('BMX Extreme Show', 3, '2025-10-05');
+
+INSERT INTO member_preferred_event_types (member_id, event_type_id) VALUES 
+(1, 1), (1, 2), 
+(2, 3), (2, 4), 
+(3, 5), (3, 6), 
+(4, 2), (4, 4), 
+(5, 1), (5, 2), (5, 3), (5, 4), (5, 5), (5, 6);

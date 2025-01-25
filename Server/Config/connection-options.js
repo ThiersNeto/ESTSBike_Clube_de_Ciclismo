@@ -6,7 +6,7 @@
  * @property {string} host          Endereço do servidor de banco de dados
  * @property {string} user          Nome de usuário para autenticação
  * @property {string} password      Senha para autenticação
- * @property {string} database      Nome do banco de dados a ser utilizado
+ * @property {string} database      Nome da base de dados a ser utilizado
  *
  * const connection = await mysql.createConnection(dbConfig);
  *
@@ -15,8 +15,16 @@
  * - Utilizar variáveis de ambiente em produção
  */
 export default {
-    "host": "localhost",
-    "user": "pw_usr",
-    "password": "PW@20242025",
-    "database": "estsbike"
-};
+    "mysqlOptions": {
+      "authProtocol": "default",
+      "enableSsl": "Disabled"
+    },
+    "previewLimit": 50,
+    "server": "localhost",
+    "port": 3307,
+    "driver": "MySQL",
+    "name": "sql",
+    "database": "estsbike",
+    "user": "root",
+    "password": "admin"
+  };
