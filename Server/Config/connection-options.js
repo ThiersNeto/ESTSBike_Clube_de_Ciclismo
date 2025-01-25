@@ -10,6 +10,9 @@
  *
  * const connection = await mysql.createConnection(dbConfig);
  *
+ * @author Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+ * <br>
+ * @author André Rocha - 202300185 - 202300185@estudantes.ips.pt
  * @warning
  * - Nunca comitar credenciais reais no controle de versão
  * - Utilizar variáveis de ambiente em produção

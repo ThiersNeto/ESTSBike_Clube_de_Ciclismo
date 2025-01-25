@@ -2,6 +2,10 @@
 /**
  * @module EventTypeController
  * @description Controlador para gestão de tipos de eventos
+ * 
+ * @author Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+ * <br>
+ * @author André Rocha - 202300185 - 202300185@estudantes.ips.pt
  */
 import { execute, string, number, sendError, sendResponse } from '../Config/Database.js';
 

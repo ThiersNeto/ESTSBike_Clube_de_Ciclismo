@@ -6,6 +6,9 @@ import connectionOptions from "./connection-options.js";
 /**
  * Pool de conexões com o banco de dados
  * @type {mysql.Pool}
+ * @author Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+ * <br>
+ * @author André Rocha - 202300185 - 202300185@estudantes.ips.pt
  */
 const pool = mysql.createPool(connectionOptions);
 

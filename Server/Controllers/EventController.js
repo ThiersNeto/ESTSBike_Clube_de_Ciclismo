@@ -9,6 +9,10 @@
  * @property {Function} toBoolean -     Converte explicitamente para booleano
  * @property {Function} sendError -     Envia resposta de erro padronizada
  * @property {Function} sendResponse -  Envia resposta de sucesso padronizada
+ * 
+ * @author Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+ * <br>
+ * @author André Rocha - 202300185 - 202300185@estudantes.ips.pt
  */
 import { execute, string, number, date, boolean, toBoolean, sendError, sendResponse } from '../Config/Database.js';
 

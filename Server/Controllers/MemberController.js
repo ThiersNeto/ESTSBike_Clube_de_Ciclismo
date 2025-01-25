@@ -2,6 +2,10 @@
 /**
  * @module MemberController
  * @description Controlador para gestão de membros e suas preferências/eventos
+ * 
+ * @author Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+ * <br>
+ * @author André Rocha - 202300185 - 202300185@estudantes.ips.pt
  */
 import { execute, string, number, boolean, toBoolean, sendError, sendResponse } from '../Config/Database.js';
 

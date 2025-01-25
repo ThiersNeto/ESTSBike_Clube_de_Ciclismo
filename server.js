@@ -9,10 +9,17 @@ import { pool } from './Server/Config/Database.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+/*
+* @author Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+* <br>
+* @author André Rocha - 202300185 - 202300185@estudantes.ips.pt
+*</br>
+*/
 /**
  * Converte a URL do módulo para um caminho de arquivo.
  * @constant __filename
  * @type {string}
+ * 
  */
 const __filename = fileURLToPath(import.meta.url);
 
