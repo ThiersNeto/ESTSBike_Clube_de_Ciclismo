@@ -119,6 +119,10 @@ async function sendResponse(response, command, parameters, processResult) {
     }
 }
 
+process.on('exit', () => {
+    pool.end().then(() => console.log('Pool de conexões encerrado.'));
+});
+
 export {
     pool,
     execute,
