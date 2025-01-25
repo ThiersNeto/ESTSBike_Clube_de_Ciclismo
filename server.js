@@ -4,8 +4,8 @@ import eventTypeController from './Server/Controllers/EventTypeController.js';
 import eventController from './Server/Controllers/EventController.js';
 import memberController from './Server/Controllers/MemberController.js';
 import cors from 'cors';
-import fs from 'fs';
-import { execute } from './Server/Config/Database.js';
+import fs from 'fs/promises';
+import { pool } from './Server/Config/Database.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -40,20 +40,19 @@ app.use(bodyParser.json());
  * @function executeSQLScript
  * @throws {Error} - Se ocorrer um erro ao executar o script SQL.
  */
-async function executeSQLScript() {
-    try {
-        const sql = fs.readFileSync(path.join(__dirname, 'Server', 'SQL', 'schema.sql'), 'utf8');
-        const statements = sql.split(';').filter(statement => statement.trim() !== '');
-        
-        for (const statement of statements) {
-            await execute(statement);
+const executeSQLScript = async (filePath) => {
+    const script = await fs.readFile(filePath, 'utf8');
+    const statements = script.split(';').filter(stmt => stmt.trim());
+
+    for (const statement of statements) {
+        try {
+            // Use query instead of execute for unsupported commands
+            await pool.query(statement);
+        } catch (error) {
+            console.error('Error executing statement:', statement, error);
         }
-        console.log('Database schema created successfully');
-    } catch (error) {
-        console.error('Error creating database schema:', error);
-        throw error;
     }
-}
+};
 
 /**
  * Inicia o servidor e configura as rotas.
@@ -63,7 +62,8 @@ async function executeSQLScript() {
  */
 async function startServer() {
     try {
-        await executeSQLScript();
+        const sqlScriptPath = path.join(__dirname, 'Server', 'SQL', 'schema.sql');
+        await executeSQLScript(sqlScriptPath);
         console.log('Database schema created and connected!');
 
         // Configuração das rotas

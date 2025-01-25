@@ -117,6 +117,7 @@ async function sendResponse(response, command, parameters, processResult) {
 }
 
 export {
+    pool,
     execute,
     string,
     number,
