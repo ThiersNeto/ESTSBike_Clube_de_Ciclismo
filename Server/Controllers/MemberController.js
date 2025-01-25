@@ -22,11 +22,11 @@ const commandDelete = 'DELETE FROM members WHERE id = ?';
 const commandGetPreferences = `
     SELECT et.*
     FROM event_types et
-             JOIN member_event_types met ON et.id = met.event_type_id
+             JOIN member_preferred_event_types met ON et.id = met.event_type_id
     WHERE met.member_id = ?
 `;
-const commandAddPreference = 'INSERT INTO member_event_types (member_id, event_type_id) VALUES (?, ?)';
-const commandRemovePreference = 'DELETE FROM member_event_types WHERE member_id = ? AND event_type_id = ?';
+const commandAddPreference = 'INSERT INTO member_preferred_event_types (member_id, event_type_id) VALUES (?, ?)';
+const commandRemovePreference = 'DELETE FROM member_preferred_event_types WHERE member_id = ? AND event_type_id = ?';
 
 /**
  * Comandos SQL para gestão de eventos de membros
@@ -43,18 +43,18 @@ const commandGetMemberEvents = `
  * Comandos de verificação
  * @namespace ValidationQueries
  */
-const checkCommand = 'SELECT * FROM member_event_types WHERE member_id = ? AND event_type_id = ?';
+const checkCommand = 'SELECT * FROM member_preferred_event_types WHERE member_id = ? AND event_type_id = ?';
 const checkEventsCommand = `
     SELECT COUNT(*) as eventCount
     FROM member_events me
              JOIN events e ON me.event_id = e.id
-    WHERE me.member_id = ? AND e.event_type_id = ?
+    WHERE me.member_id = ? AND e.type_id = ?
 `;
-const checkExistingPreference = 'SELECT * FROM member_event_types WHERE member_id = ? AND event_type_id = ?';
+const checkExistingPreference = 'SELECT * FROM member_preferred_event_types WHERE member_id = ? AND event_type_id = ?';
 const checkPreferredEventType = `
     SELECT COUNT(*) as count
-    FROM member_event_types met
-        JOIN events e ON met.event_type_id = e.event_type_id
+    FROM member_preferred_event_types met
+        JOIN events e ON met.event_type_id = e.type_id
     WHERE met.member_id = ? AND e.id = ?
 `;
 
@@ -184,7 +184,7 @@ export default {
      */
     async addMemberPreference(request, response) {
         const memberId = number(request.params.id);
-        const eventTypeId = number(request.body.event_type_id);
+        const eventTypeId = number(request.params.eventTypeId);
 
         if (!memberId || !eventTypeId) {
             return sendError(response, "Invalid member ID or event type ID", 400);
@@ -265,7 +265,7 @@ export default {
      */
     async addMemberEvent(request, response) {
         const memberId = number(request.params.id);
-        const eventId = number(request.body.event_id);
+        const eventId = number(request.params.eventId);
 
         if (!memberId || !eventId) {
             return sendError(response, "Invalid member ID or event ID", 400);

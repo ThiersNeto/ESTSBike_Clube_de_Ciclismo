@@ -80,8 +80,8 @@ async function startServer() {
         app.delete('/api/events/:id', eventController.deleteEvent);
 
         // Rotas adicionais para gerir inscrições em eventos
-        app.post('/api/events/:id/subscribe', eventController.subscribeToEvent);
-        app.delete('/api/events/:id/unsubscribe', eventController.unsubscribeFromEvent);
+        app.post('/api/events/:eventId/subscribe/:memberId', eventController.subscribeToEvent);
+        app.delete('/api/events/:eventId/unsubscribe/:memberId', eventController.unsubscribeFromEvent);
         app.get('/api/events/:id/members', eventController.getEventMembers);
 
         // Rotas para gerir tipos de eventos
@@ -100,11 +100,11 @@ async function startServer() {
 
         // Rotas adicionais para gerir preferências de tipos de eventos dos membros
         app.get('/api/members/:id/preferences', memberController.getMemberPreferences);
-        app.post('/api/members/:id/preferences', memberController.addMemberPreference);
+        app.post('/api/members/:id/preferences/:eventTypeId', memberController.addMemberPreference);
         app.delete('/api/members/:id/preferences/:eventTypeId', memberController.removeMemberPreference);
 
         // rota para adicionar um membro a um evento
-        app.post('/api/members/:id/events', memberController.addMemberEvent);
+        app.post('/api/members/:id/events/:eventId', memberController.addMemberEvent);
 
         // Tratamento para rotas não encontradas
         app.use((req, res, next) => {

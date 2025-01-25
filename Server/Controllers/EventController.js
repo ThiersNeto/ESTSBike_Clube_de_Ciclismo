@@ -175,8 +175,8 @@ export default {
      * @throws {Error}              500 - Erro interno do servidor
      */
     async subscribeToEvent(request, response) {
-        const eventId = number(request.params.id);
-        const memberId = number(request.body.member_id);
+        const eventId = number(request.params.eventId);
+        const memberId = number(request.params.memberId);
 
         if (!eventId || !memberId) {
             sendError(response, "Event ID and Member ID are required!", 400);
@@ -210,8 +210,8 @@ export default {
      * @throws {Error}              500 - Erro interno do servidor
      */
     async unsubscribeFromEvent(request, response) {
-        const eventId = number(request.params.id);
-        const memberId = number(request.body.member_id);
+        const eventId = number(request.params.eventId);
+        const memberId = number(request.params.memberId);
 
         if (!eventId || !memberId) {
             sendError(response, "Event ID and Member ID are required!", 400);
