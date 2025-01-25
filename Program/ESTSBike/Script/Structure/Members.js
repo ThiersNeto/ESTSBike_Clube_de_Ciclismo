@@ -1,6 +1,10 @@
+
 /**
  * Classe que representa um membro individual
  * @class Member
+ * @property {number} id -                  ID único do membro
+ * @property {string} name -                Nome do membro
+ * @property {number[]} preferredEvents -    IDs dos tipos de eventos preferidos
  */
 class Member {
     constructor(id, name, preferredEvents = []) {
@@ -14,8 +18,13 @@ class Member {
 }
 
 /**
- * Classe responsável pelo gerenciamento de membros
+ * Classe responsável pelo gerenciamento completo de membros
  * @class Members
+ * @property {Member[]} members -           Lista de membros cadastrados
+ * <p>
+ * @property {number} currentId -           Contador para geração de IDs
+ * <p>
+ * @property {Member|null} selectedMember - Membro atualmente selecionado na UI
  */
 class Members {
     constructor() {
@@ -26,7 +35,13 @@ class Members {
         this.eventSubscriptions = [];
     }
 
-    // Métodos CRUD básicos
+    /**
+     * Adiciona um novo membro
+     * @method addMember
+     * @param {string} name -                       Nome do membro
+     * @param {number[]} [preferredEvents=[]] -     IDs dos tipos de eventos preferidos
+     * @returns {Member}                            Novo membro criado
+     */
     addMember(name, preferredEvents) {
         this.currentId++;
         const member = new Member(this.currentId, name, preferredEvents);
@@ -34,10 +49,27 @@ class Members {
         return member;
     }
 
+    /**
+     * Retorna todos os membros cadastrados
+     * @method getAllMembers
+     * @returns {Member[]}      Lista de membros
+     */
     getAllMembers() {
         return [...this.members];
     }
 
+    /**
+     * Atualiza um membro existente
+     * @method updateMember
+     * @param {number} id -                     ID do membro
+     * <p>
+     * @param {string} name -                   Novo nome
+     * <p>
+     * @param {number[]} preferredEvents -      Novos IDs de eventos preferidos
+     * <p>
+     * @returns {boolean}                       True se atualizado com sucesso
+     * @throws {Error}                          Se membro não encontrado
+     */
     updateMember(id, name, preferredEvents) {
         const member = this.members.find(e => e.id === id);
         if (!member) throw new Error(MessageEvents.MEMBER_NOT_FOUND);
@@ -46,6 +78,13 @@ class Members {
         return true;
     }
 
+    /**
+     * Remove um membro
+     * @method deleteMember
+     * @param {number} id -         ID do membro
+     * @returns {boolean}           True se removido com sucesso
+     * @throws {Error}              Se membro não encontrado
+     */
     deleteMember(id) {
         const index = this.members.findIndex(e => e.id === id);
         if (index === -1) throw new Error(MessageEvents.MEMBER_NOT_FOUND);
@@ -53,7 +92,10 @@ class Members {
         return true;
     }
 
-    // Métodos de UI
+    /**
+     * Exibe a lista de membros na interface
+     * @method showMembers
+     */
     showMembers() {
         const content = UIHelper.clearAndGetMainContent();
         content.appendChild(this.createHeader());
@@ -61,10 +103,29 @@ class Members {
         content.appendChild(this.createButtonContainer());
     }
 
+    /**
+     * Inscreve membro em um evento
+     * @method subscribeToEvent
+     * @param {number} memberId -       ID do membro
+     * <p>
+     * @param {number} eventId -        ID do evento
+     * <p>
+     * @returns {boolean}               True se inscrito com sucesso
+     * @throws {Error}                  Se inscrição já existir
+     */
     createHeader() {
         return UIHelper.createSectionHeader('Membros');
     }
 
+    /**
+     * Cria container com botões de ações para membros
+     * @method createButtonContainer
+     * @returns {HTMLElement} Div com botões de CRUD
+     * @description Gera 3 botões com as seguintes ações:
+     * - Criar: Abre formulário de novo membro
+     * - Editar: Inicia edição do membro selecionado
+     * - Apagar: Remove membro selecionado
+     */
     createButtonContainer() {
         return UIHelper.createButtonContainer([
             { text: 'Criar', id: 'btn-member-create', action: () => this.showMemberForm() },
@@ -73,6 +134,18 @@ class Members {
         ]);
     }
 
+    /**
+     * Cria lista visual de membros com cabeçalho e itens
+     * @method createMembersList
+     * @returns {HTMLElement} Container da lista de membros
+     * @description Estrutura inclui:
+     * - Cabeçalho com colunas ID e Nome
+     * - Itens de membro ou mensagem de lista vazia
+     * - Estilização via classes CSS:
+     *   - .members-list (container principal)
+     *   - .members-header (cabeçalho)
+     *   - .member-item (cada linha de membro)
+     */
     createMembersList() {
         const membersList = document.createElement('div');
         membersList.classList.add('members-list');
@@ -89,6 +162,12 @@ class Members {
         return membersList;
     }
 
+    /**
+     * Cria elemento HTML para exibição do membro
+     * @method createMemberItem
+     * @param {Member} member - Instância do membro
+     * @returns {HTMLElement} Elemento HTML do membro
+     */
     createMemberItem(member) {
         const item = document.createElement('div');
         item.classList.add('member-item');
@@ -105,7 +184,11 @@ class Members {
         return item;
     }
 
-    // Métodos de Formulário
+    /**
+     * Cria e exibe o formulário de membro
+     * @method showMemberForm
+     * @param {Member|null} [selectedMember=null] - Membro para edição
+     */
     showMemberForm(selectedMember = null) {
         const content = UIHelper.clearAndGetMainContent();
         
@@ -134,6 +217,11 @@ class Members {
         content.appendChild(buttonContainer);
     }
 
+    /**
+     * Manipula o salvamento do formulário
+     * @method handleSave
+     * @param {Member|null} selectedMember - Membro sendo editado
+     */
     handleSave(selectedMember) {
         const nameInput = document.querySelector('.member-input');
         const checkboxes = document.querySelectorAll('.event-checkbox:checked');
@@ -158,7 +246,16 @@ class Members {
         }
     }
 
-    // Métodos de Manipulação de Eventos
+    /**
+     * Inscreve membro em um evento
+     * @method subscribeToEvent
+     * @param {number} memberId -       ID do membro
+     * <br>
+     * @param {number} eventId -        ID do evento
+     * <br>
+     * @returns {boolean}               True se inscrito com sucesso
+     * @throws {Error}                  Se inscrição já existir
+     */
     subscribeToEvent(memberId, eventId) {
         if (this.eventSubscriptions.some(sub => sub.memberId === memberId && sub.eventId === eventId)) {
             throw new Error('Membro já está inscrito neste evento');
@@ -167,6 +264,16 @@ class Members {
         return true;
     }
 
+    /**
+     * Cancela inscrição em evento
+     * @method cancelEventSubscription
+     * @param {number} memberId -       ID do membro
+     * <br>
+     * @param {number} eventId -        ID do evento
+     * <br>
+     * @returns {boolean}               True se cancelado com sucesso
+     * @throws {Error}                  Se inscrição não existir
+     */
     cancelEventSubscription(memberId, eventId) {
         const index = this.eventSubscriptions.findIndex(
             sub => sub.memberId === memberId && sub.eventId === eventId
@@ -178,7 +285,12 @@ class Members {
         return true;
     }
 
-    // Handlers
+    /**
+     * Manipula a edição de membros
+     * @method handleEdit
+     * @description Verifica seleção e exibe formulário de edição
+     * @throws {Error} Exibe erro se nenhum membro estiver selecionado
+     */
     handleEdit() {
         const selected = document.querySelector('.member-item.selected');
         if (!selected) {
@@ -190,6 +302,13 @@ class Members {
         this.showMemberForm(member);
     }
 
+    /**
+     * Manipula a exclusão de membros
+     * @method handleDelete
+     * @description Valida e executa exclusão de membro
+     * @throws {Error} Exibe erros de validação ou operação
+     * @see Validacao.validarExclusaoMembro
+     */
     handleDelete() {
         const selected = document.querySelector('.member-item.selected');
         if (!selected) {
@@ -208,6 +327,12 @@ class Members {
         }
     }
 
+    /**
+     * Cria estrutura base do formulário
+     * @method createForm
+     * @param {Member|null} selectedMember -    Membro para edição ou null para novo
+     * @returns {HTMLElement}                   Container do formulário com seções organizadas
+     */
     createForm(selectedMember) {
         const formContent = document.createElement('div');
         formContent.classList.add('form-content');
@@ -222,6 +347,17 @@ class Members {
         return formContent;
     }
 
+    /**
+     * Cria seção de nome do formulário
+     * @method createNameSection
+     * @param {Member|null} selectedMember -    Membro sendo editado
+     * @returns {HTMLElement}                   Seção com campo de entrada de nome
+     *
+     * @description Inclui:
+     * - Label "Nome"
+     * - Input text com classe 'member-input'
+     * - Valor pré-preenchido para edição
+     */
     createNameSection(selectedMember) {
         const nameSection = document.createElement('div');
         nameSection.classList.add('form-row');
@@ -241,14 +377,20 @@ class Members {
         return nameSection;
     }
 
+    /**
+     * Cria layout de colunas para seções de eventos
+     * @method createEventsSection
+     * @param {Member|null} selectedMember -    Define se exibe coluna de eventos disponíveis
+     * @returns {HTMLElement}                   Container com duas colunas:
+     * - Esquerda: Tipos preferidos
+     * - Direita: Eventos disponíveis (apenas em edição)
+     */
     createEventsSection(selectedMember) {
         const columnsContainer = UIHelper.createFormColumns();
 
-        // Coluna esquerda - Tipos de eventos preferidos
         const preferredEventsColumn = this.createPreferredEventsColumn(selectedMember);
         columnsContainer.appendChild(preferredEventsColumn);
 
-        // Coluna direita - Eventos disponíveis (apenas para edição)
         if (selectedMember) {
             const availableEventsColumn = this.createAvailableEventsColumn(selectedMember);
             columnsContainer.appendChild(availableEventsColumn);
@@ -257,6 +399,12 @@ class Members {
         return columnsContainer;
     }
 
+    /**
+     * Cria coluna de tipos de eventos preferidos
+     * @method createPreferredEventsColumn
+     * @param {Member|null} selectedMember -    Preferências atuais do membro
+     * @returns {HTMLElement}                   Coluna com checkboxes ou mensagem de ausência
+     */
     createPreferredEventsColumn(selectedMember) {
         const column = UIHelper.createFormColumn();
         const eventTypes = eventTypeManager.getAllEventTypes();
@@ -276,18 +424,23 @@ class Members {
         return column;
     }
 
+    /**
+     * Cria coluna de eventos disponíveis para inscrição
+     * @method createAvailableEventsColumn
+     * @param {Member} member -     Membro com preferências definidas
+     * @returns {HTMLElement}       Coluna com grid de eventos ou mensagem
+     * @description                 Exibe apenas eventos futuros compatíveis com preferências
+     */
     createAvailableEventsColumn(member) {
         const column = UIHelper.createFormColumn();
         const container = document.createElement('div');
         container.classList.add('events-list-container');
 
-        // Título da seção
         const title = document.createElement('h3');
         title.textContent = 'Eventos Disponíveis';
         title.classList.add('form-label');
         container.appendChild(title);
 
-        // Lista de eventos disponíveis
         const availableEvents = this.getAvailableEventsForMember(member);
         
         if (availableEvents.length === 0) {
@@ -302,6 +455,14 @@ class Members {
         return column;
     }
 
+    /**
+     * Filtra eventos disponíveis para um membro
+     * @method getAvailableEventsForMember
+     * @param {Member} member - Membro com preferências
+     * @returns {Event[]} Lista filtrada por:
+     * - Data igual ou posterior à atual
+     * - Tipo consta nas preferências
+     */
     getAvailableEventsForMember(member) {
         return eventManager.events.filter(event => {
             const eventDate = new Date(event.date);
@@ -311,11 +472,17 @@ class Members {
         });
     }
 
+    /**
+     * Cria grade de eventos disponíveis
+     * @method createEventsGrid
+     * @param {Event[]} events -    Lista de eventos
+     * @param {Member} member -     Membro relacionado
+     * @returns {HTMLElement}       Elemento HTML da grade
+     */
     createEventsGrid(events, member) {
         const grid = document.createElement('div');
         grid.classList.add('events-grid');
 
-        // Cabeçalho
         grid.appendChild(
             UIHelper.createTableHeader(
                 ['Id', 'Tipo', 'Descritivo', 'Data', 'Ação'],
@@ -323,7 +490,6 @@ class Members {
             )
         );
 
-        // Linhas de eventos
         events.forEach(event => {
             grid.appendChild(this.createEventRow(event, member));
         });
@@ -331,6 +497,16 @@ class Members {
         return grid;
     }
 
+    /**
+     *  Cria uma linha da grade de eventos com informações e ações de inscrição
+     *  @method createEventRow
+     *  @param {Object} event -                 Objeto contendo os dados do evento
+     *  @param {number} event.id -              ID único do evento
+     *  @param {number} event.typeId -          ID do tipo de evento
+     *  @param {string} event.description -     Descrição detalhada do evento
+     *  @param {string} event.date -            Data do evento em formato ISO
+     *  @param {Member} member -                Instância do membro associado à linha
+     */
     createEventRow(event, member) {
         const row = document.createElement('div');
         row.classList.add('event-row');
@@ -340,7 +516,6 @@ class Members {
             sub => sub.memberId === member.id && sub.eventId === event.id
         );
 
-        // Células de informação
         [
             event.id,
             eventType.description,
@@ -353,7 +528,6 @@ class Members {
             row.appendChild(cell);
         });
 
-        // Célula de ação
         const actionCell = document.createElement('div');
         actionCell.classList.add('item-cell', 'action-cell');
 

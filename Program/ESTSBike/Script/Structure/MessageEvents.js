@@ -5,6 +5,7 @@
  * @author Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
  * @author André Rocha - 202300185 - 202300185@estudantes.ips.pt
  */
+
 class MessageEvents {
     /**
      * Mensagens de Seleção
@@ -54,8 +55,8 @@ class MessageEvents {
     /**
      * Exibe uma mensagem de erro
      * @static
-     * @param {string} message - Mensagem de erro a ser exibida
-     * @param {HTMLElement} [element] - Elemento onde a mensagem será exibida
+     * @param {string} message -            Mensagem de erro a ser exibida
+     * @param {HTMLElement} [element] -     Elemento onde a mensagem será exibida
      */
     static showError(message, element) {
         MessageEvents.removeExistingMessages();

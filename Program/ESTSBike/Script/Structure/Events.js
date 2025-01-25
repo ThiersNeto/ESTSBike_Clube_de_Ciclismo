@@ -1,3 +1,4 @@
+
 /**
  * Classe que representa um evento individual
  * Cria uma nova instância de Event
@@ -9,7 +10,9 @@
  * @param {Date} date - Data do evento
  * @throws {Error} Se a descrição estiver vazia ou não for string
  * @throws {Error} Se a data não for um objeto Date válido
+ *
  * @author Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+ * <br>
  * @author André Rocha - 202300185 - 202300185@estudantes.ips.pt
  */
 class Event {
@@ -256,7 +259,6 @@ class EventManager {
         const formContainer = document.createElement('div');
         formContainer.classList.add('form-container');
 
-        // Tipo de evento (select)
         const typeSelect = document.createElement('select');
         typeSelect.classList.add('event-input');
         const eventTypes = eventTypeManager.getAllEventTypes();
@@ -270,7 +272,6 @@ class EventManager {
             typeSelect.appendChild(option);
         });
 
-        // Descrição
         const descInput = document.createElement('input');
         descInput.type = 'text';
         descInput.classList.add('event-input');
@@ -279,7 +280,6 @@ class EventManager {
             descInput.value = selectedEvent.description;
         }
 
-        // Data
         const dateInput = document.createElement('input');
         dateInput.type = 'date';
         dateInput.classList.add('event-input');
@@ -419,5 +419,4 @@ class EventManager {
     }
 }
 
-// Instância global do gerenciador de eventos
 const eventManager = new EventManager();

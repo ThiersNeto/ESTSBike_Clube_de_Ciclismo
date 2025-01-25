@@ -1,44 +1,85 @@
-import { execute, string, number, boolean, toBoolean, sendError, sendResponse } from '../Config/Database.js';""
 
+/**
+ * @module MemberController
+ * @description Controlador para gestão de membros e suas preferências/eventos
+ */
+import { execute, string, number, boolean, toBoolean, sendError, sendResponse } from '../Config/Database.js';
+
+/**
+ * Comandos SQL para operações básicas de membros
+ * @namespace MemberQueries
+ */
 const commandGetAll = 'SELECT * FROM members';
 const commandGetOne = 'SELECT * FROM members WHERE id = ?';
 const commandCreate = 'INSERT INTO members (name) VALUES (?)';
 const commandUpdate = 'UPDATE members SET name = ? WHERE id = ?';
 const commandDelete = 'DELETE FROM members WHERE id = ?';
+
+/**
+ * Comandos SQL para gestão de preferências
+ * @namespace PreferenceQueries
+ */
 const commandGetPreferences = `
-    SELECT et.* 
-    FROM event_types et 
-    JOIN member_event_types met ON et.id = met.event_type_id 
+    SELECT et.*
+    FROM event_types et
+             JOIN member_event_types met ON et.id = met.event_type_id
     WHERE met.member_id = ?
 `;
 const commandAddPreference = 'INSERT INTO member_event_types (member_id, event_type_id) VALUES (?, ?)';
 const commandRemovePreference = 'DELETE FROM member_event_types WHERE member_id = ? AND event_type_id = ?';
+
+/**
+ * Comandos SQL para gestão de eventos de membros
+ * @namespace MemberEventQueries
+ */
 const commandGetMemberEvents = `
-    SELECT e.* 
-    FROM events e 
-    JOIN member_events me ON e.id = me.event_id 
+    SELECT e.*
+    FROM events e
+             JOIN member_events me ON e.id = me.event_id
     WHERE me.member_id = ?
 `;
+
+/**
+ * Comandos de verificação
+ * @namespace ValidationQueries
+ */
 const checkCommand = 'SELECT * FROM member_event_types WHERE member_id = ? AND event_type_id = ?';
 const checkEventsCommand = `
-            SELECT COUNT(*) as eventCount
-            FROM member_events me
-            JOIN events e ON me.event_id = e.id
-            WHERE me.member_id = ? AND e.event_type_id = ?
-        `;
+    SELECT COUNT(*) as eventCount
+    FROM member_events me
+             JOIN events e ON me.event_id = e.id
+    WHERE me.member_id = ? AND e.event_type_id = ?
+`;
 const checkExistingPreference = 'SELECT * FROM member_event_types WHERE member_id = ? AND event_type_id = ?';
 const checkPreferredEventType = `
-                SELECT COUNT(*) as count
-                FROM member_event_types met
-                JOIN events e ON met.event_type_id = e.event_type_id
-                WHERE met.member_id = ? AND e.id = ?
-            `;
+    SELECT COUNT(*) as count
+    FROM member_event_types met
+        JOIN events e ON met.event_type_id = e.event_type_id
+    WHERE met.member_id = ? AND e.id = ?
+`;
 
 export default {
+    /**
+     * Obtém todos os membros cadastrados
+     * @async
+     * @param {Object} request -    Objeto de requisição HTTP
+     * @param {Object} response -   Objeto de resposta HTTP
+     * @returns {Promise<Array>}    Lista de membros
+     * @throws {Error}              500 - Erro interno do servidor
+     */
     async getAllMembers(request, response) {
         await sendResponse(response, commandGetAll, [], (result) => result);
     },
 
+    /**
+     * Obtém um membro pelo ID
+     * @async
+     * @param {Object} request -    Objeto de requisição HTTP
+     * @param {Object} response -   Objeto de resposta HTTP
+     * @returns {Promise<Object>}   Dados do membro
+     * @throws {Error}              404 - Membro não encontrado
+     * @throws {Error}              500 - Erro interno do servidor
+     */
     async getMember(request, response) {
         const id = number(request.params.id);
         await sendResponse(response, commandGetOne, [id], (result) => {
@@ -51,6 +92,15 @@ export default {
         });
     },
 
+    /**
+     * Cria um novo membro
+     * @async
+     * @param {Object} request -    Objeto de requisição HTTP
+     * @param {Object} response -   Objeto de resposta HTTP
+     * @returns {Promise<Object>}   Dados do membro criado
+     * @throws {Error}              400 - Nome não fornecido
+     * @throws {Error}              500 - Erro interno do servidor
+     */
     async createMember(request, response) {
         const name = string(request.body.name);
 
@@ -62,9 +112,17 @@ export default {
         } else {
             sendError(response, "You must provide a name for the member!");
         }
-        
     },
 
+    /**
+     * Atualiza um membro existente
+     * @async
+     * @param {Object} request -    Objeto de requisição HTTP
+     * @param {Object} response -   Objeto de resposta HTTP
+     * @returns {Promise<Object>}   Mensagem de confirmação
+     * @throws {Error}              400 - Nome não fornecido
+     * @throws {Error}              500 - Erro interno do servidor
+     */
     async updateMember(request, response) {
         const id = number(request.params.id);
         const name = string(request.body.name);
@@ -78,6 +136,15 @@ export default {
         }
     },
 
+    /**
+     * Exclui um membro
+     * @async
+     * @param {Object} request -    Objeto de requisição HTTP
+     * @param {Object} response -   Objeto de resposta HTTP
+     * @returns {Promise<Object>}   Mensagem de confirmação
+     * @throws {Error}              400 - Membro possui eventos associados
+     * @throws {Error}              500 - Erro interno do servidor
+     */
     async deleteMember(request, response) {
         const id = number(request.params.id);
         const checkCommand = 'SELECT * FROM member_events WHERE member_id = ?';
@@ -87,34 +154,49 @@ export default {
             sendError(response, 'Cannot delete member with event registrations', 400);
             return;
         }
-        
+
         await sendResponse(response, commandDelete, [id], () => ({
             message: 'Member deleted successfully'
         }));
     },
 
+    /**
+     * Obtém as preferências de tipos de evento de um membro
+     * @async
+     * @param {Object} request -    Objeto de requisição HTTP
+     * @param {Object} response -   Objeto de resposta HTTP
+     * @returns {Promise<Array>}    Lista de preferências
+     * @throws {Error}              500 - Erro interno do servidor
+     */
     async getMemberPreferences(request, response) {
         const id = number(request.params.id);
         await sendResponse(response, commandGetPreferences, [id], (result) => result);
     },
 
+    /**
+     * Adiciona uma preferência de tipo de evento a um membro
+     * @async
+     * @param {Object} request -    Objeto de requisição HTTP
+     * @param {Object} response -   Objeto de resposta HTTP
+     * @returns {Promise<Object>}   Mensagem de confirmação
+     * @throws {Error}              400 - IDs inválidos ou preferência já existente
+     * @throws {Error}              500 - Erro interno do servidor
+     */
     async addMemberPreference(request, response) {
         const memberId = number(request.params.id);
         const eventTypeId = number(request.body.event_type_id);
-    
+
         if (!memberId || !eventTypeId) {
             return sendError(response, "Invalid member ID or event type ID", 400);
         }
-    
+
         try {
-            // Verifica se o membro já tem essa preferência
             const existingPreference = await execute(checkExistingPreference, [memberId, eventTypeId]);
-    
+
             if (existingPreference && existingPreference.length > 0) {
                 return sendError(response, "Member already has this event type preference", 400);
             }
-    
-            // Se a preferência não existe, adiciona
+
             await sendResponse(response, commandAddPreference, [memberId, eventTypeId], (result) => {
                 if (result.affectedRows > 0) {
                     return { message: 'Member preference added successfully' };
@@ -128,18 +210,27 @@ export default {
         }
     },
 
+    /**
+     * Remove uma preferência de tipo de evento de um membro
+     * @async
+     * @param {Object} request -    Objeto de requisição HTTP
+     * @param {Object} response -   Objeto de resposta HTTP
+     * @returns {Promise<Object>}   Mensagem de confirmação
+     * @throws {Error}              400 - IDs inválidos ou eventos associados
+     * @throws {Error}              404 - Preferência não encontrada
+     * @throws {Error}              500 - Erro interno do servidor
+     */
     async removeMemberPreference(request, response) {
         const memberId = number(request.params.id);
         const eventTypeId = number(request.params.eventTypeId);
-    
+
         if (!memberId || !eventTypeId) {
             return sendError(response, "Invalid member ID or event type ID", 400);
         }
-    
+
         try {
-            // Verifica se a preferência existe
             const existingPreference = await execute(checkCommand, [memberId, eventTypeId]);
-    
+
             if (!existingPreference || existingPreference.length === 0) {
                 return sendError(response, "Preference not found", 404);
             }
@@ -149,8 +240,7 @@ export default {
             if (eventCount && eventCount.eventCount > 0) {
                 return sendError(response, "Cannot remove preference. Member has associated events of this type.", 400);
             }
-    
-            // Se a preferência existe, remove-a
+
             await sendResponse(response, commandRemovePreference, [memberId, eventTypeId], (result) => {
                 if (result.affectedRows > 0) {
                     return { message: 'Member preference removed successfully' };
@@ -164,24 +254,30 @@ export default {
         }
     },
 
+    /**
+     * Associa um membro a um evento compatível com suas preferências
+     * @async
+     * @param {Object} request -    Objeto de requisição HTTP
+     * @param {Object} response -   Objeto de resposta HTTP
+     * @returns {Promise<Object>}   Mensagem de confirmação
+     * @throws {Error}              400 - IDs inválidos ou tipo de evento não permitido
+     * @throws {Error}              500 - Erro interno do servidor
+     */
     async addMemberEvent(request, response) {
         const memberId = number(request.params.id);
         const eventId = number(request.body.event_id);
-    
+
         if (!memberId || !eventId) {
             return sendError(response, "Invalid member ID or event ID", 400);
         }
-    
+
         try {
-            // Verifica se o evento é de um tipo preferido pelo membro
-        
             const [result] = await execute(checkPreferredEventType, [memberId, eventId]);
-    
+
             if (result.count === 0) {
                 return sendError(response, "Cannot add event. Event type is not in member's preferences.", 400);
             }
-    
-            // Se o evento é de um tipo preferido, adiciona a associação
+
             const addMemberEventCommand = 'INSERT INTO member_events (member_id, event_id) VALUES (?, ?)';
             await sendResponse(response, addMemberEventCommand, [memberId, eventId], (result) => {
                 if (result.affectedRows > 0) {
@@ -195,5 +291,4 @@ export default {
             sendError(response, "An error occurred while associating member with event", 500);
         }
     }
-
 };

@@ -1,11 +1,14 @@
+
 /**
  * Classe que representa um tipo de evento individual
  * @constructor
  * @class EventType
- * @param {number} id - Identificador único do tipo de evento
- * @param {string} description - Descrição do tipo de evento
- * @throws {Error} Se a descrição estiver vazia ou não for string
+ * @param {number} id -             Identificador único do tipo de evento
+ * @param {string} description -    Descrição do tipo de evento
+ * @throws {Error}                  Se a descrição estiver vazia ou não for string
+ *
  * @author Thiers Neto - 201902549 - 201902549@estudantes.ips.pt
+ * <br>
  * @author André Rocha - 202300185 - 202300185@estudantes.ips.pt
  */
 class EventType {
@@ -82,13 +85,11 @@ class EventTypeManager {
      * @throws {Error} Se o tipo de evento estiver em uso ou não for encontrado
      */
     deleteEventType(id) {
-        // Verifica se existem eventos usando este tipo
         const eventsUsingType = eventManager.events.some(event => event.typeId === id);
         if (eventsUsingType) {
             throw new Error(MessageEvents.EVENT_TYPE_IN_USE);
         }
 
-        // Verifica se existem preferências de membros usando este tipo
         if (this.memberPreferences.some(mp => mp.eventTypeId === id)) {
             throw new Error(MessageEvents.EVENT_TYPE_IN_PREFERENCES);
         }
@@ -356,20 +357,46 @@ class EventTypeManager {
         }
     }
 
+    /**
+     * Filtra tipos de eventos com base em IDs preferidos
+     * @method getEventsByTypes
+     * @param {number[]} preferredEventIds      Array de IDs de tipos de eventos
+     * @returns {EventType[]}                   Lista filtrada de tipos de eventos
+     */
     getEventsByTypes(preferredEventIds) {
         return this.eventTypes.filter(event => preferredEventIds.includes(event.id));
     }
 
+    /**
+     * Adiciona preferências de tipos de eventos para um membro
+     * @method addMemberPreferences
+     * @param {number} memberId - ID do membro
+     * @param {number[]} eventTypeIds - IDs dos tipos de eventos preferidos
+     * @description Armazena no array memberPreferences
+     */
     addMemberPreferences(memberId, eventTypeIds) {
         this.memberPreferences.push({ memberId, eventTypeIds });
     }
 
+    /**
+     * Obtém preferências de tipos de eventos de um membro
+     * @method getMemberPreferences
+     * @param {number} memberId     ID do membro
+     * @returns {Object|null}       Objeto com preferências ou null se não encontrado
+     */
     getMemberPreferences(memberId) {
         return this.memberPreferences.find(mp => mp.memberId === memberId);
     }
 
 
-    // Métodos para interação com a API
+    /**
+     * Obtém todos os tipos de eventos da API
+     * @static
+     * @async
+     * @method getAllEventTypes
+     * @returns {Promise<EventType[]>}  Lista de tipos de eventos
+     * @throws {Error}                  Se falhar a requisição
+     */
     static async getAllEventTypes() {
         try {
           const response = await fetch('http://localhost:3000/api/event-types');
@@ -382,7 +409,16 @@ class EventTypeManager {
           return [];
         }
       }
-    
+
+    /**
+     * Cria um novo tipo de evento via API
+     * @static
+     * @async
+     * @method createEventType
+     * @param {Object} eventType -      Dados do tipo de evento
+     * @returns {Promise<Object|null>}  Resposta da API ou null em caso de erro
+     * @throws {Error}                  Se falhar a requisição
+     */
       static async createEventType(eventType) {
         try {
           const response = await fetch('http://localhost:3000/api/event-types', {

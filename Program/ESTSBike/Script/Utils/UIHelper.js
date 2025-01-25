@@ -1,3 +1,4 @@
+
 /**
  * Classe auxiliar para funções comuns de UI
  * @class UIHelper
@@ -7,8 +8,8 @@
 class UIHelper {
     /**
      * Cria um cabeçalho de seção
-     * @param {string} title - Título da seção
-     * @returns {HTMLElement} Elemento do cabeçalho
+     * @param {string} title -          Título da seção
+     * @returns {HTMLElement}           Elemento do cabeçalho
      */
     static createSectionHeader(title) {
         const sectionTitle = document.createElement('h2');
@@ -39,9 +40,9 @@ class UIHelper {
 
     /**
      * Cria um cabeçalho de tabela
-     * @param {string[]} headers - Array com os textos dos cabeçalhos
-     * @param {string} headerClass - Classe CSS para o container do cabeçalho
-     * @returns {HTMLElement} Elemento do cabeçalho da tabela
+     * @param {string[]} headers -          Array com os textos dos cabeçalhos
+     * @param {string} headerClass -        Classe CSS para o container do cabeçalho
+     * @returns {HTMLElement}               Elemento do cabeçalho da tabela
      */
     static createTableHeader(headers, headerClass) {
         const header = document.createElement('div');
@@ -59,8 +60,8 @@ class UIHelper {
 
     /**
      * Cria uma mensagem para lista vazia
-     * @param {string} message - Texto da mensagem
-     * @returns {HTMLElement} Elemento com a mensagem
+     * @param {string} message -        Texto da mensagem
+     * @returns {HTMLElement}           Elemento com a mensagem
      */
     static createEmptyMessage(message) {
         const messageElement = document.createElement('p');
@@ -71,9 +72,9 @@ class UIHelper {
 
     /**
      * Cria um formulário básico
-     * @param {string} title - Título do formulário
-     * @param {HTMLElement} content - Conteúdo do formulário
-     * @returns {HTMLElement} Container do formulário
+     * @param {string} title -          Título do formulário
+     * @param {HTMLElement} content -   Conteúdo do formulário
+     * @returns {HTMLElement}           Container do formulário
      */
     static createFormContainer(title, content) {
         const container = document.createElement('div');
@@ -108,8 +109,8 @@ class UIHelper {
 
     /**
      * Gerencia a seleção de itens em uma lista
-     * @param {HTMLElement} element - Elemento clicado
-     * @param {string} itemClass - Classe dos itens da lista
+     * @param {HTMLElement} element -               Elemento clicado
+     * @param {string} itemClass -                  Classe dos itens da lista
      */
     static handleItemSelection(element, itemClass) {
         const previousSelected = document.querySelector(`${itemClass}.selected`);
@@ -121,10 +122,10 @@ class UIHelper {
 
     /**
      * Cria um input de texto básico
-     * @param {string} className - Classe CSS do input
-     * @param {string} [value=''] - Valor inicial do input
-     * @param {string} [placeholder=''] - Placeholder do input
-     * @returns {HTMLElement} Elemento input
+     * @param {string} className -              Classe CSS do input
+     * @param {string} [value=''] -             Valor inicial do input
+     * @param {string} [placeholder=''] -       Placeholder do input
+     * @returns {HTMLElement}                   Elemento input
      */
     static createTextInput(className, value = '', placeholder = '') {
         const input = document.createElement('input');
@@ -137,10 +138,10 @@ class UIHelper {
 
     /**
      * Cria um select com opções
-     * @param {Array<{id: number|string, description: string}>} options - Opções do select
-     * @param {string} className - Classe CSS do select
-     * @param {number|string} [selectedValue] - Valor selecionado
-     * @returns {HTMLElement} Elemento select
+     * @param {Array<{id: number|string, description: string}>} options -   Opções do select
+     * @param {string} className -                                          Classe CSS do select
+     * @param {number|string} [selectedValue] -                             Valor selecionado
+     * @returns {HTMLElement}                                               Elemento select
      */
     static createSelect(options, className, selectedValue) {
         const select = document.createElement('select');
@@ -161,9 +162,9 @@ class UIHelper {
 
     /**
      * Cria um input de data
-     * @param {string} className - Classe CSS do input
-     * @param {Date} [value] - Valor inicial do input
-     * @returns {HTMLElement} Elemento input
+     * @param {string} className -              Classe CSS do input
+     * @param {Date} [value] -                  Valor inicial do input
+     * @returns {HTMLElement}                   Elemento input
      */
     static createDateInput(className, value) {
         const input = document.createElement('input');
@@ -197,11 +198,11 @@ class UIHelper {
 
     /**
      * Cria uma seção de checkbox com título
-     * @param {string} title - Título da seção
-     * @param {Array<{id: number, description: string}>} items - Itens para checkbox
-     * @param {number[]} selectedIds - IDs dos itens selecionados
-     * @param {string} className - Classe CSS para os checkboxes
-     * @returns {HTMLElement} Container dos checkboxes
+     * @param {string} title -                                      Título da seção
+     * @param {Array<{id: number, description: string}>} items -    Itens para checkbox
+     * @param {number[]} selectedIds -                              IDs dos itens selecionados
+     * @param {string} className -                                  Classe CSS para os checkboxes
+     * @returns {HTMLElement}                                       Container dos checkboxes
      */
     static createCheckboxSection(title, items, selectedIds = [], className = '') {
         const section = document.createElement('div');
