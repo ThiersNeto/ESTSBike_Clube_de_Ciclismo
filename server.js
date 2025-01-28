@@ -73,6 +73,9 @@ async function startServer() {
         await executeSQLScript(sqlScriptPath);
         console.log('Database schema created and connected!');
 
+        app.use(express.static("Program/ESTSBike", { "index": "index.html" }));
+        app.use(express.json());
+
         // Configuração das rotas
         // Rota de teste
         app.get('/test', (req, res) => {
@@ -124,7 +127,7 @@ async function startServer() {
             res.status(500).send('Algo deu errado!');
         });
 
-        const PORT = process.env.PORT || 3000;
+        const PORT = 3000;
         app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
     } catch (error) {
         console.error('Failed to start server:', error);

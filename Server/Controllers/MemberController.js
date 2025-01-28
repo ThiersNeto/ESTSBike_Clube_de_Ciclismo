@@ -294,5 +294,5 @@ export default {
             console.error('Error in addMemberEvent:', error);
             sendError(response, "An error occurred while associating member with event", 500);
         }
-    }
+    },
 };

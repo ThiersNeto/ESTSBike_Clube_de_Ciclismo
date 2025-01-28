@@ -42,6 +42,47 @@ class EventManager {
     constructor() {
         this.events = [];
         this.currentId = 0;
+        this.loadEventsFromServer();
+    }
+
+    async loadEventsFromServer() {
+        try {
+            console.log('Iniciando carregamento de eventos do servidor...');
+            const response = await fetch('http://localhost:3000/api/events');
+
+            if (!response.ok) {
+                throw new Error(`Erro HTTP! status: ${response.status}`);
+            }
+
+            const events = await response.json();
+            console.log('Dados recebidos do servidor:', events);
+
+            if (!Array.isArray(events)) {
+                throw new Error('Os dados recebidos não são um array');
+            }
+
+            this.events = events.map(event => {
+                if (!event.id || !event.type_id || !event.description || !event.date) {
+                    console.warn('Dados de evento inválidos:', event);
+                    return null;
+                }
+                return new Event(
+                    parseInt(event.id),
+                    parseInt(event.type_id),
+                    event.description,
+                    new Date(event.date)
+                );
+            }).filter(event => event !== null);
+
+            this.currentId = this.events.length > 0 ? Math.max(...this.events.map(event => event.id)) : 0;
+            console.log('Eventos carregados com sucesso:', this.events);
+        } catch (error) {
+            console.error('Erro ao carregar eventos:', error);
+            this.events = [];
+            this.currentId = 0;
+        } finally {
+            console.log('Carregamento de eventos finalizado');
+        }
     }
 
     /**
@@ -59,6 +100,7 @@ class EventManager {
         this.currentId++;
         const event = new Event(this.currentId, typeId, description, date);
         this.events.push(event);
+        this.syncCreateEvent(event);
         return event;
     }
 
@@ -90,6 +132,7 @@ class EventManager {
         event.typeId = typeId;
         event.description = description.trim();
         event.date = date;
+        this.syncUpdateEvent(event);
         return true;
     }
 
@@ -105,6 +148,8 @@ class EventManager {
             throw new Error(MessageEvents.EVENT_NOT_FOUND);
         }
         
+        const event = this.events[index];
+        this.syncDeleteEvent(event);
         this.events.splice(index, 1);
         return true;
     }
@@ -417,6 +462,43 @@ class EventManager {
         }
         return true;
     }
-}
 
+    async syncCreateEvent(event) {
+       fetch('http://localhost:3000/api/events', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                type_id: event.typeId,
+                description: event.description,
+                date: event.date.toISOString().split('T')[0]
+            }),
+        })
+    }
+
+
+    async syncUpdateEvent(event) {
+        fetch('http://localhost:3000/api/events/${event.id}', {
+             method: 'PUT',
+             headers: {
+                 'Content-Type': 'application/json',
+             },
+             body: JSON.stringify({
+                 type_id: event.typeId,
+                 description: event.description,
+                 date: event.date.toISOString().split('T')[0]
+             }),
+         })
+     }
+
+     async syncDeleteEvent(event) {
+        fetch('http://localhost:3000/api/events/${event.id}', {
+             method: 'DELETE',
+             headers: {
+                 'Content-Type': 'application/json',
+             },
+         });
+     }
+}
 const eventManager = new EventManager();

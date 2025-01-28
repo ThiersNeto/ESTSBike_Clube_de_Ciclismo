@@ -33,6 +33,21 @@ class Members {
         this.selectedMember = null;
         this.events = [];
         this.eventSubscriptions = [];
+        this.loadMembersFromServer();
+    }
+
+    async loadMembersFromServer() {
+        try {
+            const response = await fetch('http://localhost:3000/api/members');
+            if (!response.ok) {
+                throw new Error('Failed to fetch members');
+            }
+            const members = await response.json();
+            this.members = members;
+            this.currentId = Math.max(...members.map(member => member.id), 0);
+        } catch (error) {
+            console.error('Error loading members:', error);
+        }
     }
 
     /**

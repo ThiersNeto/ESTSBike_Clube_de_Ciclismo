@@ -33,6 +33,21 @@ class EventTypeManager {
         this.currentId = 0;
         this.eventAssociations = [];
         this.memberPreferences = [];
+        this.loadEventTypesFromServer();
+    }
+
+    async loadEventTypesFromServer() {
+        try {
+            const response = await fetch('http://localhost:3000/api/event-types');
+            if (!response.ok) {
+                throw new Error('Failed to fetch event types');
+            }
+            const eventTypes = await response.json();
+            this.eventTypes = eventTypes;
+            this.currentId = Math.max(...eventTypes.map(et => et.id), 0);
+        } catch (error) {
+            console.error('Error loading event types:', error);
+        }
     }
 
     /**
@@ -48,6 +63,8 @@ class EventTypeManager {
         this.currentId++;
         const eventType = new EventType(this.currentId, description);
         this.eventTypes.push(eventType);
+
+        this.syncCreateEventType(eventType);
         return eventType;
     }
 
@@ -75,6 +92,7 @@ class EventTypeManager {
             throw new Error(MessageEvents.EVENT_TYPE_NOT_FOUND);
         }
         eventType.description = description.trim();
+        this.syncUpdateEventType(eventType);
         return true;
     }
 
@@ -99,9 +117,14 @@ class EventTypeManager {
             throw new Error(MessageEvents.EVENT_TYPE_NOT_FOUND);
         }
 
+        const eventType = this.eventTypes[index];
         this.eventTypes.splice(index, 1);
+        this.syncDeleteEventType(eventType);
         return true;
     }
+
+
+
 
     /**
      * Busca um tipo de evento pelo ID
@@ -419,24 +442,35 @@ class EventTypeManager {
      * @returns {Promise<Object|null>}  Resposta da API ou null em caso de erro
      * @throws {Error}                  Se falhar a requisição
      */
-      static async createEventType(eventType) {
-        try {
-          const response = await fetch('http://localhost:3000/api/event-types', {
+      
+    syncCreateEventType(eventType) {
+        fetch('/api/event-types', {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
-            body: JSON.stringify(eventType),
-          });
-          if (!response.ok) {
-            throw new Error('Failed to create event type');
-          }
-          return await response.json();
-        } catch (error) {
-          console.error('Error:', error);
-          return null;
-        }
-      }
+            body: JSON.stringify({description: eventType.description }),
+        })
+    }
+
+    syncUpdateEventType(eventType) {
+        fetch(`/api/event-types/${eventType.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ description: eventType.description }),
+        })
+    }
+
+    syncDeleteEventType(eventType) {
+        fetch(`/api/event-types/${eventType.id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+    }
 }
 
 const eventTypeManager = new EventTypeManager(); 
