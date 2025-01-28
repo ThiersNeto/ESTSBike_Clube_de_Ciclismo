@@ -136,6 +136,7 @@ class EventManager {
         return true;
     }
 
+
     /**
      * Remove um evento
      * @param {number} id - ID do evento a ser removido
@@ -148,9 +149,9 @@ class EventManager {
             throw new Error(MessageEvents.EVENT_NOT_FOUND);
         }
         
-        const event = this.events[index];
-        this.syncDeleteEvent(event);
+
         this.events.splice(index, 1);
+        this.syncDeleteEvent(id);
         return true;
     }
 
@@ -463,7 +464,7 @@ class EventManager {
         return true;
     }
 
-    async syncCreateEvent(event) {
+    syncCreateEvent(event) {
        fetch('http://localhost:3000/api/events', {
             method: 'POST',
             headers: {
@@ -478,8 +479,8 @@ class EventManager {
     }
 
 
-    async syncUpdateEvent(event) {
-        fetch('http://localhost:3000/api/events/${event.id}', {
+    syncUpdateEvent(event) {
+        fetch(`http://localhost:3000/api/events/${event.id}`, {
              method: 'PUT',
              headers: {
                  'Content-Type': 'application/json',
@@ -492,8 +493,8 @@ class EventManager {
          })
      }
 
-     async syncDeleteEvent(event) {
-        fetch('http://localhost:3000/api/events/${event.id}', {
+    syncDeleteEvent(id) {
+        fetch(`http://localhost:3000/api/events/${id}`, {
              method: 'DELETE',
              headers: {
                  'Content-Type': 'application/json',
