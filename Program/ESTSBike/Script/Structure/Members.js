@@ -61,6 +61,7 @@ class Members {
         this.currentId++;
         const member = new Member(this.currentId, name, preferredEvents);
         this.members.push(member);
+        this.syncCreateMember(member);
         return member;
     }
 
@@ -90,6 +91,7 @@ class Members {
         if (!member) throw new Error(MessageEvents.MEMBER_NOT_FOUND);
         member.name = name;
         member.preferredEvents = preferredEvents;
+        this.syncUpdateMember(member);
         return true;
     }
 
@@ -104,6 +106,7 @@ class Members {
         const index = this.members.findIndex(e => e.id === id);
         if (index === -1) throw new Error(MessageEvents.MEMBER_NOT_FOUND);
         this.members.splice(index, 1);
+        this.syncDeleteMember(id);
         return true;
     }
 
@@ -569,6 +572,42 @@ class Members {
 
         return row;
     }
+
+    syncCreateMember(member) {
+        fetch('http://localhost:3000/api/members', {
+             method: 'POST',
+             headers: {
+                 'Content-Type': 'application/json',
+             },
+             body: JSON.stringify({
+                name: member.name,
+                preferred_events: member.preferredEvents
+             }),
+         })
+     }
+ 
+ 
+     syncUpdateMember(member) {
+         fetch(`http://localhost:3000/api/members/${member.id}`, {
+              method: 'PUT',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                name: member.name,
+                preferred_events: member.preferredEvents
+              }),
+          })
+      }
+ 
+     syncDeleteMember(memberId) {
+         fetch(`http://localhost:3000/api/members/${memberId}`, {
+              method: 'DELETE',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+          });
+      }
 }
 
 const membersModule = new Members();    
