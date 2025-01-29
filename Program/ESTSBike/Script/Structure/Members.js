@@ -279,6 +279,7 @@ class Members {
             throw new Error('Membro já está inscrito neste evento');
         }
         this.eventSubscriptions.push({ memberId, eventId });
+        this.syncSubscribeToEvent(memberId, eventId);
         return true;
     }
 
@@ -299,6 +300,7 @@ class Members {
         if (index === -1) throw new Error('Inscrição não encontrada');
         
         this.eventSubscriptions.splice(index, 1);
+        this.syncCancelEventSubscription(memberId, eventId);
         MessageEvents.showSuccess('Inscrição cancelada com sucesso');
         return true;
     }
@@ -608,6 +610,22 @@ class Members {
               },
           });
       }
+
+      syncSubscribeToEvent(memberId, eventId) {
+        fetch('http://localhost:3000/api/member-events', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ memberId, eventId }),
+        });
+    }
+
+    syncCancelEventSubscription(memberId, eventId) {
+        fetch(`http://localhost:3000/api/member-events/${memberId}/${eventId}`, {
+            method: 'DELETE',
+        });
+    }
 }
 
 const membersModule = new Members();    
